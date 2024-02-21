@@ -2,7 +2,7 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage[sc]{mathpazo}
+%\usepackage[sc]{mathpazo}
 \usepackage[ngerman,american]{babel}
 \usepackage[autostyle]{csquotes}
 \usepackage[%
@@ -33,6 +33,53 @@
 	}
 }
 \usepackage{ifthen}
+
+% added by XC later
+\usepackage{amsmath}
+\usepackage{bm}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{mathtools}
+\usepackage[shortlabels]{enumitem}
+\usepackage{subcaption}
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\algrenewcommand{\Return}{\State\algorithmicreturn~}
+
+\usepackage{amsthm}
+
+\newtheorem {theorem} {Theorem}
+\newtheorem {definition} [theorem] {Definition}
+\newtheorem {lemma} [theorem] {Lemma}
+
+
+\usetikzlibrary{automata, positioning, arrows.meta}
+\tikzset{
+        ->,  % makes the edges directed
+        >=stealth, % makes the arrow heads bold
+        node distance=3cm, % specifies the minimum distance between two nodes. Change if n
+        every state/.style={thick, fill=gray!10}, % sets the properties for each ’state’ n
+        initial text=$ $, % sets the text that appears on the start arrow
+        }
+        
+\newcommand{\TFfigures}[2]{
+    \fbox{
+        \begin{minipage}{.45\textwidth}
+        \includegraphics[width=\textwidth]{#1}
+        \captionof{figure}{False}
+    \end{minipage}
+    \begin{minipage}{.45\textwidth}
+        \includegraphics[width=\textwidth]{#2}
+        \captionof{figure}{Correct}
+    \end{minipage}
+    }
+}        
+
+
+
+
+
 
 % for fachschaft_print.pdf
 \makeatletter
