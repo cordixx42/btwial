@@ -1,0 +1,51 @@
+\chapter{Implementation}\label{chapter:implementation}
+
+\section{The High-Level Idea}
+The main purpose of the thesis is to use weakly acyclic languages to address the coverability problem in Petri nets. Therefore, the concepts from \autoref{chapter:weakly_acyclic_language} are used to adapt the Backwards Reachability Algorithm in Algorithm \autoref{alg:bw}.
+\par
+The Algorithm \autoref{alg:bw} is working with infinite upward-closed sets of markings, like $\mathcal{M}$ and $\mathcal{M}_{old}$. Since automata are characterizing languages, which are a set of words, they are a way to describe these infinite sets in a compact finite representation. In fact, for the representation of the upward closed markings, the subset of weakly acyclic languages are sufficient.
+\par
+Therefore, the idea is to represent each of the upward-closed sets, which are used in Algorithm \autoref{alg:bw}, by a weakly acyclic DFA. To manage all those DFAs efficiently, a data structure $table$ is introduced. The $table$ stores a set of weakly acyclic DFAs using the concept of the master automaton in \autoref{chapter:weakly_acyclic_language}. It further provides the required set operations $union$ and $intersection$, which calculate the union/intersection of two weakly acyclic languages. Furthermore, there are encoding functions, which take a marking, convert it into a weakly acyclic DFA, and adds it to the $table$.
+\par
+For the main operation $pre$, to calculate all possible predecessor markings, the structure of the petri net $N$ comes into use. 
+
+
+%The given input are the petri net $N$, a start marking $M_{0}$ and an end marking $M$ analogous to Algorithm \autoref{alg:bw}. 
+%This Algorithm \autoref{alg:bw_wwa} adds a $table$ data structure, which is representing a set of weakly acyclic automata. Those weakly acyclic languages are corresponding to upward closed sets of markings.
+%The $table$ is providing most of the important functions, like $union$ and $pre$. 
+%Furthermore, there is $transducer$, a data structure representing one weakly acyclic transducer. With the function $net2transducer$, the information about the flow relation of the transitions in petri net $N$ are given to $transducer$.
+
+\begin{algorithm}
+\caption{Backwards Reachability Algorithm using Weakly Acyclic Automata}\label{alg:bw_wwa}
+\begin{algorithmic}
+\Require {$N, M_{0}, M$}
+\State $table \gets EmptyTableOfNodes$
+\State $transducer \gets \textsf{net2transducer}(N)$
+\State $\mathcal{M}_{0} \gets table.\textsf{encode}(M_{0})$
+\State $\mathcal{M} \gets table.\textsf{encodeUpwardClosed}(M)$
+\State $\mathcal{M}_{old} \gets q_{\emptyset}$
+\While{true}
+	\State $\mathcal{M}_{old} \gets \mathcal{M}$
+	\State $\mathcal{M} \gets table.\textsf{pre}(transducer,\mathcal{M})$
+	\State $\mathcal{M} \gets table.\textsf{union}(\mathcal{M}_{0}, \mathcal{M}_{pre})$
+\If{$table.\textsf{intersection}(\mathcal{M}_{0}, \mathcal{M}) \neq q_{\emptyset}$}
+	\Return true
+\EndIf
+\If{$\mathcal{M} = \mathcal{M}_{old}$}
+    \Return false
+\EndIf
+\EndWhile
+\end{algorithmic}
+\end{algorithm}
+
+
+\section{Table of Nodes}
+
+\section{Transducer}
+
+\section{Petri Net}
+
+\section{Parser}
+\todo{recursive descend parser, stack overflow }
+
+\section{CorrectnessCheck}

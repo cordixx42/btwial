@@ -1,0 +1,29 @@
+\chapter{The Backwards Reachability Algorithm}\label{chapter:coverability}
+
+
+\section{Abstract Backwards Reachability Algorithm}
+
+\begin{algorithm}
+\caption{Backwards Reachability Algorithm}\label{alg:bw}
+\begin{algorithmic}
+\Require {$N, M_{0}, M$}
+\State $\mathcal{M} \gets \{ M^{'} : M^{'} \ge M \}$
+\State $\mathcal{M}_{old} \gets \emptyset$
+\While{true}
+	\State $\mathcal{M}_{old} \gets \mathcal{M}$
+	\State $\mathcal{M}_{pre} \gets \mathcal{M} \cup pre(\mathcal{M})$
+\If{$M_{0} \in \mathcal{M}$}
+	\Return true
+\EndIf
+\If{$\mathcal{M} = \mathcal{M}_{old}$}
+    \Return false
+\EndIf
+\EndWhile
+\end{algorithmic}
+\end{algorithm}
+
+
+
+\section{Combining Weakly Acyclic Languages with the Backwards Reachability}
+\todo{why we can assume for pre that it will stay weakly acyclic: upwards closed markings}
+\todo{choice between one transducer for a transition vs all transitions}

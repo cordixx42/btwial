@@ -1,0 +1,99 @@
+\chapter{Weakly Acyclic Languages}\label{chapter:weakly_acyclic_language}
+
+This chapter introduces a new class of a formal language, which we call weakly acyclic. 
+
+\section{Weakly Acyclic DFAs}\label{sec:weakly_acyclic_dfa}
+
+\begin{definition}[\cite{blondin_24}]
+Let $A = (Q, \Sigma, q_{0},\delta,F)$ be a DFA and let $\alpha(w)$ be the set of letter, which occur within in word $w$. DFA $A$ is weakly acyclic, if $\delta(q,w) = q$ implies $\delta(q,a) = q$ for every $a \in \alpha(w)$
+\end{definition}
+
+The following definitions are equivalently expressing, that a DFA $(Q, \Sigma, q_{0},\delta,F)$ is \textit{weakly acyclic}:
+\begin{itemize}[--,noitemsep]
+	\item the binary relation $\precsim $  over $Q \times Q$ with $q \precsim q^{'}$ if $\delta(q,w) = q^{'}$ is a partial order
+	\item each strongly connected component of underlying directed graph contains a single state 
+	\item the underlying directed graph does not contain any simple cycle except from self-loops
+\end{itemize}
+
+\todo{add figure of wa dfa as example}
+
+\begin{lemma}\label{lem:minimal}
+Let $A$ be a weakly acyclic DFA. The minimal DFA that accepts L$(A)$ is also weakly acyclic. 
+\end{lemma}
+
+\begin{proof}
+See {\cite[Proposition~4]{blondin_24}}
+\end{proof}
+
+
+\section{Other Representations}
+
+As with regular languages, there are equivalent ways to represent weakly acyclic languages. Let $\alpha(w)$ be the set of letter, which occur within in word $w$. 
+Blondin et al. have shown, that weakly acyclic DFAs, weakly acyclic NFAs and weakly acyclic expressions represent the same class of weakly acyclic languages \cite{blondin_24}. 
+
+
+%It can further be shown, that if a weakly acyclic DFA $A$ accepts the language $L(A)$, then the minimal automata for this language is also weakly acyclic \cite{blondin_24}. 
+
+\subsection{Weakly Acyclic NFAs}
+An NFA $(Q, \Sigma, q_{0},\delta,F)$ is \textit{weakly acyclic} if 
+\begin{itemize}[--,noitemsep]
+	\item $q \in \delta(q,w)$ implies $\delta(q,a) = {q}$ for every $a \in \alpha(w)$
+	\item the underlying directed graph does not contain any simple cycle except from self-loops and nondeterminism with a letter $a$ can only appear from a state with no self-loop of $a$.
+\end{itemize}
+
+\subsection{Weakly Acyclic Expressions}\label{sec:weakly_acyclic_regex}
+The class of weakly acyclic languages can also be characterized by \textit{weakly acyclic expressions} of the following form
+\begin{equation*}
+r \Coloneqq \emptyset \mid \Gamma^{*} \mid \Lambda^{*} ar \mid r + r \quad \text{where} \quad  \Gamma, \Lambda \subseteq \Sigma \quad \textrm{and} \quad a \in \Sigma \setminus \Lambda
+\end{equation*}
+
+% TODO: propositions proving the equivalence of dfa nfa and regex in supplementary materials
+
+\section{Properties}
+\subsection{Position in Language Hierarchy}
+The weakly acyclic language lie strictly in between finite and regular languages. 
+They are within the regular languages, as they can be characterized with DFAs, NFAs and regular expressions. Furthermore, every finite language is weakly acyclic, as only a self loop in the trap state is necessary to represent a finite set of words.
+\todo{strictness with examples}
+\todo{hierarchy figure}
+
+
+\subsection{Closure Properties}
+Weakly acyclic languages are closed under union, intersection and complementation, but not under concatenation or Kleene star. 
+\par 
+As weakly acyclic languages can be described by DFAs as in \autoref{sec:weakly_acyclic_dfa}, complementing a DFA still preserves its weakly acyclic structure. Union is already present in the definition of weakly acyclic expressions in \autoref{sec:weakly_acyclic_regex}. Therefore, the languages are also closed under intersection, which can be expressed with the combination of union and complementation. 
+\par
+Weakly acyclic languages are not closed under concatenation. The expressions $\bm{(a + b)^{*}}$ and $\bm{b}$ are weakly acyclic by themselves. The language of their concatenation $\bm{(a + b)^{*}b}$ is depicted in a minimal DFA in \autoref{fig:not-closed-concat}.
+
+\begin{figure}[t]
+\centering 
+	\begin{subfigure}{.30\textwidth}	
+		\centering 
+        \begin{tikzpicture}
+    	\node[state, initial] (q1) {$q_1$};
+    	\node[state, accepting, right of=q1] (q2) {$q_2$};
+    	\draw   (q1) edge[loop above] node{a} (q1)
+            	(q1) edge[bend left, above] node{b} (q2)
+            	(q2) edge[loop above] node{b} (q2)
+            	(q2) edge[bend left, below] node{a} (q1);
+    	\end{tikzpicture}
+    	 \caption{Minimal DFA of $L(\bm{(a + b)^{*}b})$}\label{fig:not-closed-concat}
+    \end{subfigure}
+    \begin{subfigure}{.60\textwidth}
+	\centering 
+        \begin{tikzpicture}
+    	\node[state, initial, accepting] (q1) {$q_1$};
+    	\node[state, right of=q1] (q2) {$q_2$};
+    	\node[state, right of=q2] (q3) {$q_3$};
+    	\draw   (q1) edge[below] node{a} (q2)
+            	(q1) edge[bend right, below] node{b} (q3)
+            	(q2) edge[bend right, above] node{b} (q1)
+            	(q2) edge[below] node{a} (q3)
+            	(q3) edge[loop above] node{a,b} (q3);
+    	\end{tikzpicture}
+    	\caption{Minimal DFA of $L(\bm{(ab)^{*}})$}\label{fig:not-closed-kleene}
+    \end{subfigure}
+     \caption{Not weakly acyclic DFA}
+\end{figure}
+
+By Lemma~\autoref{lem:minimal} the minimal automaton of weakly acyclic language remains weakly acyclic. As this automaton contains a cycle of length 2, this language is not weakly acyclic. The same argumentation can be made for the Kleene star closure, with $\bm{ab}$ being a weakly acyclic language, but $\bm{(ab)^{*}}$ represented in \autoref{fig:not-closed-kleene} is not weakly acyclic. 
+

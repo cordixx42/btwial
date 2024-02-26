@@ -3,8 +3,14 @@
 \RequirePackage[l2tabu,orthodox]{nag}
 
 % TODO: decide if one-sided/two-sided
+
+
 %\documentclass[headsepline,footsepline,footinclude=false,fontsize=11pt,paper=a4,listof=totoc,bibliography=totoc,BCOR=12mm,DIV=12]{scrbook} % two-sided
-\documentclass[headsepline,footsepline,footinclude=false,oneside,fontsize=11pt,paper=a4,listof=totoc,bibliography=totoc]{scrbook} % one-sided
+
+\documentclass[headsepline,footsepline,footinclude=false,oneside,fontsize=11pt,paper=a4,listof=totoc,bibliography=totoc,DIV=11]{scrbook} % one-sided
+
+
+%\documentclass[headsepline,footsepline,footinclude=false,fontsize=11pt,paper=a4,listof=totoc,bibliography=totoc,numbers=noenddot,BCOR=12mm,DIV=12]{scrbook}
 
 % TODO: change citation style in settings
 \input{settings}
@@ -43,6 +49,7 @@
 \mainmatter{}
 
 % TODO: add more chapters here
+\input{notations}
 \input{chapters/01_introduction}
 \input{chapters/02_preliminaries}
 \input{chapters/03_weakly_acyclic_language}
@@ -53,7 +60,7 @@
 \input{chapters/06_conclusion}
 
 
-\input{chapters/00_test}
+%\input{chapters/00_test}
 \appendix{}
 
 \microtypesetup{protrusion=false}

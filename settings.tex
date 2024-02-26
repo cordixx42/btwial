@@ -6,9 +6,9 @@
 \usepackage[ngerman,american]{babel}
 \usepackage[autostyle]{csquotes}
 \usepackage[%
-  backend=biber,
+  backend=bibtex,
   url=false,
-  style=alphabetic,
+  style=numeric,
   maxnames=4,
   minnames=3,
   maxbibnames=99,
@@ -35,23 +35,43 @@
 \usepackage{ifthen}
 
 % added by XC later
-\usepackage{amsmath}
+\usepackage[fleqn]{amsmath}
 \usepackage{bm}
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{mathtools}
 \usepackage[shortlabels]{enumitem}
 \usepackage{subcaption}
+\usepackage{todonotes}
+\usepackage{booktabs}
+\usepackage{relsize}
+
+\usepackage{floatrow}
+% Table float box with bottom caption, box width adjusted to content
+\newfloatcommand{capbtabbox}{table}[][\FBwidth]
+
 
 \usepackage{algorithm}
-\usepackage{algpseudocode}
+
+\usepackage[noend]{algpseudocode}
 \algrenewcommand{\Return}{\State\algorithmicreturn~}
+
+
+\algnewcommand\algorithmicforeach{\textbf{for each}}
+\algdef{S}[FOR]{ForEach}[1]{\algorithmicforeach\ #1\ \algorithmicdo}
+
+\algnewcommand\algorithmicinput{\textbf{Input:}}
+\algnewcommand\Input{\item[\algorithmicinput]}
+
+\algnewcommand\algorithmicoutput{\textbf{Output:}}
+\algnewcommand\Output{\item[\algorithmicoutput]}
+
 
 \usepackage{amsthm}
 
 \newtheorem {theorem} {Theorem}
-\newtheorem {definition} [theorem] {Definition}
-\newtheorem {lemma} [theorem] {Lemma}
+\newtheorem {definition} {Definition}
+\newtheorem {lemma} {Lemma}
 
 
 \usetikzlibrary{automata, positioning, arrows.meta}
@@ -75,9 +95,6 @@
     \end{minipage}
     }
 }        
-
-
-
 
 
 
