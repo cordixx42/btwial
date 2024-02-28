@@ -45,6 +45,8 @@
 \usepackage{todonotes}
 \usepackage{booktabs}
 \usepackage{relsize}
+\usepackage{xcolor, soul}
+\sethlcolor{yellow}
 
 \usepackage{floatrow}
 % Table float box with bottom caption, box width adjusted to content
@@ -72,6 +74,7 @@
 \newtheorem {theorem} {Theorem}
 \newtheorem {definition} {Definition}
 \newtheorem {lemma} {Lemma}
+\newtheorem {prop} {Proposition}
 
 
 \usetikzlibrary{automata, positioning, arrows.meta}
@@ -94,9 +97,9 @@
         \captionof{figure}{Correct}
     \end{minipage}
     }
-}        
+} 
 
-
+\def\HiLi{\leavevmode\rlap{\hbox to \linewidth{\color{yellow!50}\leaders\hrule height .8\baselineskip depth .5ex\hfill}}}
 
 % for fachschaft_print.pdf
 \makeatletter
