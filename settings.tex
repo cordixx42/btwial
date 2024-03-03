@@ -45,8 +45,15 @@
 \usepackage{todonotes}
 \usepackage{booktabs}
 \usepackage{relsize}
+\usepackage[linguistics]{forest}
+
 \usepackage{xcolor, soul}
 \sethlcolor{yellow}
+
+\usepackage{tikz-cd}
+\usetikzlibrary{babel}
+\usetikzlibrary{petri,positioning}
+
 
 \usepackage{floatrow}
 % Table float box with bottom caption, box width adjusted to content
@@ -76,7 +83,6 @@
 \newtheorem {lemma} {Lemma}
 \newtheorem {prop} {Proposition}
 
-
 \usetikzlibrary{automata, positioning, arrows.meta}
 \tikzset{
         ->,  % makes the edges directed
@@ -85,6 +91,9 @@
         every state/.style={thick, fill=gray!10}, % sets the properties for each ’state’ n
         initial text=$ $, % sets the text that appears on the start arrow
         }
+        
+\tikzcdset{scale cd/.style={every label/.append style={scale=#1},
+    cells={nodes={scale=#1}}}}
         
 \newcommand{\TFfigures}[2]{
     \fbox{

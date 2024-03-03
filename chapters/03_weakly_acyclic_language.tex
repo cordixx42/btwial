@@ -38,13 +38,13 @@ Blondin et al. have shown, that weakly acyclic DFAs, weakly acyclic NFAs and wea
 An NFA $(Q, \Sigma, q_{0},\delta,F)$ is \textit{weakly acyclic} if 
 \begin{itemize}[--,noitemsep]
 	\item $q \in \delta(q,w)$ implies $\delta(q,a) = {q}$ for every $a \in \alpha(w)$
-	\item the underlying directed graph does not contain any simple cycle except from self-loops and nondeterminism with a letter $a$ can only appear from a state with no self-loop of $a$.
+	\item the underlying directed graph does not contain any simple cycle except from self-loops and non-determinism with a letter $a$ can only appear from a state with no self-loop of $a$.
 \end{itemize}
 
 \subsection{Weakly Acyclic Expressions}\label{sec:weakly_acyclic_regex}
 The class of weakly acyclic languages can also be characterized by \textit{weakly acyclic expressions} of the following form
 \begin{equation*}
-r \Coloneqq \emptyset \mid \Gamma^{*} \mid \Lambda^{*} ar \mid r + r \quad \text{where} \quad  \Gamma, \Lambda \subseteq \Sigma \quad \textrm{and} \quad a \in \Sigma \setminus \Lambda
+r \Coloneqq \emptyset \mid \Gamma^{*} \mid \Lambda^{*} a r \mid r + r \quad \text{where} \quad  \Gamma, \Lambda \subseteq \Sigma \quad \textrm{and} \quad a \in \Sigma \setminus \Lambda
 \end{equation*}
 
 % TODO: propositions proving the equivalence of dfa nfa and regex in supplementary materials
@@ -69,14 +69,15 @@ Weakly acyclic languages are not closed under concatenation. The expressions $\b
 	\begin{subfigure}{.30\textwidth}	
 		\centering 
         \begin{tikzpicture}
-    	\node[state, initial] (q1) {$q_1$};
+    	\node[state, initial] (q1) {$q_{1}$};
     	\node[state, accepting, right of=q1] (q2) {$q_2$};
-    	\draw   (q1) edge[loop above] node{a} (q1)
-            	(q1) edge[bend left, above] node{b} (q2)
-            	(q2) edge[loop above] node{b} (q2)
-            	(q2) edge[bend left, below] node{a} (q1);
+    	\draw   (q1) edge[loop above] node{$\bm{a}$} (q1)
+            	(q1) edge[bend left, above] node{$\bm{b}$} (q2)
+            	(q2) edge[loop above] node{$\bm{b}$} (q2)
+            	(q2) edge[bend left, below] node{$\bm{a}$} (q1);
     	\end{tikzpicture}
-    	 \caption{Minimal DFA of $L(\bm{(a + b)^{*}b})$}\label{fig:not-closed-concat}
+    	\centering 
+    	\caption{Minimal DFA of \\ $L(\bm{(a + b)^{*}b})$}\label{fig:not-closed-concat}
     \end{subfigure}
     \begin{subfigure}{.60\textwidth}
 	\centering 
@@ -84,11 +85,11 @@ Weakly acyclic languages are not closed under concatenation. The expressions $\b
     	\node[state, initial, accepting] (q1) {$q_1$};
     	\node[state, right of=q1] (q2) {$q_2$};
     	\node[state, right of=q2] (q3) {$q_3$};
-    	\draw   (q1) edge[below] node{a} (q2)
-            	(q1) edge[bend right, below] node{b} (q3)
-            	(q2) edge[bend right, above] node{b} (q1)
-            	(q2) edge[below] node{a} (q3)
-            	(q3) edge[loop above] node{a,b} (q3);
+    	\draw   (q1) edge[below] node{$\bm{a}$} (q2)
+            	(q1) edge[bend right, below] node{$\bm{b}$} (q3)
+            	(q2) edge[bend right, above] node{$\bm{b}$} (q1)
+            	(q2) edge[below] node{$\bm{a}$} (q3)
+            	(q3) edge[loop above] node{$\bm{a},\bm{b}$} (q3);
     	\end{tikzpicture}
     	\caption{Minimal DFA of $L(\bm{(ab)^{*}})$}\label{fig:not-closed-kleene}
     \end{subfigure}

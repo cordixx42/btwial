@@ -7,24 +7,79 @@ This chapter aims to define a standardized formal notation of the theoretical mo
 \item def of upward closed sets / markings
 \item residual $L^{a}$
 \item reachability
-
+\item power set construction ?
+\item quotient automaton
+\item equivalence relation
 
 \todo{Partial Order?}
 \end{itemize}
 
 \section{Formal Languages}
 
-\section{Petri Nets}
-A petri net is tuple $(S,T,F,M_{0})$ where 
-\begin{itemize}
-	\item $S$ is a finite set of places 
-	\item $T$ is a finite set of transitions disjoint from $S$
-	\item $F \subseteq (S \times T) \cup (T \times S)$ is a flow relation 
-	\item $M_{0}: S $ is an initial marking 
-	% connected net def ? 
-\end{itemize}
-\
-A marking of a net is a mapping $M : S -> nat$, assigning each place a number of tokens. We represent these markings by using vectors. We fix a total order on the places of the net 
+\subsubsection{Residual Languages}
 
+The residual language of the language $L$ with respect to a letter $a$ is defined as \break
+$L^{a} = \{ w \in \Sigma^{*} : aw \in L \}$.
+
+We can extend this definition to the residual language with respect to a word $v \in \Sigma^{*}$ as \break
+$L^{v} = \{ w \in \Sigma^{*} : vw \in L \}$.
+
+\subsubsection{Language of an Automaton State}
+
+For a state $q$ in an automaton $A$, we define the language $L_{A}(q)$, which contains all words accepted by the $A$ with initial state $q$.
+
+\subsubsection{Transducer}
+
+A transducer $\mathcal{T}$ over $\Sigma$ is an NFA over the alphabet $\Sigma \times \Sigma$. $\mathcal{T}$ accepts the pair of words $(w,v)$ with $w = w_{1}w_{2}...w_{n}$ and $v=v_{1}v_{2}...v_{n}$, if it accepts the word $(w_{1},v_{1})(w_{2},v_{2})...(w_{n},v_{n})$.
+
+
+\section{Petri nets}
+
+\subsubsection{Petri net}
+
+A petri net $N$ is tuple $(S,\Tr,F)$ where 
+\begin{itemize}[-,noitemsep]
+	\item $S$ is a finite set of \emph{places}
+	\item $\Tr$ is a finite set of \emph{transitions} disjoint from $S$
+	\item $F \subseteq (S \times \Tr \times \mathbb{N}) \cup (\Tr \times S \times \mathbb{N})$ is a \emph{flow relation}
+\end{itemize}
+
+In drawings of Petri nets, the states are usually represented by circles, the transitions by rectangles.
+
+\subsubsection{Marking}
+A marking of a net is a mapping $M : S \rightarrow \mathbb{N}$ from the places of a Petri net to the natural numbers, assigning each place an amount of tokens.
+
+
+\subsubsection{Firing Rule}
+A transition $t \in \Tr$ is \emph{enabled} at a marking $M$, if there is exists the tuple $(s,t,n) \in F$, such that $M$ assigns at least $n$ tokens to state $s$.
+
+If a transition $t$ is enabled at marking $M$, it can \emph{fire} leading from $M$ to another marking $M'$, which we also denote by  $M \xrightarrow{t} M'$. 
+$M'$ is of the following form:
+\begin{equation*}
+M'(s) =  
+\begin{cases}
+\mathrlap{M(s) + (m - n)}\hphantom{M(s) + (m - n) + 1} \text{ if } \exists (s,t,n) \in F \text{ and } \exists (t,s,m) \in F \\
+\mathrlap{M(s) - n}\hphantom{M(s) + (m - n) + 1} \text{ if } \exists (s,t,n) \in F \text{ and } \nexists (t,s,m) \in F \\
+\mathrlap{M(s) + m}\hphantom{M(s) + (m - n) + 1} \text{ if }  \nexists (s,t,n) \in F \text{ and } \exists (t,s,m) \in F  \\
+\mathrlap{M(s)}\hphantom{M(s) + (m - n) + 1} \text{ otherwise}
+\end{cases}
+\end{equation*}
+
+\subsubsection{Reachable Markings}
+A sequence of transitions $\sigma = t_{1}...t_{n}$ is enabled at a marking $M$, if there are markings $M_{1},M_{2},\dots,M_{n}$ such that $M \xrightarrow{t_{1}} M_{1} \xrightarrow{t_{2}} M_{2} \xrightarrow{t_{3}} ... \xrightarrow{t_{n}} M_{n}$. We denote this by $M \xrightarrow{\sigma} M_{n}$. 
+
+If $M \xrightarrow{\sigma} M'$ for some markings $M,M'$ and some sequence $\sigma$, $M'$ is \emph{reachable} from $M$ and we denote this by $M \xrightarrow{*} M'$.
+
+
+\subsubsection{Upward closed sets of Markings}
+For markings $M$ and $M'$, we write $M \ge M'$, if for every state $s$ of a Petri net $M(s) \ge M'(s)$, meaning that the $M$ assigns at least as many tokens to every state as $M'$. We say that marking $M$ \emph{covers} marking $M'$.
+
+
+A set $\mathcal{M}$ of markings of the Petri net $N$ is upward closed if $M \in \mathcal{M}$ and $M' \ge M$ imply $M' \in \mathcal{M}$.
+
+A marking $M$ of a upward closed set $\mathcal{M}$ is minimal, if $\nexists M' \in \mathcal{M}$ such that $M' \le M$.
+
+An upward closed set $\mathcal{M}$ can be uniquely identified by a finite set of minimal elements. 
+%Furthermore, every $\mathcal{M}$ has finitely many minimal elements.
 
 \section{Coverability?}
