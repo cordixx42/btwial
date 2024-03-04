@@ -227,7 +227,7 @@ For a marking $M = (m_{1},m_{2},\dots,m_{n})$ we define its \emph{encoding} $f(M
 
 %We look for an encoding for those marking vectors. Using the approach of an unary encoding for natural numbers, we limit the alphabet to $\Sigma = \{\bm{1}, \square\}$. 
 
-As Definition~\autoref{def:encoding} illustrates, the token numbers in $M$ are encoded unary with $\bm{1}$s and the different positions in $M$ are separated with a separator symbol $\square$. For instance, the marking $m = (2,3,1)$ for a Petri net with 3 states is encoded into the language $L(\bm{11 \square 111 \square 1 \square})$. 
+As Definition~\autoref{def:encoding} illustrates, the token numbers in $M$ are encoded unary with $\bm{1}$s and the different positions in $M$ are separated with a separator symbol $\square$. For instance, the marking $M = (2,3,1)$ for a Petri net with 3 states is encoded into the language $L(\bm{11 \square 111 \square 1 \square})$. 
 \todo{one marking is language of a single world}
 \par 
 With this straight-forward representation we can construct new table operations $\encode$ and $\encodeUp$, which have been applied in the Backwards Reachability Algorithm with the table \autoref{alg:bw_wwa}. 
@@ -300,12 +300,14 @@ Recall the Pre language and the Predecessor set we have defined. Here for the Pr
 \ppre_{N}(\mathcal{M}) = \bigcup_{t \in \Tr} \{M': M' \xrightarrow{t} M, M \in \mathcal{M} \}
 \end{equation*}
 
-We aim to design $\mathcal{T}$, such that the words $w$ in $\Pre_{\mathcal{T}}(L)$ are encoding the predecessor markings $M'$ in $\ppre_{N}(\mathcal{M})$
-Formally, we want that the following equality holds:
+We aim to design $\mathcal{T}$, such that the words $w$ in $\Pre_{\mathcal{T}}(L)$ are encoding the predecessor markings $M'$ in $\ppre_{N}(\mathcal{M})$:
 \begin{equation*}
 f(\ppre_{N}(\mathcal{M})) = \Pre_{\mathcal{T}}(f(\mathcal{M}))
 \end{equation*}
-
+For this, the following must hold:
+\begin{equation*}
+(w,v) \in L(\mathcal{T}) \iff \exists M',M, t \text{ such that } w = f(M'), v = f(M) \text{ and } M' \xrightarrow{t} M 
+\end{equation*}
 
 %First, we replace the argument to be a node $q$ in the table for both sets. Furthermore, the single markings $M$ and $M'$ can be expressed as words $w,v \in \Sigma$. 
 
@@ -317,78 +319,75 @@ f(\ppre_{N}(\mathcal{M})) = \Pre_{\mathcal{T}}(f(\mathcal{M}))
 %\end{equation*}
 
 %We aim to design $\mathcal{T}$, such that both of the sets are equivalent. We can already see, that for both sets to be equivalent, $(w,v)$ has to be accepted by the transducer $\mathcal{T}$ if and only if there is a transition $t$ such that the marking represented by $w$ becomes the marking represented by $v$ when firing $t$.
-Therefore, the transducer must encode all transitions of the Petri net and relates a marking with one possible successor marking.
 
 
-\subsubsection{Encoding of one Petri net transition}
-A Petri net has a set of transitions $T$, which are connected to the states $S$ with the flow relation $F$. 
+Therefore, the transducer needs to encode all transitions of the Petri net and maps the encoding of one marking $M'$ with all possible successor markings $M$ by firing one transition in the Petri net.
+
+
+\subsubsection{Encoding one Petri net transition into a Transducer}
+A Petri net has a set of transitions $\Tr$, which are connected to the states $S$ by the flow relation $F$. 
 \todo{describe $F$ more}
-With the fixed order of $S = (s_{1},s_{2},\dots,s_{n})$, we can describe the effect/change in the states induced by firing a single transition $t$ with a pair of $n$-dimensional vectors $t = (f,g)$. In $f$, the element on position $i$ $f_{i}$ indicates, how many tokens from $s_{i}$ are necessary to enable $t$. In $g$, the $i$-th element $g_{i}$ expresses, how many tokens flow into state $s_{i}$ after the firing of $t$. Therefore, the complete Petri net $N$ can be described by a set of $t = (f,g)$. 
+With the fixed order of the states $S = (s_{1},s_{2},\dots,s_{n})$, we can describe the effect/change in the states induced by firing a single transition $t$ with a pair of $n$-dimensional tuples $t = (g,h)$. In $g$, the element on position $i$, denoted by $g_{i}$, indicates, how many tokens from state $s_{i}$ are necessary to enable $t$. In $h$, the $i$-th element $h_{i}$ expresses, how many tokens flow into state $s_{i}$ after the firing of $t$. Therefore, the complete Petri net $N$ can be described by a set of transition pairs $t = (g,h)$. 
 
-
-\par 
-
-Imagine a Petri net with a single transition $t=(f,g)$ with $f = (1,0,1)$ and $g = (1,3,1)$ in figure.
-
-\begin{figure}[htb]
-\centering 
-\caption{Petri net example}\label{fig:pnet}
-\begin{tikzpicture}
-% Place 1
-\node[place,
-    fill=red!25,
-    draw=red!75,
-    tokens=0,
-    label=$s_1$] (s1) at (0,2) {};
- 
-% Place 2
-\node[place,
-    fill=teal!25,
-    draw=teal!75,
-    tokens=0,
-    label=$s_2$] (s2) at (4,2) {};
- 
-% Place 3
-\node[place,
-    fill=blue!25,
-    draw=blue!75,
-    tokens=0,
-    label=below:$s_3$] (s3) at (2,0) {};
-    
-% Transition
-%\node[transition,
-%    label=$T$] (trans) at (2,2) {};
-
-
-%\node[place,tokens=2,label=above:$p_1$]        (p1) {};
-%  \node[place,label=above:$p_2\ge1$,right=of p1] (p2) {};
+%\begin{figure}[htb]
+%\centering 
+%\caption{Petri net example}\label{fig:pnet}
+%\begin{tikzpicture}
+%% Place 1
+%\node[place,
+%    fill=red!25,
+%    draw=red!75,
+%    tokens=0,
+%    label=$s_1$] (s1) at (0,2) {};
+% 
+%% Place 2
+%\node[place,
+%    fill=teal!25,
+%    draw=teal!75,
+%    tokens=0,
+%    label=$s_2$] (s2) at (4,2) {};
+% 
+%% Place 3
+%\node[place,
+%    fill=blue!25,
+%    draw=blue!75,
+%    tokens=0,
+%    label=below:$s_3$] (s3) at (2,0) {};
+%    
+%% Transition
+%%\node[transition,
+%%    label=$T$] (trans) at (2,2) {};
 %
-%  \node[transition,below right=of p1,label=below:$t_1$] {}
-%    edge[pre]                 (p1)
-%    edge[post] node[auto] {2} (p2);
+%
+%%\node[place,tokens=2,label=above:$p_1$]        (p1) {};
+%%  \node[place,label=above:$p_2\ge1$,right=of p1] (p2) {};
+%%
+%%  \node[transition,below right=of p1,label=below:$t_1$] {}
+%%    edge[pre]                 (p1)
+%%    edge[post] node[auto] {2} (p2);
+%
+%
+%%\node[transition, label=$t_1$] (trans) at (2,2) {}
+%%    edge[pre]                 (s1);
+%%    edge[pre]                 (s2);
+%%    edge[post] node[auto] {2} (s2);
+%%    edge[post] node[auto] {2} (s3);
+%
+%\node[transition, label=$t_1$] at (2,2) {}  
+%edge [pre and post] (s2)
+%edge [pre and post] (s1)
+%%edge [pre]  node[auto] {1} (s1)
+%%edge [post] node[auto] {2} (s1)
+%edge [post] node[auto] {3} (s3);
+%
+%%                                     edge [pre and post] (s3); 
+%\end{tikzpicture}
+%\end{figure}
 
 
-%\node[transition, label=$t_1$] (trans) at (2,2) {}
-%    edge[pre]                 (s1);
-%    edge[pre]                 (s2);
-%    edge[post] node[auto] {2} (s2);
-%    edge[post] node[auto] {2} (s3);
+Imagine a Petri net with a single transition $t=(g,h)$ with $g = (1,1,0)$ and $h = (1,1,3)$. Consider the marking $M=(1,3,2)$ for this Petri net depicted in \autoref{fig:mark}. 
 
-\node[transition, label=$t_1$] at (2,2) {}  
-edge [pre and post] (s2)
-edge [pre and post] (s1)
-%edge [pre]  node[auto] {1} (s1)
-%edge [post] node[auto] {2} (s1)
-edge [post] node[auto] {3} (s3);
-
-%                                     edge [pre and post] (s3); 
-\end{tikzpicture}
-\end{figure}
-
-
-Consider the marking $m=(1,2,3)$ depicted in figure. Based on the encoding, the node for this marking is the language of the word $w = 1 \square 11 \square 111 \square$. With this configuration transition $t_{1}$ is enabled and after firing we transition into $m'=(1,5,3)$ in figure. This marking is encoded by the word $v = 1 \square 11111 \square 111 \square$. 
-
-
+\begin{figure}
 \begin{minipage}{0.46\textwidth}
 \begin{figure}[H]
 \centering 
@@ -396,23 +395,19 @@ Consider the marking $m=(1,2,3)$ depicted in figure. Based on the encoding, the 
 \begin{tikzpicture}
 % Place 1
 \node[place,
-    fill=red!25,
-    draw=red!75,
+%    fill=red!25,
+%    draw=red!75,
     tokens=1,
     label=$s_1$] (s1) at (0,2) {};
  
 % Place 2
 \node[place,
-    fill=teal!25,
-    draw=teal!75,
-    tokens=2,
+    tokens=3,
     label=$s_2$] (s2) at (4,2) {};
  
 % Place 3
 \node[place,
-    fill=blue!25,
-    draw=blue!75,
-    tokens=3,
+    tokens=2,
     label=below:$s_3$] (s3) at (2,0) {};
 
 \node[transition, label=$t_1$] at (2,2) {}  
@@ -430,23 +425,17 @@ edge [post] node[auto] {3} (s3);
 \begin{tikzpicture}
 % Place 1
 \node[place,
-    fill=red!25,
-    draw=red!75,
     tokens=1,
     label=$s_1$] (s1) at (0,2) {};
  
 % Place 2
 \node[place,
-    fill=teal!25,
-    draw=teal!75,
-    tokens=5,
+    tokens=3,
     label=$s_2$] (s2) at (4,2) {};
  
 % Place 3
 \node[place,
-    fill=blue!25,
-    draw=blue!75,
-    tokens=3,
+    tokens=5,
     label=below:$s_3$] (s3) at (2,0) {};
 
 \node[transition, label=$t_1$] at (2,2) {}  
@@ -456,61 +445,301 @@ edge [post] node[auto] {3} (s3);
 \end{tikzpicture}
 \end{figure}
 \end{minipage}
+\end{figure}
+
+The encoding $f(M)$ for this marking is the language of the word $w = \bm{1 \square 111 \square 11 \square}$. With this configuration transition $t_{1}$ is enabled and the firing of $t_{1}$ leads to the marking $M'=(1,3,5)$ in \autoref{fig:markprime}. This marking is encoded by the word $v = \bm{1 \square 111 \square 11111 \square}$. 
+
+For this Petri net, the corresponding transducer needs to accept the word \break ${(\bm{1 \square 11 \square 111 \square},\bm{1 \square 11111 \square 111 \square})}$. However, the length of these words $w$ and $v$ is not the same, but the transducer can only recognize a pair of words with equal length by definition. 
+
+To address this problem of different lengths of encodings, we introduce a padding symbol $\Diamond$ to the alphabet with the purpose to pad $w$ and $v$ to the same length and adapt the definition of the encoding.
+
+\begin{definition}\label{def:encodingv2}
+For a marking $M = (m_{1},m_{2},\dots,m_{n})$ we define its \emph{padded encoding} $f'(M)$ as the language $L(\bm{1}^{m_{1}} \Diamond^{\bm{*}} \square \bm{1}^{m_{2}} \Diamond^{\bm{*}}  \square \ldots \bm{1}^{m_{n}} \Diamond^{\bm{*}}  \square)$ over $\Sigma = \{\bm{1}, \square, \Diamond \}$.
+\end{definition}
+
+The idea is to use the prior encoding $f$ for all operations in the Backwards Reachability Algorithm except of the ones involving the transducer $\mathcal{T}$. Only for the construction of the transducer and the $\pre$ procedure, we represent a node with the encoding $f'$. 
 
 
-\subsubsection{union of transducer or union of pre}
-At this point, we already need to make an important design decision. There are two approaches for transducer.
 
-\par
+\subsubsection{Construction of Transducer}
 
-The first idea is to use one transducer for encoding all transitions of the Petri net. Then, we only need to perform the $\ppre$ once per iteration analogous in \autoref{alg:bw_wwa}. However, this makes the $\nettrans$ operation in line 2 more complicated, as we need to consider non-determinism and possibly multiple start states for the transducer. By incorporating all transitions into $\mathcal{T}$, there can exist multiple mappings for a word $w$: $(w,v) \in L(\mathcal{T})$ and $(w,v') \in L(\mathcal{T})$. 
-%The table $\pre$ operation from \autoref{chapter:datastructure} also needs to be modified to deal with the multiple 
+With the new version of the encoding in Definition~\autoref{def:encodingv2} we now want to construct a transducer. Consider a Petri net with one transition $t_{1} = ((1,3,1),(1,2,2))$ depicted in \autoref{fig:petri-trans-ex}.
 
-\par
 
-The other option is to construct one single transducer for each transition. We perform $\pre$ for each transducer transition separately and union the result with the predecessor accumulation node $q$. This will result in the change highlighted in \autoref{alg:bw_wwa_final}. First, instead of one transducer we build a list of transducers $\mathcal{T}^{*}$, one for each transition in $N$, in line 2. Furthermore, we add a loop over all transducers in the list and move the $\pre$ and $\union$ computation into this inner loop.
+%\begin{algorithm}[htb]
+%\caption{Construction of $\mathcal{T}$ given a transition $t \in \Tr$ }\label{alg:trans}
+%\begin{algorithmic}[1]
+%\Input {$t = (g,h)$}
+%\State $c \gets 0$
+%\ForEach { $g_{i} \in g$ }
+%\State $\delta = h_{i} - g_{i}$
+%\State $d \gets \min (g_{i},h_{i})$
+%\ForEach { $i \in \{1,\dots,d}$}
+%\State 
+%\EndFor
+%\EndFor
+%\EndWhile
+%\end{algorithmic}
+%\end{algorithm}
 
-\par
 
-We decided to apply the second alternative for the implementation. 
+\begin{figure}[htb]
+\begin{subfigure}{0.6\textwidth}
+		\centering 
+        \begin{tikzpicture}
+%        \node[state, fill=red!25] (s1) {$s_{1}$};
+%        \node[state, fill=teal!25] (s2) {$s_{2}$};
+%        \node[state, fill=blue!25] (s3) {$s_{3}$};
+%        \node[
+       	 \node[place,
+    		fill=red!25,
+    		draw=red!75,
+    		label=$s_1$] (s1) at (0,3) {};
+    	% Place 2
+		\node[place,
+			fill=teal!25,
+    		draw=teal!75,
+    		label=$s_2$] (s2) at  (6,3)  {};
+    	% Place 3
+		\node[place,
+			fill=blue!25,
+    		draw=blue!75,
+   			label=below:$s_3$] (s3) at (3,0.5) {};
 
+		\node[transition, label=above:$t_1$] (t1) at (3,3) {}  
+		
+%		edge [pre and post] (s1)
+		\draw   (s1) edge[above, bend right] node{} (t1)
+		\draw   (t1) edge[left, bend right] node{} (s1) 	
+		\draw   (s2) edge[above, bend right] node{$3$} (t1)
+		\draw   (t1) edge[below, bend right] node{$2$} (s2)
+		\draw   (s3) edge[above, bend right] node{} (t1)
+		\draw   (t1) edge[left, bend right] node{$2$} (s3)
+        
+     	\end{tikzpicture}
+    	\caption{Petri net with one transition $t_{1}$}\label{fig:petri-trans-ex}
+\end{subfigure}
+\begin{subfigure}{1\textwidth}
+		\centering 
+        \begin{tikzpicture}[node distance=2cm]
+    	\node[state, initial, fill=red!25] (q1) {};
+    	\node[state, right of=q1,fill=red!25] (q2) {};
+    	\node[state, below of=q2,fill=teal!25] (q3) {};
+    	\node[state, right of=q3,fill=teal!25] (q4) {};
+    	\node[state, right of=q4,fill=teal!25] (q5) {};
+    	\node[state, right of=q5,fill=teal!25] (q6) {};
+    	\node[state, below of=q6,fill=blue!25] (q7) {};
+    	\node[state, right of=q7,fill=blue!25] (q8) {};
+    	\node[state, right of=q8,fill=blue!25] (q9) {};
+    	\node[state, accepting, below of=q9] (q10) {};
+    	
+    	\draw   (q1) edge[above] node{$(\bm{1},\bm{1})$} (q2)
+            	(q2) edge[loop above] node{$(\bm{1},\bm{1})$} (q2)
+            	(q2) edge[left] node{$(\square,\square)$} (q3)
+            	(q3) edge[above] node{$(\bm{1},\bm{1})$} (q4)
+            	(q4) edge[above] node{$(\bm{1},\bm{1})$} (q5)
+            	(q5) edge[loop above] node{$(\bm{1},\bm{1})$} (q5)
+            	(q5) edge[above] node{$(\bm{1},\Diamond)$} (q6)
+            	(q6) edge[left] node{$(\square,\square)$} (q7)
+            	(q7) edge[above] node{$(\bm{1},\bm{1})$} (q8)
+            	(q8) edge[loop above] node{$(\bm{1},\bm{1})$} (q8)
+            	(q8) edge[above] node{$(\Diamond,\bm{1})$} (q9)
+            	(q9) edge[left] node{$(\square,\square)$} (q10);
+            	
+    	\end{tikzpicture}
+    	\caption{Transducer $\mathcal{T}$ for transition $t_{1}$}\label{fig:transfortrans}
+\end{subfigure}
+\end{figure}
+
+For this Petri net the corresponding transducer is illustrated in \autoref{fig:transfortrans}. First, we can convince ourselves, that every $(w,v)$ accepted by the transducer can be mapped to markings $M,M'$, where $M \xrightarrow{t_{1}} M'$. For instance, the pair $(w,v) = (\bm{11\square111\square111\Diamond\square},\bm{11\square11\Diamond\square1111\square})$ is recognized by the transducer. Based on the extended encoding in Definition~\autoref{def:encodingv2}, $w$ is encoding the marking $M = (2,3,3)$ and $v$ is encoding $M' = (2,2,4)$. Looking at the Petri net, indeed firing $t_{1}$ at marking $M$ yields marking $M'$.
+
+We can have a closer look at the structure of the transducer. In \autoref{fig:petri-trans-ex} we have three different colored states so in the transducer we have three colored parts dedicated to read in tokens for the respective state. The different parts are connected by reading in a pair of separators $(\square,\square)$, which are the vertical transitions in \autoref{fig:transfortrans}.
+
+
+Each part in the transducer can be further split into three fragments. The first one is reading in a minimum amount of $(\bm{1},\bm{1})$, then there is a self loop with $(\bm{1},\bm{1})$, and the last fragment adds padding symbols $\Diamond$. 
+
+We can distinguish between three cases by comparing the transition pair $(g,h) = ((1,3,1),(1,2,2))$. 
+
+
+\subsubsection{$g_{i} = h_{i}$}
+
+Consider the relation between $t_{1}$ and the state $s_{1}$. One token is needed to enable $t_{1}$ and also one token flows back into $s_{1}$, meaning that the amount of tokens in $s_{1}$ does not change. 
+Therefore, in the red part of the  transducer we first read in one $(\bm{1},\bm{1})$ transition in the first fragment, because at least one token is needed to enable $t_{1}$. Then there is a self-loop, to allow an arbitrary amount of further tokens. Finally, the fragment with padding symbols is not necessary here, as the number of tokens in $s_{1}$ stays the same before and after firing $t_{1}$.
+
+\subsubsection{$g_{i} > h_{i}$}
+
+Looking at the state $s_{2}$, $g_{2} = 3 > 2 = h_{2}$. Here, the number of tokens leaving $s_{2}$ after firing $t_{1}$ is higher than the number coming in. 
+
+In this case, a minimum of three tokens are needed to enable $t_{1}$ and a minimum of two tokens are in $s_{2}$ after firing $t_{1}$. We take the minimum of these two numbers and read in two $(\bm{1},\bm{1})$ in the first fragment of the green part. With the self loop we again allow for more tokens. 
+
+Finally in the last fragment, as here the number of tokens inside $s_{2}$ decreases with the firing of $t_{1}$, we read one $(\bm{1},\Diamond)$ to pad a $\bm{1}$ in the pre-image with $\Diamond$ in the image of the transducer.
+
+\subsubsection{$g_{i} < h_{i}$}
+This case is symmetrical to the previous one. The only difference is in the third fragment of the transducer. Instead of $(\bm{1},\Diamond)$ we read in the correct number of $(\Diamond,\bm{1})$, because after firing $t_{1}$, the number of tokens in $s_{3}$ increases.
+
+
+\subsubsection{Preprocess and Postprocess}
+
+Again consider the marking $M = (2,3,3)$. By Definition~\autoref{def:encodingv2}, there are infinitely many words encoding this $M$, because we allow for arbitrary amounts of padding symbols $\Diamond$. The word $\bm{11\Diamond\Diamond\square111\square111\Diamond\square}$ is one possible encoding $f'(M)$ for $M$. However, the transducer in \autoref{fig:transfortrans} does not accept any pair $(w,v)$, where $w=\bm{11\Diamond\Diamond\square111\square111\Diamond\square}$.
+
+The problem is, that the transducer constructed in the last part only works for one specific encoding of a marking, which is dependent on the structure of the transition $t = (g,h)$ it has been created from. 
+
+
+In the concrete example in \autoref{fig:transfortrans} the transducer only maps a word of the form $w = \bm{11}^{k}\square\bm{111}^{k}\bm{1}\square\bm{11}^{k}\Diamond\square$ to another word $v = \bm{11}^{k}\square\bm{111}^{k}\Diamond\square\bm{11}^{k}\bm{1}\square$.
+
+Therefore, we require further table operations $\prep$ and $\post$ to convert between languages without padding $\Diamond$ and languages with a specific amount of $\Diamond$ given a transducer $\mathcal{T}$. Since the transducer is only used in the $\pre$ function, these two new operations are only performed before and after $\pre$. 
+
+
+%Therefore, we require further table operations $\prep$ and $\post$ to convert between a node without $\Diamond$ transitions (encoding $f(M)$) to a node with the specific amount of padding transitions the transducer requires. Since the transducer is only used in the $\pre$ function, these two new operations are only performed before and after $\pre$. 
+
+Let $W = \{ w : (w,v) \in L(\mathcal{T}) \}$ and $V = \{ v: (w,v) \in L(\mathcal{T}) \}$.
+For a node $q$ in the table 
+\begin{itemize}[-,noitemsep]
+\item $\prep(q)$ returns a node $q'$
+\begin{itemize}
+\item $q$ and $q'$ encode same set of markings: $f^{-1}(L(q)) = f'^{-1}(L(q'))$ 
+\item $L(q') \subseteq V$
+\end{itemize}
+
+\item $\pre(\{q_{0\mathcal{T}},q'\},\mathcal{T})$ returns a node $q_{\text{pre}}$
+\begin{itemize}
+\item $L(q_{\text{pre}}) \subseteq W $
+\end{itemize}
+
+\item $\post(q_{\text{pre}})$ returns a node $q''$
+\begin{itemize}
+\item $q_{\text{pre}}$ and $q''$ encode same set of markings: $f'^{-1}(L(q_{\text{pre}})) = f^{-1}(L(q''))$ 
+\end{itemize}
+
+\end{itemize}
+
+Based on the structure of the words in $W$ and $V$, $\prep(q)$ adds nodes with $\Diamond$ transitions before a separator $\square$, while $\post(q)$ removes nodes with $\Diamond$ transitions before a separator $\square$.
+
+
+
+
+%Operate with the encoding from Def without padding on other table operations. only pre and transducer use the padding. 
+%Based on the specific transition transducer, we add the padding. after pre we again delete the padding 
+
+%example with the markings, what is added, and what removed
+
+
+%\begin{algorithm}[htb]
+%\caption{Preprocess}\label{alg:prep}
+%\begin{algorithmic}[1]
+%\Input {$t = (g,h), q \in \tbl, j \in \mathbb{N} $}
+%\Procedure{preprocess}{$t,q,j$}
+%\If {$\cache[q]$}
+%\Return {$\cache[q]$}
+%\EndIf
+%\State $\cache[q] \gets \self$
+%\State $b \gets \final(q)$
+%\State $s \gets [q_{\emptyset},\dots,q_{\emptyset}]$
+%%\ForEach {$a_{i} \in \Sigma$}
+%\If {$\Succ(q,\square) \neq q_{\emptyset} \land (h_{j}-g_{j}) > 0 $}
+%\State add $h_{j}-g_{j}$ new nodes containing only $\Diamond$ transitions between $q$ and $\Succ(q,\square)$
+%\State 
+%\Else
+%\State $s_{\bm{1}} \gets \Call{preprocess}{t,\Succ(q,\bm{1}),j}$
+%\If{$\Succ(q,\square) \neq q_{\emptyset}$}
+%\State $j \gets j + 1$
+%\EndIf
+%\State $s_{\square} \gets \Call{preprocess}{t,\Succ(q,\square),j}$
+%\EndIf
+%\State $q' \gets T.\make(s,b)$
+%\State $\cache[S] \gets q'$
+%\Return $q'$
+%\EndProcedure
+%\end{algorithmic}
+%\end{algorithm}
+
+
+
+
+%\begin{figure}[htb]
+%		\centering 
+%        \begin{tikzpicture}[node distance=2cm]
+%    	\node[state, initial, fill=red!25] (q1) {};
+%    	\node[state, right of=q1,fill=red!25] (q2) {};
+%    	\node[state, below of=q2,fill=teal!25] (q3) {};
+%    	\node[state, right of=q3,fill=teal!25] (q4) {};
+%    	\node[state, right of=q4,fill=teal!25] (q5) {};
+%    	\node[state, right of=q5,fill=teal!25] (q6) {};
+%    	\node[state, below of=q6,fill=blue!25] (q7) {};
+%    	\node[state, right of=q7,fill=blue!25] (q8) {};
+%    	\node[state, right of=q8,fill=blue!25] (q9) {};
+%    	\node[state, accepting, below of=q9] (q10) {};
+%    	
+%    	\draw   (q1) edge[above] node{$(\bm{1},\bm{1})$} (q2)
+%            	(q2) edge[loop above] node{$(\bm{1},\bm{1})$} (q2)
+%            	(q2) edge[left] node{$(\square,\square)$} (q3)
+%            	(q3) edge[above] node{$(\bm{1},\bm{1})$} (q4)
+%            	(q4) edge[above] node{$(\bm{1},\bm{1})$} (q5)
+%            	(q5) edge[loop above] node{$(\bm{1},\bm{1})$} (q5)
+%            	(q5) edge[above] node{$(\bm{1},\Diamond)$} (q6)
+%            	(q6) edge[left] node{$(\square,\square)$} (q7)
+%            	(q7) edge[above] node{$(\bm{1},\bm{1})$} (q8)
+%            	(q8) edge[loop above] node{$(\bm{1},\bm{1})$} (q8)
+%            	(q8) edge[above] node{$(\Diamond,\bm{1})$} (q9)
+%            	(q9) edge[left] node{$(\square,\square)$} (q10);
+%            	
+%    	\end{tikzpicture}
+%    	\caption{Transducer $\mathcal{T}$ for transition $t_{1}$}\label{fig:transfortrans}
+%\end{figure}
+
+
+
+
+
+%\subsubsection{union of transducer or union of pre}
+%At this point, we already need to make an important design decision. There are two approaches for transducer.
+%
+%\par
+%
+%The first idea is to use one transducer for encoding all transitions of the Petri net. Then, we only need to perform the $\ppre$ once per iteration analogous in \autoref{alg:bw_wwa}. However, this makes the $\nettrans$ operation in line 2 more complicated, as we need to consider non-determinism and possibly multiple start states for the transducer. By incorporating all transitions into $\mathcal{T}$, there can exist multiple mappings for a word $w$: $(w,v) \in L(\mathcal{T})$ and $(w,v') \in L(\mathcal{T})$. 
+%%The table $\pre$ operation from \autoref{chapter:datastructure} also needs to be modified to deal with the multiple 
+%
+%\par
+%
+%The other option is to construct one single transducer for each transition. We perform $\pre$ for each transducer transition separately and union the result with the predecessor accumulation node $q$. This will result in the change highlighted in \autoref{alg:bw_wwa_final}. First, instead of one transducer we build a list of transducers $\mathcal{T}^{*}$, one for each transition in $N$, in line 2. Furthermore, we add a loop over all transducers in the list and move the $\pre$ and $\union$ computation into this inner loop.
+%
+%\par
+%
+%We decided to apply the second alternative for the implementation. 
+
+\subsubsection{Final Backwards Reachability Algorithm with the Table of Nodes}
+With the described construction of the transducer and the two new table operation we achieve a final version of the Backwards Reachability Algorithm shown in \autoref{alg:bw_wwa_final}. 
+
+In line 2, instead of constructing one transducer we build a list $\mathcal{T}^{*}$ of transducers, where each $\mathcal{T} \in \mathcal{T}^{*}$ represents one transition of the Petri net $N$. Therefore, we need to add an inner loop in line 8, which iterates over all $\mathcal{T}$. Inside this loop, we use $\prep$ and $\post$ before and after the $\pre$ operation, which has been explained in detail in the last section.
 
 
 \begin{algorithm}[htb]
 \caption{Backwards Reachability Algorithm with Table of Nodes}\label{alg:bw_wwa_final}
 \begin{algorithmic}[1]
 \Input {$N, M_{0}, M$}
-\State $T \gets \text{EmptyTableOfNodes}$
+\State $\tbl \gets \text{EmptyTableOfNodes}$
 \State $\mathcal{T}^{*} \gets \textsf{net2transducers}(N)$
-\State $\mathcal{M}_{0} \gets T.\textsf{encode}(M_{0})$
-\State $\mathcal{M} \gets T.\textsf{encodeUpwardClosed}(M)$
-\State $\mathcal{M}_{\text{old}} \gets q_{\emptyset}$
+\State $q_{0} \gets  \tbl.\textsf{encode}(M_{0})$
+\State $q \gets \tbl.\textsf{encodeUpwardClosed}(M)$
+\State $q_{\text{old}} \gets q_{\emptyset}$
 \While{true}
-	\State $\mathcal{M}_{\text{old}}  \gets \mathcal{M}$
+	\State $q_{\text{old}}  \gets q$
 	\ForEach{$\mathcal{T} \in \mathcal{T}^{*}$}
-	\State $\mathcal{M}_{pre} \gets T.\pre(\{q_{0\mathcal{T}},\mathcal{M}\},\mathcal{T})$
-	\State $\mathcal{M} \gets T.\union(\mathcal{M}, \mathcal{M}_{pre})$
+%	\State $q' \gets \tbl.\prep(q,t_{\mathcal{T}})$
+\State $q' \gets \tbl.\prep(q,\mathcal{T}})$
+	\State $q_{\text{pre}} \gets \tbl.\pre(\{q_{0\mathcal{T}},q'\},\mathcal{T})$
+%	\State $q'' \gets \tbl.\post(q_{\text{pre}},t_{\mathcal{T}})$
+	\State $q'' \gets \tbl.\post(q_{\text{pre}},\mathcal{T}})$
+	\State $q \gets \tbl.\union(q, q'')$
 	\EndFor
-\If{$T.\textsf{intersection}(\mathcal{M}_{0}, \mathcal{M}) \neq q_{\emptyset}$}
+\If{$\tbl.\inter(q_{0}, q) \neq q_{\emptyset}$}
 	\Return true
 \EndIf
-\If{$\mathcal{M} = \mathcal{M}_{\text{old}} $}
+\If{$q = q_{\text{old}} $}
     \Return false
 \EndIf
 \EndWhile
 \end{algorithmic}
 \end{algorithm}
 
-
-Problem: $(w,v) \in L(\mathcal{T})$, but $w,v$ can have different lengths. By definition of transducer it only maps a word to another word of same length. Therefore, introduce padding symbol $x$. 
-
-
-
-\subsubsection{Petri net transitions}
-A Petri net has a set of transitions $T$, which are connected to the states $S$ with the flow relation $F$. $F$ maps
-
-
-
-
-%Let the word $w$ encode the marking $M_{1}$ and $v$ encode the marking $M_{2}$. Then we want $(w,v)$ to be accepted by the transducer, if there is a transition $t$ in the Petri net, where $M_{1}$ becomes $M_{2}$ by firing that transition.
 

@@ -544,14 +544,14 @@ Now we are one recursion level down and the current input $S=\{(q_{1},q_{3}),(q_
 \tikzset{
   basic/.style={
     draw,
-    fill=blue!10,
+    fill=blue!5,
     rounded corners=6pt,
     text width=16em,
     align=center
   },
   root/.style={
     basic,
-    rounded corners=2pt,
+    rounded corners=6pt,
     text width=16em,
   },
   child node/.style={
@@ -614,12 +614,13 @@ The fact that $\widetilde{C}$ is weakly acyclic is intuitive, since all cycles h
 We aim to show that $L(\widetilde{C}) = \Pre_{\mathcal{T}}(A)$.
 Using Lemma~\ref{lem:b}, after line 1 $L(B) = \Pre_{\mathcal{T}}(A)$. For the DFA $C$ constructed by the power set construction in line 4, it holds that $L(C) = L(B) = \Pre_{\mathcal{T}}(A)$. To show $L(\widetilde{C}) = \Pre_{\mathcal{T}}(A)$ we only need to proof $L(\widetilde{C}) = L(C)$. \\
 
-Let $\widehat{C}$ denote the unique minimal automaton of $C$. Each state in $\widehat{C}$ recognizes a distinct language and $L(\widehat{C}) = L(C) = \Pre_{\mathcal{T}}(A)$. Let $L_{M}(p)$ denote the language recognized from state $p$ in an automaton $M$.
+Let $\widehat{C}$ denote the unique minimal automaton of $C$. Each state in $\widehat{C}$ recognizes a distinct language and $L(\widehat{C}) = L(C)$. Let $L_{M}(p)$ denote the language recognized from state $p$ in an automaton $M$.
 
-Assume for contradiction $L(C) \neq L(\widetilde{C})$. This means, in line 3 of \autoref{alg:proof} non-equivalent states have been unified.
+Assume for contradiction $L(C) \neq L(\widetilde{C})$. This means, in line 3 of \autoref{alg:proof} non-equivalent states have been collapsed.
 Specifically, there exist two distinct states $p,q$, which are part of a cycle in $C$ and have been collapsed into one state of $\widetilde{C}$, but $L_{C}(p) \neq L_{C}(q)$.
 
-As $p,q$ form a cycle in $C$, there exist non-empty words $v,w \in \Sigma^{*}$ such that $\delta_{C}(p,v) = q$ and $\delta_{C}(q,w) = p$. For $u = vw$, $\delta_{C}(p,u) = p$.
+As $p,q$ form a cycle in $C$, there exist non-empty words $v,w \in \Sigma^{*}$ such that $\delta_{C}(p,v) = q$ and $\delta_{C}(q,w) = p$. 
+%For $u = vw$, $\delta_{C}(p,u) = p$.
 
 As $L_{C}(p) \neq L_{C}(q)$, there exist distinct states $p',q'$ in $\widehat{C}$ such that $L_{C}(p) = L_{\widehat{C}}(p')$ and $L_{C}(q) = L_{\widehat{C}}(q')$. 
 
@@ -628,7 +629,7 @@ Then it holds that
 \item $\delta_{\widehat{C}}(p',v) = q'$ because $L_{\widehat{C}}(p')^{v} = L_{C}(p)^{v} = L_{C}(q) = L_{\widehat{C}}(q')$
 \item $\delta_{\widehat{C}}(q',w) = p'$ because
 $L_{\widehat{C}}(q')^{w} = L_{C}(q)^{w} = L_{C}(p) = L_{\widehat{C}}(p')$
-\item $\delta_{\widehat{C}}(p',vw) = \delta_{\widehat{C}}(\delta_{\widehat{C}}(p',v),w) = \delta_{\widehat{C}}(q',w) = p'$
+%\item $\delta_{\widehat{C}}(p',vw) = \delta_{\widehat{C}}(\delta_{\widehat{C}}(p',v),w) = \delta_{\widehat{C}}(q',w) = p'$
 \end{itemize}
 %$\delta_{C_{\approx}}(p',v) = q'$ because $L_{C_{\approx}}(p')^{v} = L_{C}(p)^{v} = L_{C}(q) = L_{C_{\approx}}(q')$.
 %

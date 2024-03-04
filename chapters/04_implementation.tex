@@ -1,4 +1,4 @@
-\chapter{Implementation}\label{chapter:implementation}
+\chapter{Further Implementations}\label{chapter:implementation}
 
 %The main purpose of the thesis is to use weakly acyclic languages to address the coverability problem in Petri nets. Therefore, the concepts from \autoref{chapter:weakly_acyclic_language} are used to adapt the Backwards Reachability Algorithm in Algorithm \autoref{alg:bw}.
 \par
@@ -14,7 +14,40 @@
 %The $table$ is providing most of the important functions, like $union$ and $pre$. 
 %Furthermore, there is $transducer$, a data structure representing one weakly acyclic transducer. With the function $net2transducer$, the information about the flow relation of the transitions in petri net $N$ are given to $transducer$.
 
+\section{Visualization of Data Structures}
+We implemented methods for visualizing the Table of Nodes and Transducers. Automatically generated dot files.
+
+\todo{add figures of generated images}
+
 \section{Parser}
 \todo{recursive descend parser, stack overflow }
+To be able to use our Backwards Reachability Algorithm on existing problem instances, we implement a parser to transform Petri nets of the MIST format into the representation of Petri nets used in our implementation. 
+The MIST input format is shown in Figure. 
+
+We use the stucture of a recursive descend parser. 
 
 \section{CorrectnessCheck}
+To verify the correctness of \autoref{alg:bw_wwa_final} we implement another procedure $\mm$. For a node $q$ in the table, $\mm$ computes the set of minimal markings for the upward closed set $q$ represents. By checking the correctness of the minimal markings we recognize if \autoref{alg:bw_wwa_final} returns the correct result.
+
+\begin{lemma}\label{lem:sanity}
+Let $q$ be a node in the Table of Nodes, which is encoding the upwards closed set $\mathcal{M}$. Then for every minimal marking of $\mathcal{M}$ there exists a path without self loop in the weakly acyclic automaton for $q$.
+\end{lemma}
+
+Using Lemma~\autoref{lem:sanity}.
+We iterate over all states in the automaton of $q$ and 
+
+\begin{algorithm}[htb]
+\caption{Computation of the Minimal Markings}\label{alg:sanity}
+\begin{algorithmic}[1]
+\Procedure{minMarkings}{$q$}
+%\If {$\cache[q]$}
+%\Return {$\cache[q]$}
+%\EndIf
+\State topology 
+\State $W \gets (q,
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+
+
