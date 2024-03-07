@@ -47,6 +47,18 @@
 \usepackage{relsize}
 \usepackage[linguistics]{forest}
 
+\usepackage{multirow}
+
+\usepackage{svg}
+
+\usepackage{pgfplots,pgfplotstable}       % <-- required in preamble
+%\pgfplotsset{compat=1.12}
+\usetikzlibrary{plotmarks}
+%\usepackage[squaren]{SIunits}        % <-- required in preamble
+
+%\usepackage{siunitx}
+
+
 \usepackage{xcolor, soul}
 \sethlcolor{yellow}
 
@@ -83,7 +95,7 @@
 \newtheorem {lemma} {Lemma}
 \newtheorem {prop} {Proposition}
 
-\usetikzlibrary{automata, positioning, arrows.meta}
+\usetikzlibrary{automata, positioning, arrows.meta, arrows}
 \tikzset{
         ->,  % makes the edges directed
         >=stealth, % makes the arrow heads bold
@@ -109,6 +121,12 @@
 } 
 
 \def\HiLi{\leavevmode\rlap{\hbox to \linewidth{\color{yellow!50}\leaders\hrule height .8\baselineskip depth .5ex\hfill}}}
+
+
+
+
+
+\algrenewcommand\textproc{\textsf}
 
 % for fachschaft_print.pdf
 \makeatletter

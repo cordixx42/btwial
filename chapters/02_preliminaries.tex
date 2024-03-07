@@ -1,18 +1,17 @@
 \chapter{Preliminaries}\label{chapter:preliminaries}
 This chapter aims to define a standardized formal notation of the theoretical models used in thesis.
 
-\section{TODOS}
-\begin{itemize}
-\item include definition of a transducer 
-\item def of upward closed sets / markings
-\item residual $L^{a}$
-\item reachability
-\item power set construction ?
-\item quotient automaton
-\item equivalence relation
-
-\todo{Partial Order?}
-\end{itemize}
+%\section{TODOS}
+%\begin{itemize}
+%\item include definition of a transducer 
+%\item def of upward closed sets / markings
+%\item residual $L^{a}$
+%\item reachability
+%\item power set construction ?
+%\item quotient automaton
+%\item equivalence relation
+%\todo{Partial Order?}
+%\end{itemize}
 
 \section{Formal Languages}
 
@@ -37,31 +36,31 @@ A transducer $\mathcal{T}$ over $\Sigma$ is an NFA over the alphabet $\Sigma \ti
 
 \subsubsection{Petri net}
 
-A petri net $N$ is tuple $(S,\Tr,F)$ where 
+A petri net $N$ is tuple $(P,\Tr,F)$ where 
 \begin{itemize}[-,noitemsep]
-	\item $S$ is a finite set of \emph{places}
+	\item $P$ is a finite set of \emph{places}
 	\item $\Tr$ is a finite set of \emph{transitions} disjoint from $S$
-	\item $F \subseteq (S \times \Tr \times \mathbb{N}) \cup (\Tr \times S \times \mathbb{N})$ is a \emph{flow relation}
+	\item $F \subseteq (P \times \Tr \times \mathbb{N}) \cup (\Tr \times P \times \mathbb{N})$ is a \emph{flow relation}
 \end{itemize}
 
-In drawings of Petri nets, the states are usually represented by circles, the transitions by rectangles.
+In drawings of Petri nets, the places are usually represented by circles, the transitions by rectangles and the flow relation is illustrated by numbered arrows between places and transitions.
 
 \subsubsection{Marking}
-A marking of a net is a mapping $M : S \rightarrow \mathbb{N}$ from the places of a Petri net to the natural numbers, assigning each place an amount of tokens.
+A marking of a net is a mapping $M : P \rightarrow \mathbb{N}$ from the places of a Petri net to the natural numbers, assigning each place an amount of tokens.
 
 
 \subsubsection{Firing Rule}
-A transition $t \in \Tr$ is \emph{enabled} at a marking $M$, if there is exists the tuple $(s,t,n) \in F$, such that $M$ assigns at least $n$ tokens to state $s$.
+A transition $t \in \Tr$ is \emph{enabled} at a marking $M$, if for all tuples $(p,t,n) \in F$, $M$ assigns at least $n$ tokens to place $p$.
 
 If a transition $t$ is enabled at marking $M$, it can \emph{fire} leading from $M$ to another marking $M'$, which we also denote by  $M \xrightarrow{t} M'$. 
 $M'$ is of the following form:
 \begin{equation*}
-M'(s) =  
+M'(p) =  
 \begin{cases}
-\mathrlap{M(s) + (m - n)}\hphantom{M(s) + (m - n) + 1} \text{ if } \exists (s,t,n) \in F \text{ and } \exists (t,s,m) \in F \\
-\mathrlap{M(s) - n}\hphantom{M(s) + (m - n) + 1} \text{ if } \exists (s,t,n) \in F \text{ and } \nexists (t,s,m) \in F \\
-\mathrlap{M(s) + m}\hphantom{M(s) + (m - n) + 1} \text{ if }  \nexists (s,t,n) \in F \text{ and } \exists (t,s,m) \in F  \\
-\mathrlap{M(s)}\hphantom{M(s) + (m - n) + 1} \text{ otherwise}
+\mathrlap{M(p) + (m - n)}\hphantom{M(p) + (m - n) + 1} \text{ if } \exists (p,t,n) \in F \text{ and } \exists (t,p,m) \in F \\
+\mathrlap{M(p) - n}\hphantom{M(p) + (m - n) + 1} \text{ if } \exists (p,t,n) \in F \text{ and } \nexists (t,p,m) \in F \\
+\mathrlap{M(p) + m}\hphantom{M(p) + (m - n) + 1} \text{ if }  \nexists (p,t,n) \in F \text{ and } \exists (t,p,m) \in F  \\
+\mathrlap{M(p)}\hphantom{M(p) + (m - n) + 1} \text{ otherwise}
 \end{cases}
 \end{equation*}
 
@@ -72,7 +71,7 @@ If $M \xrightarrow{\sigma} M'$ for some markings $M,M'$ and some sequence $\sigm
 
 
 \subsubsection{Upward closed sets of Markings}
-For markings $M$ and $M'$, we write $M \ge M'$, if for every state $s$ of a Petri net $M(s) \ge M'(s)$, meaning that the $M$ assigns at least as many tokens to every state as $M'$. We say that marking $M$ \emph{covers} marking $M'$.
+For markings $M$ and $M'$, we write $M \ge M'$, if for every place $p$ of a Petri net $M(p) \ge M'(p)$, meaning that the $M$ assigns at least as many tokens to every state as $M'$. We say that marking $M$ \emph{covers} marking $M'$.
 
 
 A set $\mathcal{M}$ of markings of the Petri net $N$ is upward closed if $M \in \mathcal{M}$ and $M' \ge M$ imply $M' \in \mathcal{M}$.
@@ -81,5 +80,3 @@ A marking $M$ of a upward closed set $\mathcal{M}$ is minimal, if $\nexists M' \
 
 An upward closed set $\mathcal{M}$ can be uniquely identified by a finite set of minimal elements. 
 %Furthermore, every $\mathcal{M}$ has finitely many minimal elements.
-
-\section{Coverability?}
