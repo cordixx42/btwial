@@ -15,8 +15,7 @@ The following definitions are equivalently expressing, that a DFA $(Q, \Sigma, q
 	\item the underlying directed graph does not contain any simple cycle except from self-loops
 \end{itemize}
 
-\todo{add figure of wa dfa as example}
-\autoref{fig:wadfa} shows a weakly acyclic DFA, which accepts the language $L(\bm{ab^{*}a + ba^{*}b})$.
+\autoref{fig:wadfa} shows an example for a weakly acyclic DFA, which accepts the language $L(\bm{ab^{*}a + ba^{*}b})$.
 
 \begin{lemma}\label{lem:minimal}
 Let $A$ be a weakly acyclic DFA. The minimal DFA that accepts L$(A)$ is also weakly acyclic. 
@@ -25,7 +24,6 @@ Let $A$ be a weakly acyclic DFA. The minimal DFA that accepts L$(A)$ is also wea
 \begin{proof}
 See {\cite[Proposition~4]{blondin_24}}
 \end{proof}
-
 
 \begin{minipage}{.45\textwidth}
 \begin{figure}[H]
@@ -66,7 +64,7 @@ See {\cite[Proposition~4]{blondin_24}}
 \begin{minipage}{.5\textwidth}
 \begin{figure}[H]
 \centering 
-\includegraphics[scale=0.5]{./figures/languages.png}
+\includegraphics[scale=0.48]{./figures/languages.png}
 \caption{Weakly Acyclic Classes in the Language Hierarchy}\label{fig:hierar}
 \end{figure}
 \end{minipage}
@@ -100,8 +98,6 @@ r \Coloneqq \emptyset \mid \Gamma^{*} \mid \Lambda^{*} a r \mid r + r \quad \tex
 \subsection{Position in Language Hierarchy}
 The weakly acyclic language lie strictly in between finite and regular languages, as it can be seen in \autoref{fig:hierar}.
 They are within the regular languages, as they can be characterized with DFAs, NFAs and regular expressions. Furthermore, every finite language is weakly acyclic, as only a self loop in the trap state is necessary to represent a finite set of words.
-\todo{strictness with examples}
-\todo{hierarchy figure}
 
 
 \subsection{Closure Properties}

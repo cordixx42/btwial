@@ -469,8 +469,7 @@ Therefore, the first argument $S$ of $\pre$ represents a state in the DFA $C$ an
 Each state in $B$ is a pair containing a state of the transducer ($ p \in Q_{\mathcal{T}}$) in the first position and a state of the table ($ q \in Q_{T}$) in the second position.
 
 In order to construct the right node for the Pre language, we compute the correct final flag $b$ in line 4 and successor array $s$ in the loop from line 6 to 13. After the inner loop from line 8 to 9, $S'$ represents the successor state in DFA $C$ for $S$ with respect to the letter $a_{i}$. This happens by accumulating all $\delta_{B}((p,q),a_{i})$ from Lemma~\autoref{lem:b} into $S'$ in line 9. Recall, that $\Succ(q,a_{i})$ returns the node for the successor language with respect to the letter $a_{i}$, which agrees with $\delta_{A}(q,a_{i})$ from Lemma~\autoref{lem:b}.
-
-Therefore, 
+After the loop, in line 14 we pass the constructed $s$ and $b$ to the $\make$ operation, which creates the node into the table.
 
 
 

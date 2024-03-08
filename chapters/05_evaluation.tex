@@ -1,70 +1,28 @@
 \chapter{Evaluation}\label{chapter:evaluation}
-We implemented the Backwards Reachability Algorithm with the Table of Nodes (\autoref{alg:bw_wwa_final}) in a tool \textsc{Petrimat} using the programming language C++. The tool expects as input Petri nets in the MIST file format. We implemented a parser to transform from the MIST format into the representation we use in our implementation.  
+We implemented the Backwards Reachability Algorithm with the Table of Nodes, sketched in \autoref{alg:bw_wwa_final}, in a tool \textsc{Petrimat} using the programming language C++. 
 
-We tested the tool on existing coverability instances with a benchmark script from another coverability tool \textsc{QCover} (cite). 
-We performed tests on two benchmark suites, one called mist and the other wahl-kroening. The mist suite contains 27 coverability instances, and
+The tool expects the Petri net $N$ with start and target marking ($M_{0},M$) in the MIST file format as input \cite{ganty_15}. We implemented a parser to transform from the MIST format into the representation we use in our implementation. 
 
-We compare \textsc{Petrimat} (\textit{ptm}) with the tools \textsc{Mist} (\textit{mist}) and \textsc{QCover} (\textit{qcov}). All benchmarks were run on a machine with an Apple M1 Pro CPU and 32 GiB RAM. We performed each benchmark with a timeout of 5 minutes. 
+There are some differences to the input expected by \autoref{alg:bw_wwa_final}. First, the problem instances sometimes contain a set of start markings of a special form instead of the single marking $M_{0}$. To handle this scenario we adapt the $\encode$ operation to generate the correct node given a set of markings. 
 
-The results for the mist benchmarks are shown in \autoref{tab:mist-results}.
-The instances are ordered ascendingly by the number of places in the Petri net. 
-The first column shows the instance name, while the second column depicts the result. Safe means not coverable, unsafe means coverable.
+Furthermore, the MIST format allows to have multiple target markings $M$, which are to be covered. The instance is coverable, if one of the target markings is coverable. We simply encode each single target marking analogous to line 4 in \autoref{alg:bw_wwa_final} and finally take the union of all these nodes.
 
-The next two columns show information on the underlying Petri net. number
+We compare \textsc{Petrimat} (\textit{ptm}) with the existing tools \textsc{Mist} (\textit{mist}) and \textsc{QCover} (\textit{qcov})  \cite{ganty_15,blondin_15}. 
+The tools were tested on existing coverability instances with a benchmark the tool \textsc{QCover} based on \cite{blondin_16}.  All benchmarks were run on a machine with an Apple M1 Pro CPU and 32 GiB RAM with a timeout of 300 seconds (5 minutes). 
+The coverability problems used are from the toolkit of \textit{mist} and consist of 27 coverability instances. 
+%The wahl-kroening instances are from ... and contain x instances. 
 
-The table shows the coverability instances with the information on the underlying Petri net, the solve time in milliseconds for the three tools, and an estimation of the maximal memory usage of the tools in kilobytes. 
+\bigbreak
 
+The benchmark results for the instances are shown in \autoref{tab:mist-results}.
+The instances are ordered ascendingly by the number of places in the Petri net. The first column shows the name of the coverability instance, while the second column depicts the result of the coverability problem. Here, safe means that the given instance is not coverable, and unsafe implies, that the instance is coverable.
+Out of the 27 instances, only 4 are unsafe, and the rest are all safe. 
 
-%\begin{table}[h]
-%\centering
-%\resizebox{\textwidth}{!}{%
-%\begin{tabular}{c c c c c c c c c c}
-%\toprule
-%
-%\multicolumn{1}{c}{} & \multicolumn{1}{c}{} & \multicolumn{2}{c}{\textbf{Petri net}} & \multicolumn{3}{c}{\textbf{solve time (ms)}} & \multicolumn{3}{c}{\textbf{max memory (mb)}} \\
-%\cmidrule(rl){3-4} \cmidrule(rl){5-7} \cmidrule(rl){8-10}
-%
-%instance & result & places & trans & ptm & mist & qcov & ptm & mist & qcov \\
-%
-%\midrule
-%
-%basicME & safe & 5 & 4 & 10 & 8 & 3039 & 1,57 & 4,64 & 79,89 \\ %\hline
-%pingpong & safe & 6 & 6 & 13 & 8 & 2383 & 1,58 & 4,7 & 77,12 \\ %\hline
-%newrtp & safe & 9 & 12 & 33 & 10 & 2054 & 1,78 & 4,66 & 72,32 \\ %\hline
-%leabasicapproach & unsafe & 16 & 12 & 40 & 11 & 3229 & 2,9 & 4,92 & 80,59 \\ %\hline
-%lamport & safe & 11 & 9 & 51 & 13 & 2673 & 2,46 & 4,7 & 82,21 \\ %\hline
-%MultiME & safe & 12 & 11 & 57 & 11 & 2797 & 2,45 & 5,17 & 86,54 \\ %\hline
-%csm & safe & 14 & 13 & 93 & 22 & 2379 & 3,14 & 5,41 & 74,67 \\ %\hline
-%peterson & safe & 14 & 12 & 144 & 21 & 3217 & 3,7 & 4,9 & 78,21 \\ %\hline
-%multipool & safe & 18 & 21 & 221 & 286 & 2640 & 4,72 & 7,78 & 72,43 \\ %\hline
-%read-write & safe & 13 & 9 & 288 & 56 & 2300 & 4,4 & 6,1 & 74,3 \\ %\hline
-%mesh2x2 & safe & 32 & 32 & 512 & 129 & 2960 & 8,91 & 7,23 & 76,46 \\ %\hline
-%fms & safe & 22 & 20 & 799 & 36 & 2569 & 6,38 & 4,77 & 77,06 \\ %\hline
-%newdekker & safe & 16 & 14 & 1167 & 56 & 2620 & 16,51 & 4,83 & 79,89 \\ %\hline
-%bingham\_h25 & safe & 28 & 51 & 1525 & 248 & 2561 & 15,22 & 7,73 & 74,91 \\ %\hline
-%manufacturing & safe & 13 & 6 & 2454 & 885 & 2541 & 26,94 & 12,03 & 79,36 \\ %\hline
-%mesh3x2 & safe & 52 & 54 & 4000 & 1381 & 2677 & 52,75 & 12,04 & 72,61 \\ %\hline
-%pncsasemiliv & unsafe & 31 & 36 & 6133 & 836 & 3810 & 91,25 & 6,52 & 81,12 \\ %\hline
-%kanban & unsafe & 16 & 16 & 7503 & 158863 & - & 143,12 & 53,71 & 92,67 \\ %\hline
-%bounded\_kanban & safe & 16 & 16 & 8774 & 160560 & 2560 & 138,29 & 4,71 & 75,17 \\ %\hline
-%bingham\_h50 & safe & 53 & 101 & 11059 & 3461 & 3047 & 94,91 & 14,81 & 72,93 \\ %\hline
-%extendedread-write-sc & safe & 24 & 22 & 15508 & 94171 & 3383 & 82,62 & 5,6 & 76,48 \\ %\hline
-%fms\_attic & safe & 22 & 20 & 16381 & 827 & 2646 & 59,25 & 8,64 & 77,82 \\ %\hline
-%bingham\_h250\_attic & safe & 253 & 501 & 127682 & 9902 & 93454 & 751,33 & 465,48 & 237,42 \\ %\hline
-%pncsacover & unsafe & 31 & 36 & 128721 & - & 31920 & 1529,44 & 15,53 & 87,41 \\ %\hline
-%bingham\_h150 & safe & 153 & 301 & - & - & 3336 & 2032,22 & 104,47 & 78,62 \\ %\hline
-%bingham\_h250 & safe & 253 & 501 & - & - & 3127 & 3335,7 & 108,89 & 84,74 \\ %\hline
-%extendedread-write & safe & 24 & 22 & - & - & 2900 & 4187,79 & 34,09 & 85,97 \\ %\hline
-%
-%\bottomrule
-%\end{tabular}%
-%}
-%\caption{Results of the mist benchmark suite}
-%\label{tab:mist-results}
-%\end{table}
+%For the safe instances, during the Backwards Reachability Algorithm the complete set of all predecessors is calculated, before the procedure terminates. 
+The next two columns show the amount of places and transitions in the underlying Petri net.
+Finally, the solve time and an estimation for the maximal memory usage of the three tools are shown. Both the solve time and the memory usage are computed using the built-in \textsf{time} command of the Z shell (zhs). For the solve time, the user time and system time are added together to get the CPU time the tools consume. 
 
-
-\begin{table}[h]
+\begin{table}[H]
 \centering
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{c c c c c c c c c c}
@@ -113,46 +71,84 @@ basicME & safe & 5 & 4 & 10 & 8 & 3039 & 1.57 & 4.64 & 79.89 \\
 \end{table}
 
 
+First, we can observe there is no consistent relation between the number of places and transitions with the difficulty of the instance. For example, the mesh3x2 instance with over 50 places and transitions is solved by all three tools in under 4 seconds, while the kanban instance with 16 places and transitions takes around 159 seconds for \textit{mist} and even times out for \textit{qcov}.
 
-\begin{table}[h]
+Comparing the times of \textit{ptm} with the other two tools, we recognize that there is similar trend of the solve times from \textit{ptm} and \textit{mist}. Still, there exist some problems where \textit{ptm} performs significantly better, like kanban or extendedread-write-sc, or where \textit{mist} solves the problems a lot faster, which is the case for newdekker or fms\_attic. But the overall fluctuations are mostly consistent between these two tools. 
+\textit{qcov} on the other hand shows very stable times for most of the instances, mostly between 2 and 4 seconds. Only for pncsacover, bingham\_h250\_attic and kanban, \textit{qcov} needs more than 4 seconds. This could be, because the qcover tool needs a certain amount of processing time independent of the instance structure.
+
+In general, \textit{ptm} and \textit{mist} are much faster in a lot of smaller problems, but have more difficulties processing some seemingly more difficult instances, where they are significantly slower than \textit{qcov}. 
+
+Looking at the memory usage for the three tools, we can observe a clear correlation to the solve times. The timed out instances of \textit{ptm} consume gigabytes of memory. Like the solve times, the memory consumption for \textit{qcov} stays very stable around 80 megabytes. The memory measured of \textit{mist} is very low with only a few megabytes for most of the instances and even the highest value measured is below 500 megabytes.
+
+Altogether, the solve time of our tool \textit{ptm} is competitive to the other two tools. While in the smaller instances, \textit{ptm} is often a little slower than \textit{mist}, it solves the more difficult kanban and kanban\_bounded instances roughly 20 times faster than \textit{mist}.
+Against \textit{qcov} \textit{ptm} has a clear advantage in the smaller instances. 
+
+The overall memory measurements show good results for \textit{ptm} in the easier instances, but are an enormous amount higher than the other two tools in some instances like extended-read-write-sc or pncsacover.
+
+\bigbreak
+
+However, it is questionable, if the memory command of the Z shell gives an accurate representation of the peak memory used by the tools. For instance, the Table of Nodes used in \textit{ptm} does not have any operations for removing nodes. During the procedure a lot of nodes are never used again but still remain in the table and are thus contributing to the memory usage.
+
+Therefore, in order to have a better comparison of the memory usage we want to take a closer look at the size of the underlying data structures. For \textit{ptm} we can measure information about the Table of Nodes very easily. The \textit{mist} tool uses a data structure called Interval Sharing Tree to represent the minimal markings \cite{ganty_07,ganty_15}. Running the tool with a special command allows insights on the size of the generated tree. 
+The tool \textit{qcov} is left out here, as we have not found a good way to compare..
+
+\bigbreak
+
+\autoref{tab:mist-results-datastruct} shows more information about the number of iterations of the Backwards Reachability Algorithm, the Table of Nodes from \textit{ptm} and the data structure from \textit{mist}.
+
+
+We can observe that the number of iterations before the algorithm terminates mostly below 30 iterations.
+
+The three columns under Table of Nodes in \autoref{tab:mist-results-datastruct} show some properties of the table before termination of the algorithm.
+
+The table size shows the complete amount of nodes in the table, which have been created in the algorithm. We can see, that the numbers range from hundreds to millions of generated nodes. 9 out of the 27 instances generate more than 200000 nodes into the table.
+
+The column max node in the middle indicates the size of the largest $q$ after any iteration of the Backwards Reachability Algorithm. Comparing this column with the table size, we can see there also exists a positive correlation. 
+%This makes sense, as the number of iterations between the instance does not differ a lot and 
+
+The end node is the size of the node $q$ right before terminating. For the uncoverable safe instances, this is the size needed to represent the completely computed predecessor set containing all backwards reachable markings. We can observe that for most instances, the size is in a similar magnitude as the max node size. There are some cases, like pncsacover or kanban\_bounded, where the end size is much smaller. But note, that all of these three instances are unsafe, meaning that the size of the end node might not be the complete predecessor set, as the algorithm terminates earlier. 
+
+
+
+\begin{table}[H]
 \centering
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{c c c c c c c c c c}
 \toprule
 
-\multicolumn{1}{c}{} & \multicolumn{2}{c}{\textbf{Petri net}} & \multicolumn{1}{c}{} & \multicolumn{3}{c}{\textbf{Table of Nodes}} &  \multicolumn{1}{c}{\textbf{MIST}}\\
+\multicolumn{1}{c}{} & \multicolumn{2}{c}{\textbf{solve time (ms)}} & \multicolumn{1}{c}{} & \multicolumn{3}{c}{\textbf{Table of Nodes}} &  \multicolumn{1}{c}{\textbf{MIST}}\\
 \cmidrule(rl){2-3} \cmidrule(rl){5-7}
 
-\textbf{instance} & places & trans & \textbf{iter} & table size & max node & end node & end size \\
+\textbf{instance} & \textit{ptm} & \textit{mist} & \textbf{iter} & table size & max node & end node & end size \\
 
 \midrule
-        basicME & 5 & 4 & 3 & 365 & 31 & 31 & 26 \\
-        pingpong & 6 & 6 & 4 & 427 & 28 & 28 & 33 \\
-        newrtp & 9 & 12 & 6 & 939 & 31 & 29 & 50 \\
-        lamport & 11 & 9 & 5 & 3210 & 97 & 62 & 80 \\
-        MultiME & 12 & 11 & 5 & 3113 & 73 & 66 & 70 \\
-        manufacturing & 13 & 6 & 14 & 89483 & 3348 & 1489 & 953 \\
-        read-write & 13 & 9 & 9 & 9923 & 322 & 236 & 235 \\
-        peterson & 14 & 12 & 6 & 6799 & 210 & 181 & 169 \\
-        csm & 14 & 13 & 5 & 5210 & 110 & 93 & 109 \\
-        leabasicapproach & 16 & 12 & 2 & 4030 & 180 & 180 & 162 \\
-        newdekker & 16 & 14 & 8 & 51804 & 1468 & 895 & 341 \\
-        kanban & 16 & 16 & 11 & 571617 & 6635 & 1132 & 1594 \\
-        kanban\_bounded & 16 & 16 & 18 & 574675 & 6635 & 768 & 720 \\
-        multipool & 18 & 21 & 6 & 11731 & 137 & 116 & 196 \\
-        fms & 22 & 20 & 15 & 15827 & 285 & 247 & 233 \\
-        fms\_attic & 22 & 20 & 27 & 228830 & 2735 & 2431 & 881 \\
-        extendedread-write-sc & 24 & 22 & 24 & 322684 & 2769 & 1245 & 758 \\
-        extendedread-write & 24 & 22 & - & - & - & - & - \\
-        bingham\_h25 & 28 & 51 & 27 & 48969 & 161 & 161 & 253 \\
-        pncsasemiliv & 31 & 36 & 7 & 340348 & 6375 & 1652 & 2139 \\
-        pncsacover & 31 & 36 & 15 & 7015463 & 80180 & 779 & - \\
-        mesh2x2 & 32 & 32 & 5 & 30142 & 271 & 271 & 344 \\
-        mesh3x2 & 52 & 54 & 8 & 202945 & 914 & 796 & 987 \\
-        bingham\_h50 & 53 & 101 & 52 & 316044 & 311 & 311 & 503 \\
-        bingham\_h150 & 153 & 301 & - & - & - & - & - \\
-        bingham\_h250\_attic & 253 & 501 & 4 & 2869137 & 3547 & 2914 & 4512 \\
-        bingham\_h250 & 253 & 501 & - & - & - & - & - \\
+basicME & 10 & 8 & 3 & 365 & 31 & 31 & 26 \\
+pingpong & 13 & 8 & 4 & 427 & 28 & 28 & 33 \\
+newrtp & 33 & 10 & 6 & 939 & 31 & 29 & 50 \\
+lamport & 51 & 13 & 5 & 3210 & 97 & 62 & 80 \\
+MultiME & 57 & 11 & 5 & 3113 & 73 & 66 & 70 \\
+manufacturing & 288 & 56 & 14 & 89483 & 3348 & 1489 & 953 \\
+read-write & 2454 & 885 & 9 & 9923 & 322 & 236 & 235 \\
+peterson & 93 & 22 & 6 & 6799 & 210 & 181 & 169 \\
+csm & 144 & 21 & 5 & 5210 & 110 & 93 & 109 \\
+leabasicapproach & 40 & 11 & 2 & 4030 & 180 & 180 & 162 \\
+newdekker & 1167 & 56 & 8 & 51804 & 1468 & 895 & 341 \\
+kanban & 7503 & 158863 & 11 & 571617 & 6635 & 1132 & 1594 \\
+kanban\_bounded & 8774 & 160560 & 18 & 574675 & 6635 & 768 & 720 \\
+multipool & 221 & 286 & 6 & 11731 & 137 & 116 & 196 \\
+fms & 799 & 36 & 15 & 15827 & 285 & 247 & 233 \\
+fms\_attic & 16381 & 827 & 27 & 228830 & 2735 & 2431 & 881 \\
+extendedread-write-sc & 15508 & 94171 & 24 & 322684 & 2769 & 1245 & 758 \\
+extendedread-write & - & - & - & - & - & - & - \\
+bingham\_h25 & 1525 & 248 & 27 & 48969 & 161 & 161 & 253 \\
+pncsasemiliv & 6133 & 836 & 7 & 340348 & 6375 & 1652 & 2139 \\
+pncsacover & 128721 & - & 15 & 7015463 & 80180 & 779 & - \\
+mesh2x2 & 512 & 129 & 5 & 30142 & 271 & 271 & 344 \\
+mesh3x2 & 4000 & 1381 & 8 & 202945 & 914 & 796 & 987 \\
+bingham\_h50 & 11059 & 3461 & 52 & 316044 & 311 & 311 & 503 \\
+bingham\_h150 & - & - & - & - & - & - & - \\
+bingham\_h250\_attic & 127682 & 9902 & 4 & 2869137 & 3547 & 2914 & 4512 \\
+bingham\_h250 & - & - & - & - & - & - & - \\
         \bottomrule
 \end{tabular}%
 }
@@ -160,18 +156,180 @@ basicME & safe & 5 & 4 & 10 & 8 & 3039 & 1.57 & 4.64 & 79.89 \\
 \label{tab:mist-results-datastruct}
 \end{table}
 
+Finally, the last column of \autoref{tab:mist-results-datastruct} depicts the size of the final interval tree of \textit{mist} also representing the set of predecessors.
+
+We can compare the end node and end size columns of \textit{ptm} and \textit{mist} to get overview of the sizes the respective data structures needs to represent the predecessor set of markings. 
+
+\bigbreak 
+
+We performed further tests, where we record the size of the table and the size of the node $q$ in \autoref{alg:bw_wwa_final} after each iteration of the while loop. 
+
+%Recall, that $q$ is node representing all predecessor markings for $i$ transition. With the size of $q$ we mean the amount of nodes in the subautomaton with initial state $q$. T
+
+\autoref{fig:qgrowth} and \autoref{fig:tabgrowth} show the results for some instances of the mist group.
+
+In \autoref{fig:qgrowth} we can observe that almost all of the depicted instances have a steep rise in the size of node $q$ during the first couple of iterations. After the maximal peak size is reached, it gradually begins to fall again. The speed of the decline is varying for the instances, with the size of pncsacover or kanban\_bounded falling more and more quickly compared to extended-read-write-sc.
+Only the plot of the bingham\_25 instance behaves very differently to the others. The size of $q$ slowly increases here with more iterations and in the end there is even a small leap before the algorithm terminates. 
+
+pncsacover, which also had a very big table size and max size of $q$, also in both graphs higher than the other instances. However, the marking size also shrinks rapidly leading to a relatively small end size of $q$.
 
 
 
-\begin{itemize}
-\item tested with different compiler optimizations, speed up was not very high , o0 to ofast 
-\item program maybe much time with memory access 
-\item mist invariants and not invariants
-\end{itemize}
+%The table shows the coverability instances with the information on the underlying Petri net, the solve time in milliseconds for the three tools, and an estimation of the maximal memory usage of the tools in kilobytes. 
+
+
+%\begin{table}[htb]
+%\centering
+%\resizebox{\textwidth}{!}{%
+%\begin{tabular}{c c c c c c c c c c}
+%\toprule
+%
+%\multicolumn{1}{c}{} & \multicolumn{1}{c}{} & \multicolumn{2}{c}{\textbf{Petri net}} & \multicolumn{3}{c}{\textbf{solve time (ms)}} & \multicolumn{3}{c}{\textbf{max memory (mb)}} \\
+%\cmidrule(rl){3-4} \cmidrule(rl){5-7} \cmidrule(rl){8-10}
+%
+%\textbf{instance} & \textbf{result} & places & trans & \textit{ptm}& \textit{mist} & \textit{qcov} & \textit{ptm} & \textit{mist} & \textit{qcov} \\
+%
+%\midrule
+%
+%basicME & safe & 5 & 4 & 10 & 8 & 3039 & 1.57 & 4.64 & 79.89 \\
+%        pingpong & safe & 6 & 6 & 13 & 8 & 2383 & 1.58 & 4.7 & 77.12 \\
+%        newrtp & safe & 9 & 12 & 33 & 10 & 2054 & 1.78 & 4.66 & 72.32 \\
+%        lamport & safe & 11 & 9 & 51 & 13 & 2673 & 2.46 & 4.7 & 82.21 \\
+%        MultiME & safe & 12 & 11 & 57 & 11 & 2797 & 2.45 & 5.17 & 86.54 \\
+%        read-write & safe & 13 & 9 & 288 & 56 & 2300 & 4.4 & 6.1 & 74.3 \\
+%        manufacturing & safe & 13 & 6 & 2454 & 885 & 2541 & 26.94 & 12.03 & 79.36 \\
+%        csm & safe & 14 & 13 & 93 & 22 & 2379 & 3.14 & 5.41 & 74.67 \\
+%        peterson & safe & 14 & 12 & 144 & 21 & 3217 & 3.7 & 4.9 & 78.21 \\
+%        leabasicapproach & unsafe & 16 & 12 & 40 & 11 & 3229 & 2.9 & 4.92 & 80.59 \\
+%        newdekker & safe & 16 & 14 & 1167 & 56 & 2620 & 16.51 & 4.83 & 79.89 \\
+%        kanban & unsafe & 16 & 16 & 7503 & 158863 & - & 143.12 & 53.71 & 92.67 \\
+%        kanban\_bounded & safe & 16 & 16 & 8774 & 160560 & 2560 & 138.29 & 4.71 & 75.17 \\
+%        multipool & safe & 18 & 21 & 221 & 286 & 2640 & 4.72 & 7.78 & 72.43 \\
+%        fms & safe & 22 & 20 & 799 & 36 & 2569 & 6.38 & 4.77 & 77.06 \\
+%        fms\_attic & safe & 22 & 20 & 16381 & 827 & 2646 & 59.25 & 8.64 & 77.82 \\
+%        extendedread-write-sc & safe & 24 & 22 & 15508 & 94171 & 3383 & 82.62 & 5.6 & 76.48 \\
+%        extendedread-write & safe & 24 & 22 & - & - & 2900 & 4187.79 & 34.09 & 85.97 \\
+%        bingham\_h25 & safe & 28 & 51 & 1525 & 248 & 2561 & 15.22 & 7.73 & 74.91 \\
+%        pncsasemiliv & unsafe & 31 & 36 & 6133 & 836 & 3810 & 91.25 & 6.52 & 81.12 \\
+%        pncsacover & unsafe & 31 & 36 & 128721 & - & 31920 & 1529.44 & 15.53 & 87.41 \\
+%        mesh2x2 & safe & 32 & 32 & 512 & 129 & 2960 & 8.91 & 7.23 & 76.46 \\
+%        mesh3x2 & safe & 52 & 54 & 4000 & 1381 & 2677 & 52.75 & 12.04 & 72.61 \\
+%        bingham\_h50 & safe & 53 & 101 & 11059 & 3461 & 3047 & 94.91 & 14.81 & 72.93 \\
+%        bingham\_h150 & safe & 153 & 301 & - & - & 3336 & 2032.22 & 104.47 & 78.62 \\
+%        bingham\_h250\_attic & safe & 253 & 501 & 127682 & 9902 & 93454 & 751.33 & 465.48 & 237.42 \\
+%        bingham\_h250 & safe & 253 & 501 & - & - & 3127 & 3335.7 & 108.89 & 84.74 \\
+%
+%\bottomrule
+%\end{tabular}%
+%}
+%\caption{Results of the mist benchmark suite}
+%\label{tab:mist-results}
+%\end{table}
+
+%\begin{table}[htb]
+%\centering
+%\resizebox{\textwidth}{!}{%
+%\begin{tabular}{c c c c c c c c c c}
+%\toprule
+%
+%\multicolumn{1}{c}{} & \multicolumn{2}{c}{\textbf{Petri net}} & \multicolumn{1}{c}{} & \multicolumn{3}{c}{\textbf{Table of Nodes}} &  \multicolumn{1}{c}{\textbf{MIST}}\\
+%\cmidrule(rl){2-3} \cmidrule(rl){5-7}
+%
+%\textbf{instance} & places & trans & \textbf{iter} & table size & max node & end node & end size \\
+%
+%\midrule
+%        basicME & 5 & 4 & 3 & 365 & 31 & 31 & 26 \\
+%        pingpong & 6 & 6 & 4 & 427 & 28 & 28 & 33 \\
+%        newrtp & 9 & 12 & 6 & 939 & 31 & 29 & 50 \\
+%        lamport & 11 & 9 & 5 & 3210 & 97 & 62 & 80 \\
+%        MultiME & 12 & 11 & 5 & 3113 & 73 & 66 & 70 \\
+%        manufacturing & 13 & 6 & 14 & 89483 & 3348 & 1489 & 953 \\
+%        read-write & 13 & 9 & 9 & 9923 & 322 & 236 & 235 \\
+%        peterson & 14 & 12 & 6 & 6799 & 210 & 181 & 169 \\
+%        csm & 14 & 13 & 5 & 5210 & 110 & 93 & 109 \\
+%        leabasicapproach & 16 & 12 & 2 & 4030 & 180 & 180 & 162 \\
+%        newdekker & 16 & 14 & 8 & 51804 & 1468 & 895 & 341 \\
+%        kanban & 16 & 16 & 11 & 571617 & 6635 & 1132 & 1594 \\
+%        kanban\_bounded & 16 & 16 & 18 & 574675 & 6635 & 768 & 720 \\
+%        multipool & 18 & 21 & 6 & 11731 & 137 & 116 & 196 \\
+%        fms & 22 & 20 & 15 & 15827 & 285 & 247 & 233 \\
+%        fms\_attic & 22 & 20 & 27 & 228830 & 2735 & 2431 & 881 \\
+%        extendedread-write-sc & 24 & 22 & 24 & 322684 & 2769 & 1245 & 758 \\
+%        extendedread-write & 24 & 22 & - & - & - & - & - \\
+%        bingham\_h25 & 28 & 51 & 27 & 48969 & 161 & 161 & 253 \\
+%        pncsasemiliv & 31 & 36 & 7 & 340348 & 6375 & 1652 & 2139 \\
+%        pncsacover & 31 & 36 & 15 & 7015463 & 80180 & 779 & - \\
+%        mesh2x2 & 32 & 32 & 5 & 30142 & 271 & 271 & 344 \\
+%        mesh3x2 & 52 & 54 & 8 & 202945 & 914 & 796 & 987 \\
+%        bingham\_h50 & 53 & 101 & 52 & 316044 & 311 & 311 & 503 \\
+%        bingham\_h150 & 153 & 301 & - & - & - & - & - \\
+%        bingham\_h250\_attic & 253 & 501 & 4 & 2869137 & 3547 & 2914 & 4512 \\
+%        bingham\_h250 & 253 & 501 & - & - & - & - & - \\
+%        \bottomrule
+%\end{tabular}%
+%}
+%\caption{Information on the Data Structure}
+%\label{tab:mist-results-datastruct}
+%\end{table}
+
+%\begin{table}[htb]
+%\centering
+%\resizebox{\textwidth}{!}{%
+%\begin{tabular}{c c c c c c c c c c}
+%\toprule
+%
+%\multicolumn{1}{c}{} & \multicolumn{2}{c}{\textbf{solve time (ms)}} & \multicolumn{1}{c}{} & \multicolumn{3}{c}{\textbf{Table of Nodes}} &  \multicolumn{1}{c}{\textbf{MIST}}\\
+%\cmidrule(rl){2-3} \cmidrule(rl){5-7}
+%
+%\textbf{instance} & \textit{ptm} & \textit{mist} & \textbf{iter} & table size & max node & end node & end size \\
+%
+%\midrule
+%basicME & 10 & 8 & 3 & 365 & 31 & 31 & 26 \\
+%pingpong & 13 & 8 & 4 & 427 & 28 & 28 & 33 \\
+%newrtp & 33 & 10 & 6 & 939 & 31 & 29 & 50 \\
+%lamport & 51 & 13 & 5 & 3210 & 97 & 62 & 80 \\
+%MultiME & 57 & 11 & 5 & 3113 & 73 & 66 & 70 \\
+%manufacturing & 288 & 56 & 14 & 89483 & 3348 & 1489 & 953 \\
+%read-write & 2454 & 885 & 9 & 9923 & 322 & 236 & 235 \\
+%peterson & 93 & 22 & 6 & 6799 & 210 & 181 & 169 \\
+%csm & 144 & 21 & 5 & 5210 & 110 & 93 & 109 \\
+%leabasicapproach & 40 & 11 & 2 & 4030 & 180 & 180 & 162 \\
+%newdekker & 1167 & 56 & 8 & 51804 & 1468 & 895 & 341 \\
+%kanban & 7503 & 158863 & 11 & 571617 & 6635 & 1132 & 1594 \\
+%kanban\_bounded & 8774 & 160560 & 18 & 574675 & 6635 & 768 & 720 \\
+%multipool & 221 & 286 & 6 & 11731 & 137 & 116 & 196 \\
+%fms & 799 & 36 & 15 & 15827 & 285 & 247 & 233 \\
+%fms\_attic & 16381 & 827 & 27 & 228830 & 2735 & 2431 & 881 \\
+%extendedread-write-sc & 15508 & 94171 & 24 & 322684 & 2769 & 1245 & 758 \\
+%extendedread-write & - & - & - & - & - & - & - \\
+%bingham\_h25 & 1525 & 248 & 27 & 48969 & 161 & 161 & 253 \\
+%pncsasemiliv & 6133 & 836 & 7 & 340348 & 6375 & 1652 & 2139 \\
+%pncsacover & 128721 & - & 15 & 7015463 & 80180 & 779 & - \\
+%mesh2x2 & 512 & 129 & 5 & 30142 & 271 & 271 & 344 \\
+%mesh3x2 & 4000 & 1381 & 8 & 202945 & 914 & 796 & 987 \\
+%bingham\_h50 & 11059 & 3461 & 52 & 316044 & 311 & 311 & 503 \\
+%bingham\_h150 & - & - & - & - & - & - & - \\
+%bingham\_h250\_attic & 127682 & 9902 & 4 & 2869137 & 3547 & 2914 & 4512 \\
+%bingham\_h250 & - & - & - & - & - & - & - \\
+%        \bottomrule
+%\end{tabular}%
+%}
+%\caption{Information on the Data Structure}
+%\label{tab:mist-results-datastruct}
+%\end{table}
+
+
+
+%
+%\begin{itemize}
+%\item tested with different compiler optimizations, speed up was not very high , o0 to ofast 
+%\item program maybe much time with memory access 
+%\item mist invariants and not invariants
+%\end{itemize}
 
 %\pgfplotstableread[col sep=comma]{./csv-plot/ext-rw.csv}\mydata
 
-\begin{figure}[ht]
+\begin{figure}[htb]
 \begin{tikzpicture}
 \begin{axis}[
 	xmode=normal,
@@ -180,7 +338,7 @@ basicME & safe & 5 & 4 & 10 & 8 & 3039 & 1.57 & 4.64 & 79.89 \\
 	ylabel=automaton size for node $q$,
 %    xticklabels from table={\mydata}{INSTANCE},
 	title={Marking Size Growth},
-	width=0.85\linewidth,
+	width=0.75\linewidth,
 	legend style={at={(1,1)}, anchor=north east}]
 	
 	\addplot[-,line width=1pt,solid,color=blue!75,mark=o]  table[x=ITER,y=MARKINGSIZE,col sep=comma]{./csv-plot/ext-rw.csv};
@@ -189,10 +347,10 @@ basicME & safe & 5 & 4 & 10 & 8 & 3039 & 1.57 & 4.64 & 79.89 \\
 	\addplot[-,line width=1pt,solid,color=red!75,mark=x]  table[x=ITER,y=MARKINGSIZE,col sep=comma]{./csv-plot/pncsacover.csv};
 	\addlegendentry{pncsacover}
 	
-	\addplot[-,line width=1pt,solid,color=green!75,mark=square]  table[x=ITER,y=MARKINGSIZE,col sep=comma]{./csv-plot/bh25.csv};
+	\addplot[-,line width=1pt,solid,color=cyan!75,mark=square]  table[x=ITER,y=MARKINGSIZE,col sep=comma]{./csv-plot/bh25.csv};
 	\addlegendentry{bingham\_25}
 	
-	\addplot[-,line width=1pt,solid,color=teal!75,mark=triangle]  table[x=ITER,y=MARKINGSIZE,col sep=comma]{./csv-plot/manu.csv};
+	\addplot[-,line width=1pt,solid,color=olive!75,mark=triangle]  table[x=ITER,y=MARKINGSIZE,col sep=comma]{./csv-plot/manu.csv};
 	\addlegendentry{manufacturing}
 	
 	\addplot[-,line width=1pt,solid,color=orange!75,mark=diamond]  table[x=ITER,y=MARKINGSIZE,col sep=comma]{./csv-plot/kanbanb.csv};
@@ -215,10 +373,11 @@ table[x=ITER,y=MARKINGSIZE,col sep=comma]{./csv-plot/mesh3x2.csv};
 %\addlegendentry{Transfer function};
 \end{axis}
 \end{tikzpicture}
+\caption{Growth of the Size of $q$}\label{fig:qgrowth}
 \end{figure}
 
 
-\begin{figure}[ht]
+\begin{figure}[htb]
 \begin{tikzpicture}
 \begin{axis}[
 	xmode=normal,
@@ -227,7 +386,7 @@ table[x=ITER,y=MARKINGSIZE,col sep=comma]{./csv-plot/mesh3x2.csv};
 	ylabel=size of table (in nodes),
 %    xticklabels from table={\mydata}{INSTANCE},
 	title={Table Size Growth},
-	width=0.85\linewidth,
+	width=0.75\linewidth,
 	legend style={at={(1,0)}, anchor=south east}]
 	
 	\addplot[-,line width=1pt,solid,color=blue!75,mark=o]  table[x=ITER,y=TABLESIZE,col sep=comma]{./csv-plot/ext-rw.csv};
@@ -236,10 +395,10 @@ table[x=ITER,y=MARKINGSIZE,col sep=comma]{./csv-plot/mesh3x2.csv};
 	\addplot[-,line width=1pt,solid,color=red!75,mark=x]  table[x=ITER,y=TABLESIZE,col sep=comma]{./csv-plot/pncsacover.csv};
 	\addlegendentry{pncsacover}
 	
-	\addplot[-,line width=1pt,solid,color=green!75,mark=square]  table[x=ITER,y=TABLESIZE,col sep=comma]{./csv-plot/bh25.csv};
+	\addplot[-,line width=1pt,solid,color=cyan!75,mark=square]  table[x=ITER,y=TABLESIZE,col sep=comma]{./csv-plot/bh25.csv};
 	\addlegendentry{bingham\_25}
 	
-	\addplot[-,line width=1pt,solid,color=teal!75,mark=triangle]  table[x=ITER,y=TABLESIZE,col sep=comma]{./csv-plot/manu.csv};
+	\addplot[-,line width=1pt,solid,color=olive!75,mark=triangle]  table[x=ITER,y=TABLESIZE,col sep=comma]{./csv-plot/manu.csv};
 	\addlegendentry{manufacturing}
 	
 	\addplot[-,line width=1pt,solid,color=orange!75,mark=diamond]  table[x=ITER,y=TABLESIZE,col sep=comma]{./csv-plot/kanbanb.csv};
@@ -255,6 +414,7 @@ table[x=ITER,y=TABLESIZE,col sep=comma]{./csv-plot/mesh3x2.csv};
 	
 \end{axis}
 \end{tikzpicture}
+\caption{Growth of the Size of Table}\label{fig:tabgrowth}
 \end{figure}
 
 

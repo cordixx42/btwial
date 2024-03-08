@@ -55,7 +55,7 @@ As the abstract \autoref{alg:bw} operates on infinite sets of markings, it is no
 During the execution of \autoref{alg:bw} the set $\mathcal{M}$ remains upward closed. 
 \end{lemma}
 \begin{proof}
-Upwards closed sets are closed under union and $\ppre$. 
+Upwards closed sets are closed under union and $\ppre$ {\cite[Lemma~3.2.16]{esparza_19}}. 
 \end{proof}
 
 
@@ -63,7 +63,7 @@ Upwards closed sets are closed under union and $\ppre$.
 \autoref{alg:bw} terminates. 
 \end{lemma}
 \begin{proof}
-Follows immediately from cite script here.
+Follows immediately from {\cite[Lemma~3.2.17]{esparza_19}}.
 \end{proof}
 
 As described in the chapter on the preliminaries, each upward closed set can be described by a finite number of minimal elements. Furthermore, Lemma~\autoref{lem:upwclosed} shows that the sets used in the algorithm always stay upwards closed. Existing implementations use these properties and express $\mathcal{M}$ with its finite set of minimal markings during the whole procedure.
@@ -486,7 +486,7 @@ The idea is to use the ordinary encoding $f$ for all operations in the Backwards
 
 With the introduced padded encoding from Definition~\autoref{def:encodingv2} we now want to construct a transducer $\mathcal{T}$ for a Petri net transition $t$. The following property should be satisfied:
 \begin{itemize}[-,noitemsep]
-\item For all markings $M,M'$ and transition $t$, where $M \xrightarrow{t} M'$, there exist a padded encoding $w \in f'(M)$ and $v \in f'(M')$, such that $\mathcal{T}$ accepts $(w,v)$.
+\item For all markings $M,M'$ and transition $t$, where $M \xrightarrow{t} M'$, there exist some padded encodings $w \in f'(M)$ and $v \in f'(M')$, such that $\mathcal{T}$ accepts $(w,v)$.
 \end{itemize}
 
 
@@ -570,7 +570,7 @@ For this Petri net the constructed transducer is illustrated in \autoref{fig:tra
 \label{fig:net2trans}
 \end{figure}
 
-We can have a closer look at the structure of the transducer. In \autoref{fig:petri-trans-ex} we have three places, which correspond to the three parts of the transducer with different level and color. Each level reads in an amount of tokens for the respective place. The different levels are connected by reading in a pair of separators $(\square,\square)$, which are the vertical transitions in \autoref{fig:transfortrans}.
+We can have a closer look at the structure of the transducer. In \autoref{fig:petri-trans-ex} we have three places, which correspond to the three parts of the transducer with different level and color. Each level reads in an amount of tokens for the respective place. The different levels are connected by reading in a pair of separators $(\square,\square)$, which are the vertical transitions in \autoref{fig:transfortrans}. The final $(\square,\square)$ from the last level leads into an accepting final state of the transducer.
 
 We can distinguish between two cases for constructing the part of the transducer for the place $p_{i}$, given the transition $t = (g,h)$.
 
@@ -612,26 +612,50 @@ As mentioned, the constructed transducer only maps specific padded encodings dep
 
 Therefore, further table operations $\prep$ and $\post$ are required to convert between nodes of the transducer specific padded encoding and nodes of the ordinary encoding. Since the transducer is only used in the $\pre$ function, these two new operations are only performed before and after $\pre$. 
 
-$\prep$ takes a node representing a set of ordinary encoded markings and returns a node representing the same set of markings but with the padded encoding matching the image of the transducer.
+$\prep$ converts a node in the ordinary encoding into an equivalent node in the padded encoding specific to the image of the transducer by adding $\Diamond$ transitions. The node returned by $\prep$ is then passed on to the $\pre$ operation. $\post$ converts the result of $\pre$, which is a node in the specific padded encoding of the pre-image of the transducer, back to the correct ordinary encoding, removing $\Diamond$ transitions in the process.
 
-Consider the figure. By tracking the amount of $\square$s, we know for which place of the petri net we are currently reading in words. Let $k$ be the amount of padding symbols we need to insert before the next $\square$. 
-
-Fig left shows the part of the automaton before preprocess. There can only exist successors for $\bm{1}$ and $\square$, because the automaton ordinary encoding. If we encounter a part of the automaton with a $\square$ transition to node $q'$, where $q' \neq q_{\emptyset}$, we need to insert $k$ padding transitions and nodes between $q$ and $q'$. This is shown in figure right.
-
-The operation $\post$ is considering the reverse direction. 
+The question remains, how many padding transitions need to be added or removed.
+As can be seen in \autoref{fig:net2trans}, we construct the transducer in a way, that the amount of paddings before the $i$-th separator $\square$ is fixed for both pre-image and image of the transducer. Therefore, we can use this property to add or remove that fixed amount of $\Diamond$ symbols. Taking the transducer in \autoref{fig:transfortrans} as an example, here $\prep$ needs to add one $\Diamond$ before the second $\square$, while $\post$ will remove one $\Diamond$ before the third $\square$.
 
 
 
+\autoref{fig:prepost} visualizes the two operations. The \autoref{fig:beforeprep} on the left shows a subautomaton $\prep$ is currently processing starting with the node $q$. A second input given to $\prep$ is a counter $i$, which indicates that the next $\square$ is the $i$-th separator symbol. There are only successors for $\bm{1}$ and $\square$, because the automaton given to $\prep$ is still in the ordinary encoding and does not contain any $\Diamond$s. 
 
-Let $\mathcal{T}$ based on the construction from the last section map a word of the form $w = \bm{1}^{k_{1}}\Diamond^{l_{1}}\square\bm{1}^{k_{2}}\Diamond^{l_{2}}\square...\bm{1}^{k_{n}}\Diamond^{l_{n}}\square$ to the word $v = \bm{1}^{k_{1}'}\Diamond^{l_{1}'}\square\bm{1}^{k_{2}'}\Diamond^{l_{2}'}\square...\bm{1}^{k_{n}'}\Diamond^{l_{n}'}\square$ such that ${k_{i} + l_{i} = k_{i}' + l_{i}'}$.
+Assume that in the image of the transducer, there are $k$ padding symbols before the $i$-th separator symbol. Then $\prep$ needs to add $k$ new nodes $q_{1},\dots,q_{k}$ between $q$ and $q'$, as depicted on the right in \autoref{fig:afterprep}. The $\square$ transition of $q$ is removed and one $\Diamond$ transition from $q$ to $q_{1}$ is added. From $q_{1}$ to $q_{k}$ there are $k-1$ further $\Diamond$ transitions. Eventually, the $\square$ transition is inserted from $q_{k}$ to $q'$. Finally, $\prep$ makes recursive calls for $q''$ and $q'$. Note here, that for the call with $q''$ we will pass on the same counter $i$, but for the call with $q'$ we increase the counter by one, as the next $\square$ after $q'$ will be the $i+1$-th separator.
 
-Then $\prep$ adds new nodes and transitions reading in $l_{i}'$ many padding symbols $\Diamond$ before the $i$-th separator symbol $\square$, while $\post$ removes the nodes responsible for reading in $l_{i}$ many $\Diamond$s before the $i$-th $\square$.
+The $\post$ operation works in the reverse direction from \autoref{fig:afterprep} to \autoref{fig:beforeprep}. Instead of adding new nodes, we remove $q_{1},\dots,q_{k}$ by removing the $\Diamond$ transition from $q$ and adding the $\square$ transition directly to $q'$.
 
 
 
 
 
-\begin{figure}[htb]
+
+%For $\prep$, the amount of paddings in the second position ($(\bm{1},\Diamond)$ transitions in $\mathcal{T}$) is relevant because it prepares the node for intersection with the image of the transducer. In the example in \autoref{fig:net2trans}, the transducer image consists of words with one $\Diamond$ before the second $\square$. 
+%
+%Opposed to this, $\post$ is given a node representing a subset of the pre-image after the $\pre$ operation. Therefore, the number of $\Diamond$s to be removed corresponds to the number of padding symbols in the first position ($(\Diamond,\bm{1})$ transitions in $\mathcal{T}$). We can again look at the example from \autoref{fig:net2trans}. Since we know that the pre-image contains one padding $\Diamond$ before the last $\square$, we will remove that one padding
+%
+%$\prep$ takes a node representing a set of ordinary encoded markings and returns a node representing the same set of markings but with the padded encoding matching the image of the transducer.
+%
+%Consider the figure. By tracking the amount of $\square$s, we know for which place of the petri net we are currently reading in words. Let $k$ be the amount of padding symbols we need to insert before the next $\square$. 
+%
+%Fig left shows the part of the automaton before preprocess. There can only exist successors for $\bm{1}$ and $\square$, because the automaton ordinary encoding. If we encounter a part of the automaton with a $\square$ transition to node $q'$, where $q' \neq q_{\emptyset}$, we need to insert $k$ padding transitions and nodes between $q$ and $q'$. This is shown in figure right.
+%
+%The operation $\post$ is considering the reverse direction. 
+
+
+
+
+
+
+%Let $\mathcal{T}$ based on the construction from the last section map a word of the form $w = \bm{1}^{k_{1}}\Diamond^{l_{1}}\square\bm{1}^{k_{2}}\Diamond^{l_{2}}\square...\bm{1}^{k_{n}}\Diamond^{l_{n}}\square$ to the word $v = \bm{1}^{k_{1}'}\Diamond^{l_{1}'}\square\bm{1}^{k_{2}'}\Diamond^{l_{2}'}\square...\bm{1}^{k_{n}'}\Diamond^{l_{n}'}\square$ such that ${k_{i} + l_{i} = k_{i}' + l_{i}'}$.
+
+%Then $\prep$ adds new nodes and transitions reading in $l_{i}'$ many padding symbols $\Diamond$ before the $i$-th separator symbol $\square$, while $\post$ removes the nodes responsible for reading in $l_{i}$ many $\Diamond$s before the $i$-th $\square$.
+
+
+
+
+
+\begin{figure}[H]
 \centering 
 	\begin{subfigure}{.25\textwidth}	
 		\centering 
@@ -643,7 +667,7 @@ Then $\prep$ adds new nodes and transitions reading in $l_{i}'$ many padding sym
     	\draw (q1) edge[above] node{$\square$} (q2);
 %            	(q1) edge[above] node{$(\bm{a},\bm{c})$} (q2);
      	\end{tikzpicture}
-    	\caption{before $\prep$}
+    	\caption{before $\prep$} \label{fig:beforeprep}
     \end{subfigure}
     \begin{subfigure}{.73\textwidth}
 	\centering 
@@ -661,9 +685,9 @@ Then $\prep$ adds new nodes and transitions reading in $l_{i}'$ many padding sym
     	\draw (q6) edge[above] node{$\square$} (q2);
 %            	(q1) edge[above] node{$(\bm{a},\bm{c})$} (q2);
      	\end{tikzpicture}
-    	\caption{after $\prep$}
+    	\caption{after $\prep$} \label{fig:afterprep}
     \end{subfigure}
-     \caption{Preprocess}
+     \caption{Visualization of $\pre$}\label{fig:prepost}
      \label{fig:pre}
 \end{figure}
 
@@ -761,7 +785,7 @@ Then $\prep$ adds new nodes and transitions reading in $l_{i}'$ many padding sym
 %We decided to apply the second alternative for the implementation. 
 
 \subsubsection{Final Backwards Reachability Algorithm with the Table of Nodes}
-With the described construction of the transducer and the two new table operation, we achieve a final version of the Backwards Reachability Algorithm shown in \autoref{alg:bw_wwa_final}. 
+With the described construction of the transducer and the two new table operations $\prep$ and $\post$, we achieve a final version of the Backwards Reachability Algorithm shown in \autoref{alg:bw_wwa_final}. 
 
 In line 2, instead of constructing one transducer we build a list $\mathcal{T}^{*}$ of transducers, where each $\mathcal{T} \in \mathcal{T}^{*}$ represents one transition of the Petri net $N$. Therefore, we need to add an inner loop in line 8, which iterates over all $\mathcal{T}$. Inside this loop, we use $\prep$ and $\post$ before and after the $\pre$ operation. $\prep$ converts the ordinary encoded $q$ into the padded encoded $q'$ in line 9. After the $\pre$ operation returns $q_{\text{pre}}$, which is also in the form of a padded encoding, we use $\post$ to convert back into the ordinary encoding returning node $q''$.
 
