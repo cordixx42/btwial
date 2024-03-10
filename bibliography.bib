@@ -7,8 +7,10 @@
 
 
 @unpublished{blondin_24,
-  author = "M. Blondin, M. Cadilhac, J. Esparza",
-  title  = "Symbolic representation of weakly acyclic sets"
+  author = "Blondin, Michael and Cadilhac, M. and Esparza, Javier",
+  title  = "Symbolic representation of weakly acyclic sets",
+  year    = {N.D.},
+  note    = {unpublished}
 }
 
 @article{rackoff_78,
@@ -77,3 +79,195 @@ title = {Symbolic Data Structure for sets of k-uples of integers}
   journal = {GitHub repository},
   howpublished = {\url{https://github.com/blondimi/qcover}}
 }
+
+@article{german_92, author = {German, Steven M. and Sistla, A. Prasad}, title = {Reasoning about systems with many processes}, year = {1992}, issue_date = {July 1992}, publisher = {Association for Computing Machinery}, address = {New York, NY, USA}, volume = {39}, number = {3}, issn = {0004-5411}, url = {https://doi.org/10.1145/146637.146681}, doi = {10.1145/146637.146681}, abstract = {Methods are given for automatically verifying temporal properties of concurrent systems containing an arbitrary number of finite-state processes that communicate using CCS actions. TWo models of systems are considered. Systems in the first model consist of a unique control process and an arbitrary number of user processes with identical definitions. For this model, a decision procedure to check whether all the executions of a process satisfy a given specification is presented. This algorithm runs in time double exponential in the sizes of the control and the user process definitions. It is also proven that it is decidable whether all the fair executions of a process satisfy a given specification. The second model is a special case of the first. In this model, all the processes have identical definitions. For this model, an efficient decision procedure is presented that checks if every execution of a process satisfies a given temporal logic specification. This algorithm runs in time polynomial in the size of the process definition. It is shown how to verify certain global properties such as mutual exclusion and absence of deadlocks. Finally, it is shown how these decision procedures can be used to reason about certain systems with a communication network.}, journal = {J. ACM}, month = {jul}, pages = {675–735}, numpages = {61} }
+
+
+@article{kaiser_14, author = {Kaiser, Alexander and Kroening, Daniel and Wahl, Thomas}, title = {A Widening Approach to Multithreaded Program Verification}, year = {2014}, issue_date = {October 2014}, publisher = {Association for Computing Machinery}, address = {New York, NY, USA}, volume = {36}, number = {4}, issn = {0164-0925}, url = {https://doi.org/10.1145/2629608}, doi = {10.1145/2629608}, abstract = {Pthread-style multithreaded programs feature rich thread communication mechanisms, such as shared variables, signals, and broadcasts. In this article, we consider the automated verification of such programs where an unknown number of threads execute a given finite-data procedure in parallel. Such procedures are typically obtained as predicate abstractions of recursion-free source code written in C or Java. Many safety problems over finite-data replicated multithreaded programs are decidable via a reduction to the coverability problem in certain types of well-ordered infinite-state transition systems. On the other hand, in full generality, this problem is Ackermann-hard, which seems to rule out efficient algorithmic treatment.We present a novel, sound, and complete yet empirically efficient solution. Our approach is to judiciously widen the original set of coverability targets by configurations that involve fewer threads and are thus easier to decide, and whose exploration may well be sufficient: if they turn out uncoverable, so are the original targets. To soften the impact of “bad guesses”—configurations that turn out coverable—the exploration is accompanied by a parallel engine that generates coverable configurations; none of these is ever selected for widening. Its job being merely to prevent bad widening choices, such an engine need not be complete for coverability analysis, which enables a range of existing partial (e.g., nonterminating) techniques. We present extensive experiments on multithreaded C programs, including device driver code from FreeBSD, Solaris, and Linux distributions. Our approach outperforms existing coverability methods by orders of magnitude.}, journal = {ACM Trans. Program. Lang. Syst.}, month = {oct}, articleno = {14}, numpages = {29}, keywords = {Multithreaded program verification, coverability, well-structured transition systems} }
+
+@Inbook{carvalho_18,
+author="Carvalho, Rafael V.
+and Verbeek, Fons J.
+and Coelho, Clarimar J.",
+editor="Alves Barbosa da Silva, Fabricio
+and Carels, Nicolas
+and Paes Silva Junior, Floriano",
+title="Bio-modeling Using Petri Nets: A Computational Approach",
+bookTitle="Theoretical and Applied Aspects of Systems Biology",
+year="2018",
+publisher="Springer International Publishing",
+address="Cham",
+pages="3--26",
+abstract="Petri nets have been widely used to model and analyze biological system. The formalism comprises different types of paradigms, integrating qualitative and quantitative (i.e., stochastic, continuous, or hybrid) modeling and analysis techniques. In this chapter, we describe the Petri net formalism and a broad view of its structure and characteristics applied in the modeling process in systems biology. We present the different net classes of the formalism, its color extension, and model analysis. The objective is to provide a discussion on the Petri net formalism as basis for research in computational biology.",
+isbn="978-3-319-74974-7",
+doi="10.1007/978-3-319-74974-7_1",
+url="https://doi.org/10.1007/978-3-319-74974-7_1"
+}
+
+@Article{cherdal_18,
+AUTHOR = {Cherdal, Safae and Mouline, Salma},
+TITLE = {Modelling and Simulation of Biochemical Processes Using Petri Nets},
+JOURNAL = {Processes},
+VOLUME = {6},
+YEAR = {2018},
+NUMBER = {8},
+ARTICLE-NUMBER = {97},
+URL = {https://www.mdpi.com/2227-9717/6/8/97},
+ISSN = {2227-9717},
+ABSTRACT = {Systems composed of many components which interact with each other and lead to unpredictable global behaviour, are considered as complex systems. In a biological context, complex systems represent living systems composed of a large number of interacting elements. In order to study these systems, a precise mathematical modelling was typically used in this context. However, this modelling has limitations in the structural understanding and the behavioural study. In this sense, formal computational modelling is an approach that allows to model and to simulate dynamical properties of these particular systems. In this paper, we use Hybrid Functional Petri Net (HFPN), a Petri net extension dedicated to study and verify biopathways, to model and study the Methionine metabolic pathway. Methionine and its derivatives play significant roles in human bodies. We propose a set of simulations for the purpose of studying and analysing the Methionine pathway’s behaviour. Our simulation results have shown that several important abnormalities in this pathway are related to sever diseases such as Alzheimer’s disease, cardiovascular disease, cancers and others.},
+DOI = {10.3390/pr6080097}
+}
+
+@InProceedings{hee_13,
+author="van Hee, Kees M.
+and Sidorova, Natalia
+and van der Werf, Jan Martijn",
+editor="Jensen, Kurt
+and van der Aalst, Wil M. P.
+and Balbo, Gianfranco
+and Koutny, Maciej
+and Wolf, Karsten",
+title="Business Process Modeling Using Petri Nets",
+booktitle="Transactions on Petri Nets and Other Models of Concurrency VII",
+year="2013",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="116--161",
+abstract="Business process modeling has become a standard activity in many organizations. We start with going back into the history and explain why this activity appeared and became of such importance for organizations to achieve their business targets. We discuss the context in which business process modeling takes place and give a comprehensive overview of the techniques used in modeling. We consider bottom up and top down approaches to modeling, also in the context of developing correct-by-construction models of business processes. The correctness property we focus on is soundness, or weak termination, basically meaning that at every moment of its execution, a process has an option to continue along an execution path leading to termination, which is an important sanity check for business processes. Finally, we discuss analogies between business processes and software services and their orchestrations and argue the applicability of the described modeling techniques to the world of services.",
+isbn="978-3-642-38143-0"
+}
+
+
+@article{silva_97,
+title = {Petri Nets for the Design and Operation of Manufacturing Systems},
+journal = {European Journal of Control},
+volume = {3},
+number = {3},
+pages = {182-199},
+year = {1997},
+issn = {0947-3580},
+doi = {https://doi.org/10.1016/S0947-3580(97)70077-3},
+url = {https://www.sciencedirect.com/science/article/pii/S0947358097700773},
+author = {M. Silva and E. Teruel},
+keywords = {Implementation, Manufacturing systems, Modelling, Performance control, Performance Evaluation, Petri nets, Scheduling},
+abstract = {Modern manufacturing systems pose a diversity of problems all along their life cycle which are often treated with particular independent formalisms and techniques. Petri nets are a family of formalisms which can be used, sometimes with advantage, for many of these problems, with the additional benefit of improving the communication between stages of the life cycle. The utilisation of Petri nets in several of these stages is illustrated and surveyed in this paper, mainly addressed to manufacturing systems engineers with a basic knowledge of Petri nets.}
+}
+
+@article{wenzelburger_19,
+title = {A Petri Net Modeling Framework for the Control of Flexible Manufacturing Systems ⁎⁎The authors wish to acknowledge the funding provided by the Federal Ministry of Education and Research Germany – Research Campus ARENA2036},
+journal = {IFAC-PapersOnLine},
+volume = {52},
+number = {13},
+pages = {492-498},
+year = {2019},
+note = {9th IFAC Conference on Manufacturing Modelling, Management and Control MIM 2019},
+issn = {2405-8963},
+doi = {https://doi.org/10.1016/j.ifacol.2019.11.111},
+url = {https://www.sciencedirect.com/science/article/pii/S2405896319310596},
+author = {Philipp Wenzelburger and Frank Allgöwer},
+keywords = {Flexible manufacturing systems, Industry 4.0, Petri Nets, Production control},
+abstract = {The changes in manufacturing practice towards increasingly flexible structures demand novel strategies for production scheduling and control. To this end, we introduce an automated model generation scheme that builds upon a coarse description of the production process and the factory. The generated model is based on a Petri Net representation of the production process, which we slightly enhance to separate automatically evolving processes from consciously taken manufacturing decisions. From the Petri Net model we deduce a state space description which can be used for the synthesis of feedback control for the manufacturing system. The model generation is illustrated with an example and further possibilities to utilize and enhance the model are discussed.}
+}
+
+@inproceedings{finkel_91,
+author = {Finkel, Alain},
+year = {1991},
+month = {06},
+pages = {210-243},
+title = {The Minimal Coverability Graph for Petri Nets.},
+volume = {674},
+isbn = {978-3-540-56689-2},
+journal = {LNCS},
+doi = {10.1007/3-540-56689-9_45}
+}
+
+
+@article{abdulla_00,
+author = {Abdulla, Parosh and Cerans, Karlis and Jonsson, Bengt and Tsay, Yih-Kuen},
+year = {2000},
+month = {07},
+pages = {109-127},
+title = {Algorithmic Analysis of Programs with Well Quasi-ordered Domains},
+volume = {160},
+journal = {Information and Computation},
+doi = {10.1006/inco.1999.2843}
+}
+
+@INPROCEEDINGS{abdulla_96,
+  author={Abdulla, P.A. and Cerans, K. and Jonsson, B. and Yih-Kuen Tsay},
+  booktitle={Proceedings 11th Annual IEEE Symposium on Logic in Computer Science}, 
+  title={General decidability theorems for infinite-state systems}, 
+  year={1996},
+  volume={},
+  number={},
+  pages={313-321},
+  keywords={Automata;Control systems;Automatic control;Councils;Petri nets;State-space methods;Mathematics;Computer science;Information management;Safety},
+  doi={10.1109/LICS.1996.561359}}
+  
+@InProceedings{delzanno_00,
+author="Delzanno, Giorgio
+and Raskin, Jean-Fran{\c{c}}cois",
+editor="Graf, Susanne
+and Schwartzbach, Michael",
+title="Symbolic Representation of Upward-Closed Sets",
+booktitle="Tools and Algorithms for the Construction and Analysis of Systems",
+year="2000",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="426--441",
+abstract="The control state reachability problem is decidable for well-structured infinite-state systems like unbounded Petri Nets, Vector Addition Systems, Lossy Petri Nets, and Broadcast Protocols. An abstract algorithm that solves the problem is given in [A{\v{C}}JT96,FS99]. The algorithm computes the closure of the predecessor operator w.r.t. a given upward-closed set of target states. When applied to this class of verification problems, traditional (infinite-state) symbolic model checkers suffer from the state explosion problem even for very small examples. We provide BDD-like data structures to represent in a compact way collections of upwards closed sets over numerical domains. This way, we turn the abstract algorithm of [A{\v{C}}JT96,FS99] into a practical method. Preliminary experimental results indicate the potential usefulness of our method.",
+isbn="978-3-540-46419-8"
+}
+
+@article{delzanno_04,
+  title={Covering sharing trees: a compact data structure for parameterized verification},
+  author={Giorgio Delzanno and Jean-François Raskin and Laurent Van Begin},
+  journal={International Journal on Software Tools for Technology Transfer},
+  year={2004},
+  volume={5},
+  pages={268-297},
+  url={https://api.semanticscholar.org/CorpusID:26113006}
+}
+
+@InProceedings{wolper_98,
+author="Wolper, Pierre
+and Boigelot, Bernard",
+editor="Hu, Alan J.
+and Vardi, Moshe Y.",
+title="Verifying systems with infinite but regular state spaces",
+booktitle="Computer Aided Verification",
+year="1998",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="88--97",
+abstract="Thanks to the development of a number of efficiency enhancing techniques, state-space exploration based verification, and in particular model checking, has been quite successful for finite-state systems. This has prompted efforts to apply a similar approach to systems with infinite state spaces. Doing so amounts to developing algorithms for computing a symbolic representation of the infinite state space, as opposed to requiring the user to characterize the state space by assertions. Of course, in most cases, this can only be done at the cost of forgoing any general guarantee of success. The goal of this paper is to survey a number of results in this area and to show that a surprisingly common characteristic of the systems that can be analyzed with this approach is that their state space can be represented as a regular language.",
+isbn="978-3-540-69339-0"
+}
+
+@InProceedings{moller_99,
+author="M{\o}ller, Jesper
+and Lichtenberg, Jakob
+and Andersen, Henrik Reif
+and Hulgaard, Henrik",
+editor="Flum, J{\"o}rg
+and Rodriguez-Artalejo, Mario",
+title="Difference Decision Diagrams",
+booktitle="Computer Science Logic",
+year="1999",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="111--125",
+abstract="This paper describes a newdata structure, difference decision diagrams (DDDs), for representing a Boolean logic over inequalities of the form x-y ≤ c where the variables are integer or real-valued.We give algorithms for manipulating DDDs and for determining validity, satisfiability, and equivalence. DDDs enable an efficient verification of timed systems modeled as, for example, timed automata or timed Petri nets, since both the states and their associated timing information are represented symbolically, similar to how BDDs represent Boolean predicates. We demonstrate the efficiency of DDDs by analyzing a timed system and compare the results with the tools Kronos and Uppaal.",
+isbn="978-3-540-48168-3"
+}
+
+@misc{esparza_19,
+  author        = {Esparza, Javier},
+  title         = {Petri Nets Lecture Notes},
+  month         = {June},
+  year          = {2019},
+  publisher={Technical University Munich}
+}
+
+
+

@@ -1,18 +1,36 @@
 \chapter{Conclusion}\label{chapter:conclusion}
 
+In this thesis we have developed a new approach for solving the coverability problem in Petri nets, which incorporates the new class of weakly acyclic languages. This class is a subset of all regular languages and is characterized by having no cycles except for self-loops in the automaton.
+With the idea of using weakly acyclic automata for representing markings in Petri nets we want to implement the abstract procedure of the Backwards Reachability Algorithm using these automata.
+ 
+For this, we designed a data structure,  which we call Table of Nodes, to store weakly acyclic languages in an efficient manner. Furthermore, we implemented operations for this data structure, which are required for the Backwards Reachability procedure. 
+For the main operation $\pre$, which is responsible for calculating the language of the predecessor markings in each iteration of the algorithm, we give a short proof, that it computes the correct result.
 
-\begin{itemize}
-\item we implemented a tool for solving bw problem in petri nets 
-\item designed appropiate 
-\item could proof the correctness by comparing the minimal elements
-\item results were competitive with other state of the art tools, especially for smaller 
-\item compact representation of the resulting set of predecessor markings 
-\end{itemize}
+Hereafter, we developed an encoding scheme to map from a Petri net marking to the corresponding weakly acyclic language. We capture the structure of the Petri net by a transducer, which is given as input for the $\pre$ operation. 
+
+Using these constructs, we were able to successfully implement the Backwards Reachability Algorithm with the Table of Nodes into the tool \textsc{Petrimat}.
+
+Finally, we performed benchmarks with existing coverability instances and compared our implementation to two other state-of-the-art coverability tools.
+The results indicate, that our implementation is competitive with those tools and even outperforms them for some instances. Further tests giving information on our data structure show, that our approach with the use of automata offers a compact representation for the final set of predecessors. 
+
+We checked the correctness of our tool not only by comparing the coverability results to the other tools, but we also implemented an algorithm, which for a given node computes the minimal markings this node represents. By comparing the minimal markings obtained by our tool with the minimal markings obtained by one other tool, we could verify that the computed predecessor set is the same (for all uncoverable instances). 
+
+At last, we conclude by giving some future directions, which can be further examined.
+In order to have a better overview, where our implementation is spending a lot of time, an analysis with the use of a profiler should be considered. With these insights, more targeted optimizations could be performed, which might increase the speed of the algorithm by a great amount. 
+
+Furthermore, the Table of Nodes lacks an operation for removing nodes, which burdens the memory usage of our tool. To address this issue, a garbage collection procedure could be implemented to discover and free the memory of unused nodes.
+%\begin{itemize}
+%\item we implemented a tool for solving bw problem in petri nets 
+%\item designed a data structure with idea of weakly acyclic languages and  appropiate algorithms
+%\item could proof the correctness by comparing the minimal elements
+%\item results were competitive with other state of the art tools, especially for smaller instances
+%\item compact representation of the resulting set of predecessor markings 
+%\end{itemize}
 
 
 
-future todos 
-\begin{itemize}
-\item profiling and optimizing : we performed test with c++ compiler
-\item garbage collection for the table : padded nodes not relevant
-\end{itemize}
+%future todos 
+%\begin{itemize}
+%\item profiling and optimizing : we performed test with c++ compiler
+%\item garbage collection for the table : padded nodes not relevant
+%\end{itemize}

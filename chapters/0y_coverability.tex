@@ -10,8 +10,8 @@ The coverability problem, decides for a Petri Net, a start marking $M_{0}$ and a
 \todo{complexity of problem, space hierarchy theorem, cite rackoff lipton}
 
 \par
-There are various procedures aiming to solve the difficult problem of coverability. For instance, Rackoff's algorithm uses the construction of the reachability graph until a certain depth for . 
-\par
+%There are various procedures aiming to solve the difficult problem of coverability. For instance, Rackoff's algorithm uses the construction of the reachability graph until a certain depth for . 
+%\par
 The method, which is used in this thesis is the Backwards Reachability Algorithm. This method iteratively calculates the set of all predecessor markings, which can cover $M$ and verifies, if $M_{0}$ is part of the set. Formally, we define this set as the following.
 \begin{definition}\label{def:ppre}
 $\ppre_{N}(\mathcal{M}) = \bigcup_{t \in \Tr} \{M : M \xrightarrow{t} M' \ , \ M' \in \mathcal{M} \}$ is the \emph{Predecessor set} and contains the set of all markings $M$, which evolve into a marking in $\mathcal{M}$ by firing one transition $t$ of the Petri net $N = (P,\Tr,F)$.
@@ -49,7 +49,11 @@ In line 7 we check, if the start marking $M_{0}$ has been added to this accumula
 \par
 At the start of each iteration in line 4 $\mathcal{M}_{\text{old}}$ is set to $\mathcal{M}$, before $\mathcal{M}$ is extended with the predecessors. Therefore, the comparison of $\mathcal{M}$ and $\mathcal{M}_{0}$ in line 9 is confirming, if any new elements have been added into $\mathcal{M}$ in line 5. If $\mathcal{M}$ has not changed in this iteration, it also will not change in any future one, which indicates $M$ is not coverable and we return false.
 \par
-As the abstract \autoref{alg:bw} operates on infinite sets of markings, it is not directly implementable in this form. 
+
+
+
+
+As the abstract \autoref{alg:bw} operates on infinite sets of markings, it is not directly implementable in this form. Furthermore, one might wonder, if there are inputs, where the conditions in line 7 and line 9 will never evaluate to true, leading to the algorithm's failure to terminate.
 
 \begin{lemma}\label{lem:upwclosed}
 During the execution of \autoref{alg:bw} the set $\mathcal{M}$ remains upward closed. 
@@ -66,7 +70,7 @@ Upwards closed sets are closed under union and $\ppre$ {\cite[Lemma~3.2.16]{espa
 Follows immediately from {\cite[Lemma~3.2.17]{esparza_19}}.
 \end{proof}
 
-As described in the chapter on the preliminaries, each upward closed set can be described by a finite number of minimal elements. Furthermore, Lemma~\autoref{lem:upwclosed} shows that the sets used in the algorithm always stay upwards closed. Existing implementations use these properties and express $\mathcal{M}$ with its finite set of minimal markings during the whole procedure.
+As described in the chapter on the preliminaries, each upward closed set can be described by a finite number of minimal elements. Furthermore, Lemma~\autoref{lem:upwclosed} shows that the sets used in the algorithm always stay upwards closed. Lemma~\autoref{lem:bwterm} demonstrates, that the algorithm does terminate. Existing implementations use these properties and express $\mathcal{M}$ with its finite set of minimal markings during the whole procedure.
 
 \todo{minimal markings exponential number, why automata might be better}
 
@@ -96,7 +100,7 @@ Recall, that the $\pre$ procedure has been defined with the important preconditi
 
 \begin{figure}[htb]
 \centering
-\caption{Relationship between the markings and nodes}\label{fig:markingtonode}
+\caption{Mapping between Markings and Nodes}\label{fig:markingtonode}
 \begin{tikzcd}[scale cd = 1.3, row sep=huge]
 %[sep=large,every arrow/.append style={maps to}, every label/.append style={font=\normalsize}]
 \mathcal{M}_{1} \arrow[r,"\ppre \ + \ \cup"] \arrow[d, leftrightarrow,""{name=D1}] &[6em]
@@ -397,7 +401,7 @@ Imagine a Petri net with a single transition $t=(g,h)$ with $g = (1,1,0)$ and $h
 \begin{minipage}{0.46\textwidth}
 \begin{figure}[H]
 \centering 
-\caption{Petri net before executing $t_{1}$}\label{fig:mark}
+\caption{Petri Net before firing $t_{1}$}\label{fig:mark}
 \begin{tikzpicture}[>={Stealth[round]}]
 % Place 1
 \node[place,
@@ -432,7 +436,7 @@ Imagine a Petri net with a single transition $t=(g,h)$ with $g = (1,1,0)$ and $h
 \begin{minipage}{0.46\textwidth}
 \begin{figure}[H]
 \centering 
-\caption{Petri net after executing $t_{1}$}\label{fig:markprime}
+\caption{Petri Net after firing $t_{1}$}\label{fig:markprime}
 \begin{tikzpicture}[>={Stealth[round]}]
 % Place 1
 \node[place,
@@ -496,7 +500,84 @@ For this Petri net the constructed transducer is illustrated in \autoref{fig:tra
 
 %First, we can convince ourselves, that every $(w,v)$ accepted by the transducer can be mapped to markings $M,M'$, where $M \xrightarrow{t_{1}} M'$. For instance, the pair $(w,v) = (\bm{11\square111\square111\Diamond\square},\bm{11\square11\Diamond\square1111\square})$ is recognized by the transducer. Based on the extended encoding in Definition~\autoref{def:encodingv2}, $w$ is encoding the marking $M = (2,3,3)$ and $v$ is encoding $M' = (2,2,4)$. Looking at the Petri net, indeed firing $t_{1}$ at marking $M$ yields marking $M'$.
 
-\begin{figure}[ht]
+%\begin{figure}[ht]
+%\begin{subfigure}{0.6\textwidth}
+%		\centering 
+%        \begin{tikzpicture}[>={Stealth[round]}]
+%%        \node[state, fill=red!25] (s1) {$s_{1}$};
+%%        \node[state, fill=teal!25] (s2) {$s_{2}$};
+%%        \node[state, fill=blue!25] (s3) {$s_{3}$};
+%%        \node[
+%       	 \node[place,
+%    		fill=red!25,
+%    		draw=red!75] (s1) at (0,3) {$p_1$};
+%    	% Place 2
+%		\node[place,
+%			fill=teal!25,
+%    		draw=teal!75] (s2) at  (6,3)  {$p_2$};
+%    	% Place 3
+%		\node[place,
+%			fill=blue!25,
+%    		draw=blue!75] (s3) at (3,0.5) {$p_3$};
+%
+%		\node[transition, label=above:$t_1$] (t1) at (3,3) {};
+%		
+%		\node[text width=7cm] at (11,2)
+%    {\Large $g = (\textcolor{red!75}{1},\textcolor{teal!75}{3},\textcolor{blue!75}{1})$};
+%    
+%    	\node[text width=7cm] at (11,1)
+%    {\Large $h = (\textcolor{red!75}{1},\textcolor{teal!75}{2},\textcolor{blue!75}{2})$};
+%    
+%		
+%%		edge [pre and post] (s1)
+%		\draw   (s1) edge[below, bend right] node{$1$} (t1);
+%		\draw 	    (t1) edge[above, bend right] node{$1$} (s1);	
+%		\draw  		(s2) edge[above, bend right] node{$3$} (t1);
+%		\draw	    (t1) edge[below, bend right] node{$2$} (s2);
+%		\draw	    (s3) edge[right, bend right] node{$1$} (t1);
+%		\draw	    (t1) edge[left, bend right] node{$2$} (s3);
+%        
+%     	\end{tikzpicture}
+%    	\caption{Petri net with one transition $t_{1}$}\label{fig:petri-trans-ex}
+%\end{subfigure}
+%\begin{subfigure}{1\textwidth}
+%		\centering 
+%        \begin{tikzpicture}[node distance=2cm,>={Stealth[round]}]
+%    	\node[state, initial, fill=red!25,draw=red!75] (q1) {$p_{1}$};
+%    	\node[state, right of=q1,fill=red!25,draw=red!75] (q2) {$p_{1}$};
+%    	\node[state, below of=q2,fill=teal!25,draw=teal!75] (q3) {$p_{2}$};
+%    	\node[state, right of=q3,fill=teal!25,draw=teal!75] (q4) {$p_{2}$};
+%    	\node[state, right of=q4,fill=teal!25,draw=teal!75] (q5) {$p_{2}$};
+%    	\node[state, right of=q5,fill=teal!25,draw=teal!75] (q6) {$p_{2}$};
+%    	\node[state, below of=q6,fill=blue!25,draw=blue!75] (q7) {$p_{3}$};
+%    	\node[state, right of=q7,fill=blue!25,draw=blue!75] (q8) {$p_{3}$};
+%    	\node[state, right of=q8,fill=blue!25,draw=blue!75] (q9) {$p_{3}$};
+%    	\node[state, accepting, below of=q9] (q10) {};
+%    	
+%    	\draw   (q1) edge[above] node{$(\bm{1},\bm{1})$} (q2)
+%            	(q2) edge[loop above] node{$(\bm{1},\bm{1})$} (q2)
+%            	(q2) edge[left] node{$(\square,\square)$} (q3)
+%            	(q3) edge[above] node{$(\bm{1},\bm{1})$} (q4)
+%            	(q4) edge[above] node{$(\bm{1},\bm{1})$} (q5)
+%            	(q5) edge[loop above] node{$(\bm{1},\bm{1})$} (q5)
+%            	(q5) edge[above] node{$(\bm{1},\Diamond)$} (q6)
+%            	(q6) edge[left] node{$(\square,\square)$} (q7)
+%            	(q7) edge[above] node{$(\bm{1},\bm{1})$} (q8)
+%            	(q8) edge[loop above] node{$(\bm{1},\bm{1})$} (q8)
+%            	(q8) edge[above] node{$(\Diamond,\bm{1})$} (q9)
+%            	(q9) edge[left] node{$(\square,\square)$} (q10);
+%            	
+%    	\end{tikzpicture}
+%    	\caption{Transducer $\mathcal{T}$ for transition $t_{1}$}\label{fig:transfortrans}
+%\end{subfigure}
+%\caption{From Petri Net to Transducer}
+%\label{fig:net2trans}
+%\end{figure}
+
+We can have a closer look at the structure of the transducer. In \autoref{fig:petri-trans-ex} we have three places, which correspond to the three parts of the transducer with different level and color. Each level reads in an amount of tokens for the respective place. The different levels are connected by reading in a pair of separators $(\square,\square)$, which are the vertical transitions in \autoref{fig:transfortrans}. The final $(\square,\square)$ from the last level leads into an accepting final state of the transducer.
+
+
+\begin{figure}[H]
 \begin{subfigure}{0.6\textwidth}
 		\centering 
         \begin{tikzpicture}[>={Stealth[round]}]
@@ -570,7 +651,7 @@ For this Petri net the constructed transducer is illustrated in \autoref{fig:tra
 \label{fig:net2trans}
 \end{figure}
 
-We can have a closer look at the structure of the transducer. In \autoref{fig:petri-trans-ex} we have three places, which correspond to the three parts of the transducer with different level and color. Each level reads in an amount of tokens for the respective place. The different levels are connected by reading in a pair of separators $(\square,\square)$, which are the vertical transitions in \autoref{fig:transfortrans}. The final $(\square,\square)$ from the last level leads into an accepting final state of the transducer.
+
 
 We can distinguish between two cases for constructing the part of the transducer for the place $p_{i}$, given the transition $t = (g,h)$.
 

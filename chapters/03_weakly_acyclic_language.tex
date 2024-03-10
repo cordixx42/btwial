@@ -41,7 +41,7 @@ See {\cite[Proposition~4]{blondin_24}}
 %    			(q3) edge[above] node{$\bm{b}$} (q4)
 %            	(q4) edge[loop above] node{$\bm{a},\bm{b}$} (q4);
 %    	\end{tikzpicture}
-\begin{tikzpicture}[shorten >=1pt,node distance=2.3cm,on grid,>={Stealth[round]},auto]
+\begin{tikzpicture}[shorten >=1pt,node distance=2.1cm,on grid,>={Stealth[round]},auto]
 
   \node[state,initial]  (q_0)                      {$q_1$};
   \node[state]          (q_1) [above right=of q_0] {$q_2$};
@@ -136,7 +136,7 @@ Weakly acyclic languages are not closed under concatenation. The expressions $\b
     	\end{tikzpicture}
     	\caption{Minimal DFA of $L(\bm{(ab)^{*}})$}\label{fig:not-closed-kleene}
     \end{subfigure}
-     \caption{Not weakly acyclic DFA}
+     \caption{Not Weakly Acyclic DFA}
 \end{figure}
 
 By Lemma~\autoref{lem:minimal} the minimal automaton of weakly acyclic language remains weakly acyclic. As this automaton contains a cycle of length 2, this language is not weakly acyclic. The same argumentation can be made for the Kleene star closure, with $\bm{ab}$ being a weakly acyclic language, but $\bm{(ab)^{*}}$ represented in \autoref{fig:not-closed-kleene} is not weakly acyclic. 
