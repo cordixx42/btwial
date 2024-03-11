@@ -4,22 +4,19 @@
 %
 %jonas war hier
 
-Petri nets are a useful mathematical model to describe distributed systems. Their generality and abstractism makes them applicable in a wide range of areas, including the verification of concurrent programs \cite{german_92,kaiser_14}, manufacturing and control systems \cite{silva_97, wenzelburger_19}, biological systems \cite{carvalho_18, cherdal_18} and business processes \cite{hee_13}.
+Petri nets are a useful mathematical model for describing and analyzing concurrent systems. Their generality makes them applicable in a wide range of areas, including the verification of concurrent programs \cite{german_92,kaiser_14}, manufacturing and control systems \cite{silva_97, wenzelburger_19}, biological systems \cite{carvalho_18, cherdal_18} and business processes \cite{hee_13}.
 
 
-This formal model consists of places, which are connected by transitions. The places contain tokens, which are able to move between the places by executing transitions. We call a marking a configuration of the Petri net, where each place is assigned a specific amount of tokens.
-This formal model allows to examine interesting properties of real-world systems on an abstract mathematical level.
+A Petri net consists of places, which are connected by transitions. The places contain tokens, which can move between the places by executing transitions. We call a marking a configuration of the Petri net, where each place is assigned a specific amount of tokens.
 
-Some most studied decision problems in this area are about reachability and boundedness of Petri nets. The reachability problem investigates, which markings are reachable from a given start marking by executing transitions of the net. The boundedness problem observes, if the amount of tokens in the places are limited by an upper bound for all reachable markings.
+This formal model allows us to examine interesting properties on an abstract mathematical level. Some of the most studied decision problems in this area are about the reachability and boundedness of Petri nets. The reachability problem investigates which markings are reachable from a given start marking by executing transitions of the net. The boundedness problem studies, if the number of tokens in the places is limited by an upper bound for all reachable markings.
 
 In this thesis, we shift the attention to another important decision problem, the coverability problem of Petri nets, which investigates the following issue:
-Can a given start marking reach a marking larger than a given target marking, by executing an arbitrary amount of transitions of the Petri net? Here, a larger marking means, that this marking assigns at least as many tokens to the place compared to another.
+Can a given start marking reach a marking larger than a given target marking by executing an arbitrary amount of transitions of the Petri net? Here, a larger marking means that this marking assigns at least as many tokens to the place as the target marking.
 
-\todo{why coverability useful}
+There exist various decision procedures for the coverability problem. For instance, the Coverability Graph Algorithm builds the coverability graph of a given Petri net and start marking, which can be efficiently checked for coverability given any target marking \cite{finkel_91}. Rackoff's Algorithm is another procedure, which makes use of the reachability graph by constructing it until a specific depth dependent on the target marking \cite{rackoff_78,esparza_19}. 
 
-There exist various decision procedures for the coverability problem. For instance, the coverability graph algorithm builds the coverability graph of a given Petri net and start marking, which can be efficiently checked for coverability given any target marking \cite{finkel_91}. Rackoff's algorithm is another procedure, which makes use of the reachability graph by constructing it until a specific depth dependent on the target marking \cite{rackoff_78,esparza_19}. 
-
-The decision procedure we are examining for the thesis is the Backwards Reachability Algorithm. This algorithm starts with the infinite set of all markings, which are larger than the target marking. Such a set, where if a certain element is included, all elements greater than it are also included, we call upward closed. By iteratively computing and assembling all possible predecessor markings of this upward closed set and checking if the predecessors contain the start marking, we obtain the solution to the coverability problem \cite{abdulla_96}. 
+The decision procedure we are examining for the thesis is the Backwards Reachability Algorithm. This algorithm starts with the infinite set of all markings larger than the target marking. Such a set with the property that if a certain element is included, all elements greater than it are also included is called upward closed. By iteratively computing and assembling all possible predecessor markings of this upward closed set and checking if the predecessors contain the start marking, we obtain the solution to the coverability problem \cite{abdulla_96}. 
 
 To represent the infinite upward closed sets of the Backwards Reachability Algorithm, common approaches operate with the unique finite set of minimal markings, which every upward closed set possesses. However, the efficiency of this algorithm depends heavily on the number of minimal markings for the upward closed sets, which might grow exponentially with the number of places in the Petri net \cite{delzanno_00}. To address this issue, studies have been conducted on data structures designed for representing infinite sets \cite{wolper_98, moller_99, delzanno_04}.
 
@@ -30,18 +27,20 @@ To represent the infinite upward closed sets of the Backwards Reachability Algor
 
 %describe backwards reachability algorithm loosely, introduce upward closed sets
 
-In this thesis we want to investigate a novel approach to the Backwards Reachability Algorithm by representing the infinite upward closed sets with formal languages. Using deterministic finite automata for the 
-We make the following contributions:
+In this thesis we want to investigate a novel approach to the Backwards Reachability Algorithm by representing the infinite upward closed sets with formal languages.
+By mapping a marking to a word over an alphabet and a set of markings to a language over that alphabet, we are able describe the infinite upward closed sets from the algorithm with the use deterministic finite automata.
+ 
+In detail, we make the following contributions:
 
 \begin{itemize}[-]
 \setlength\itemsep{0.2em}
-\item introduce the class of weakly acyclic languages, which are a subset of regular languages (\autoref{chapter:weakly_acyclic_language})
-\item design a data structure Table of Nodes for representing weakly acyclic automata efficiently (\autoref{chapter:datastructure})
-\item implement important operations on this data structures (\autoref{chapter:datastructure})
-\item define a bidirectional mapping between weakly acyclic automata and Petri net configurations (\autoref{chapter:coverability})
-\item construct a bidirectional mapping between a transducer - an automaton with input and output - and a Petri net (\autoref{chapter:coverability})
-\item integrate the Table of Nodes into the Backwards Reachability Algorithm
-\item perform benchmarks on our implementation and compare it to other coverability tools (\autoref{chapter:evaluation})
+\item we introduce the class of weakly acyclic languages, which are a subset of regular languages (\autoref{chapter:weakly_acyclic_language})
+\item we design a data structure Table of Nodes for representing weakly acyclic automata efficiently (\autoref{chapter:datastructure})
+\item we implement important operations on this data structures (\autoref{chapter:datastructure})
+\item we define a bidirectional mapping between weakly acyclic automata and Petri net configurations (\autoref{chapter:coverability})
+\item we construct a bidirectional mapping between a transducer - an automaton with input and output - and a Petri net (\autoref{chapter:coverability})
+\item we integrate the Table of Nodes into the Backwards Reachability Algorithm (\autoref{chapter:coverability})
+\item we perform benchmarks on our implementation and compare it to other coverability tools (\autoref{chapter:evaluation})
 \end{itemize}
 
-The benchmarks show, that our approach can characterize the infinite sets of markings compactly in the data structure we developed. Furthermore, comparisons with existing tools emphasize, that our implementation is able to compete with 
+The benchmarks show that our approach can characterize the infinite sets of markings compactly with the data structure we developed. Furthermore, comparisons with existing tools emphasize that our implementation is able to compete with state-of-the-art solvers for the coverability problem.

@@ -1,23 +1,26 @@
 \chapter{The Backwards Reachability Algorithm}\label{chapter:coverability}
 
-The main purpose of the thesis is to use weakly acyclic languages to address the coverability problem in Petri nets. Therefore, the data structure of the Table of Nodes from \autoref{chapter:datastructure} and the operations it provides are used in order to realize the Backwards Reachability Algorithm for solving the coverability problem. This chapter begins with refreshing the coverability problem and describing a general form of the Backwards Reachability Algorithm, before adapting it to integrate the  Table of Nodes.
+The main purpose of the thesis is to use weakly acyclic languages to address the coverability problem in Petri nets. Therefore, the data structure of the Table of Nodes from \autoref{chapter:datastructure} and the operations it provides are used in order to realize the Backwards Reachability Algorithm for solving this decision problem. This chapter begins with revisiting the coverability problem and describing the general procedure of the Backwards Reachability Algorithm before adapting it to integrate the  Table of Nodes.
 
 \section{Abstract Backwards Reachability Algorithm}\label{sec:abstractbw} 
 Given a Petri Net $N$ with start marking $M_{0}$, we say that a marking $M$ is coverable in $(N,M_{0})$, if there exists a reachable marking $M'$, where $M'\ge M$. 
 %We say $M'$ covers $M$ for $M'\ge M$, which means for each place in the Petri net, marking $M'$ has at least the number of tokens as in $M$.
 
-The coverability problem, decides for a Petri Net, a start marking $M_{0}$ and a target marking $M$, if there is a sequence of transitions leading to a marking $M'$, which covers $M$. It has been shown, that the coverability problem is EXPSPACE-complete \cite{lipton_76,rackoff_78}. 
-\todo{complexity of problem, space hierarchy theorem, cite rackoff lipton}
+The coverability problem decides for a Petri Net, a start marking $M_{0}$ and a target marking $M$, if there is a sequence of transitions leading to a marking $M'$, which covers $M$. It has been shown, that the coverability problem is EXPSPACE-complete \cite{lipton_76,rackoff_78}. 
+
 
 \par
 %There are various procedures aiming to solve the difficult problem of coverability. For instance, Rackoff's algorithm uses the construction of the reachability graph until a certain depth for . 
 %\par
-The method, which is used in this thesis is the Backwards Reachability Algorithm. This method iteratively calculates the set of all predecessor markings, which can cover $M$ and verifies, if $M_{0}$ is part of the set. Formally, we define this set as the following.
+The method, which is used in this thesis for solving this problem is the Backwards Reachability Algorithm. This method iteratively calculates the set of all predecessor markings, which can cover $M$ and verifies if $M_{0}$ is part of the set. Formally, we define this set as the following:
 \begin{definition}\label{def:ppre}
 $\ppre_{N}(\mathcal{M}) = \bigcup_{t \in \Tr} \{M : M \xrightarrow{t} M' \ , \ M' \in \mathcal{M} \}$ is the \emph{Predecessor set} and contains the set of all markings $M$, which evolve into a marking in $\mathcal{M}$ by firing one transition $t$ of the Petri net $N = (P,\Tr,F)$.
 \end{definition}
 \par 
-The abstract procedure of the Backwards Reachability Algorithm is presented in \autoref{alg:bw}. The input are the Petri net $N$, the start configuration $M_{0}$ and the target configuration $M$. In line 1, we initialize the set $\mathcal{M}$ with the upward closed set with $M$ as the sole minimal element. $\mathcal{M}$ contains all markings $M'$, which cover $M$. Another set $\mathcal{M}_{\text{old}}$ has the purpose of storing the state of $\mathcal{M}$ from the last iteration and is initially set to the empty set in line 2.
+The abstract procedure of the Backwards Reachability Algorithm is presented in \autoref{alg:bw}. The input are the Petri net $N$, the start marking $M_{0}$ and the target marking $M$. 
+
+In line 1, we initialize the set $\mathcal{M}$ with the upward closed set with $M$ as the sole minimal element. $\mathcal{M}$ contains all markings $M'$, which cover $M$. 
+%Another set $\mathcal{M}_{\text{old}}$ has the purpose of storing the state of $\mathcal{M}$ from the last iteration and is initially set to the empty set in line 2.
 
 \begin{algorithm}[htb]
 \caption{Backwards Reachability Algorithm}\label{alg:bw}
@@ -44,16 +47,16 @@ The rest of the procedure happens in the while loop from line 3 onwards. In each
 %Here, the set $\ppre(\mathcal{M})$ from Definition~\autoref{def:ppre} is used
 %Here, the set $\ppre(\mathcal{M}) = \cup_{t \in T} \{M': M' \xrightarrow{t} M, M \in \mathcal{M} \}$ contains all markings $M'$, which develop into a marking in $\mathcal{M}$ by executing one transition $t$ of the net.
 \par
-In line 7 we check, if the start marking $M_{0}$ has been added to this accumulating set of predecessors. If it is contained in $\mathcal{M}$, there exists a series of transitions transforming $M_{0}$ into a marking, which covers $M$. This indicates $M$ is coverable in $(N,M_{0})$ and we return true. 
+In line 7 we check if the start marking $M_{0}$ has been added to this accumulating set of predecessors. If it is contained in $\mathcal{M}$, there exists a series of transitions transforming $M_{0}$ into a marking, which covers $M$. This indicates $M$ is coverable in $(N,M_{0})$ and we return true. 
 %Next we examine in line 8, if the $\ppre$ has has added any new elements into $\mathcal{M}$. 
 \par
-At the start of each iteration in line 4 $\mathcal{M}_{\text{old}}$ is set to $\mathcal{M}$, before $\mathcal{M}$ is extended with the predecessors. Therefore, the comparison of $\mathcal{M}$ and $\mathcal{M}_{0}$ in line 9 is confirming, if any new elements have been added into $\mathcal{M}$ in line 5. If $\mathcal{M}$ has not changed in this iteration, it also will not change in any future one, which indicates $M$ is not coverable and we return false.
+At the start of each iteration in line 4 $\mathcal{M}_{\text{old}}$ is set to $\mathcal{M}$ before $\mathcal{M}$ is extended with the predecessors. Therefore, the comparison of $\mathcal{M}$ and $\mathcal{M}_{0}$ in line 9 is confirming if any new elements have been added into $\mathcal{M}$ in line 5. If $\mathcal{M}$ has not changed in this iteration, it also will not change in any future one, which indicates $M$ is not coverable and we return false.
 \par
 
 
 
 
-As the abstract \autoref{alg:bw} operates on infinite sets of markings, it is not directly implementable in this form. Furthermore, one might wonder, if there are inputs, where the conditions in line 7 and line 9 will never evaluate to true, leading to the algorithm's failure to terminate.
+As the abstract \autoref{alg:bw} operates on infinite sets of markings, it is not directly implementable in this form. Furthermore, one might wonder if there exist inputs, where the conditions in line 7 and line 9 will never evaluate to true, leading to the algorithm's failure to terminate.
 
 \begin{lemma}\label{lem:upwclosed}
 During the execution of \autoref{alg:bw} the set $\mathcal{M}$ remains upward closed. 
@@ -72,31 +75,25 @@ Follows immediately from {\cite[Lemma~3.2.17]{esparza_19}}.
 
 As described in the chapter on the preliminaries, each upward closed set can be described by a finite number of minimal elements. Furthermore, Lemma~\autoref{lem:upwclosed} shows that the sets used in the algorithm always stay upwards closed. Lemma~\autoref{lem:bwterm} demonstrates, that the algorithm does terminate. Existing implementations use these properties and express $\mathcal{M}$ with its finite set of minimal markings during the whole procedure.
 
-\todo{minimal markings exponential number, why automata might be better}
-
-
 %\begin{lemma}\label{lem:uppre}
 %If $\mathcal{M}$ is upward closed, then $\ppre(\mathcal{M})$ is also upward closed.
 %\end{lemma}
 
 \section{Using the Table of Nodes for the Backwards Reachability}
 %For our approach we want to describe the infinite upward closed sets in the Backwards Reachability Algorithm with finite representations of automata. We use the nodes in the table, which characterize weakly acyclic languages, to encode markings and upward closed set of markings. 
-The \autoref{alg:bw} is working with infinite upward-closed sets of markings, like $\mathcal{M}$ and $\mathcal{M}_{\text{old}}$. Since automata are characterizing languages, which are a set of words, they are a way to describe these infinite sets in a compact finite representation. For our approach, we want to implement the Backwards Reachability Algorithm with the Table of Nodes data structure from \autoref{chapter:datastructure} by modelling the markings of Petri nets with weakly acyclic languages. 
-
-\par 
-
+\autoref{alg:bw} is working with infinite upward-closed sets of markings, like $\mathcal{M}$ and $\mathcal{M}_{\text{old}}$. Since automata are characterizing languages, which are a set of words, they are a way to describe these infinite sets in a compact finite representation. For our approach, we want to implement the Backwards Reachability Algorithm with the Table of Nodes data structure from \autoref{chapter:datastructure} by modelling the markings of Petri nets with weakly acyclic languages. 
 \autoref{fig:markingtonode} shows the mapping between the infinite sets and the nodes in the table. 
 \par 
 
 In the upper row of the figure, the procedure from \autoref{alg:bw} with infinite sets of markings is shown. 
-$\mathcal{M}_{i}$ denotes the upward closed set $\mathcal{M}$ in iteration $i$ of the loop starting in line 3 of \autoref{alg:bw} and iteration $n$ is the last iteration, where the procedure terminates. With the calculation of the Predecessor set $\ppre$ and set union $\cup$, we transition from the set $\mathcal{M}_{i}$  to $\mathcal{M}_{i+1}$.
+$\mathcal{M}_{i}$ denotes the upward closed set $\mathcal{M}$ in iteration $i$ of the loop starting in line 3 of \autoref{alg:bw}, and iteration $n$ marks the last iteration, where the procedure terminates. With the calculation of the Predecessor set $\ppre$ and set union $\cup$, we transition from the set $\mathcal{M}_{i}$  to $\mathcal{M}_{i+1}$.
 
 \par 
 
 The lower row shows the implementation of the Backwards Reachability Algorithm making use of the Table of Nodes. We map the infinite sets $\mathcal{M}_{i}$ to nodes $q_{i}$ in the table using a specific encoding scheme. The operations $\ppre$ and $\cup$ are performed with equivalent table operations $\pre$ and $\union$, which were examined in \autoref{chapter:datastructure}.
 Given the node $q_{i}$, which is encoding $\mathcal{M}_{i}$, performing one iteration in the lower row yields the node $q_{i+1}$, which is exactly the encoding for $\mathcal{M}_{i+1}$.
 
-Recall, that the $\pre$ procedure has been defined with the important precondition, that the Pre language needs to be weakly acyclic. In order for the $\pre$ in the lower row of \autoref{fig:markingtonode} to function correctly, we need to guarantee that every $M_{i}$ is mapped to a weakly acyclic node. With Lemma~\autoref{lem:upwclosed} every $M_{i}$ is upwards closed. Therefore, we only need to design the encoding in a way, that all upwards closed sets are mapped to weakly acyclic languages.
+Recall, that the $\pre$ procedure has been defined with the important precondition, that the Pre language needs to be weakly acyclic. In order for the $\pre$ in the lower row of \autoref{fig:markingtonode} to function correctly, we need to guarantee that every $\mathcal{M}_{i}$ is mapped to a weakly acyclic node. With Lemma~\autoref{lem:upwclosed} every $\mathcal{M}_{i}$ is upwards closed. Therefore, we only need to design the encoding in a way such that all upwards closed sets of markings are mapped to weakly acyclic languages.
 
 \begin{figure}[htb]
 \centering
@@ -120,7 +117,7 @@ Recall, that the $\pre$ procedure has been defined with the important preconditi
 
 \par 
 
-Analogous to \autoref{alg:bw}, the input are a Petri net, start configuration and end configuration. In line 1 the Table of Nodes $\tbl$ is initialized with an empty table containing only $q_{\emptyset}$, $q_{\Sigma^{*}}$ and $q_{\epsilon}$. 
+Analogous to \autoref{alg:bw}, the input are a Petri net, a start marking and a target marking. In line 1 the Table of Nodes $\tbl$ is initialized with an empty table containing only the nodes $q_{\emptyset}$, $q_{\Sigma^{*}}$ and $q_{\epsilon}$. 
 
 %\begin{algorithm}[htb]
 %\caption{Backwards Reachability Algorithm with Table of Nodes}\label{alg:bw_wwa}
@@ -197,33 +194,30 @@ Analogous to \autoref{alg:bw}, the input are a Petri net, start configuration an
 \end{algocolor}
 \end{algorithm}
 
-First, the input markings need to be transformed into their particular representation of a node in the table, which is the encoding shown by the bidirectional arrows between $\mathcal{M}_{i}$ and $q_{i}$ in \autoref{fig:markingtonode}. 
-For this, we introduce new operations $\encode$ and $\encodeUp$. $\encode$ converts one marking to a node in the table, while $\encodeUp$ converts an upward closed set with one minimal marking into a node. The latter is used in line 4 and corresponds to the initialization of $\mathcal{M}$ before the loop on the right side.
+First, the input markings need to be transformed into their particular representation of a node in the table.
+For this, we introduce new operations $\encode$ and $\encodeUp$. $\encode$ converts one marking to a node, while $\encodeUp$ converts an upward closed set with one minimal marking into a node into the table. The latter is used in line 4 and corresponds to the initialization of $\mathcal{M}$ before the loop on the right side of \autoref{alg:bw_wwa}.
 
 %$\mathcal{M}_{\text{old}}$ is set to the node representing $\emptyset$ corresponding to line 2 of \autoref{alg:bw}. 
 \par
 
-The rest of the adapted operation remains very close to \autoref{alg:bw}. Each gray line on the right from the previous algorithm can be exactly mapped to a line of the adapted operation with the table on the left. The sets $\mathcal{M}, \mathcal{M}_{\text{old}}, \mathcal{M}_{\text{pre}}$ are encoded by the nodes $q,q_{\text{old}},q_{\text{pre}}$. The start marking $M_{0}$ corresponds to $q_{0}$. 
-As already presented with \autoref{fig:markingtonode}, the $\ppre$ is replaced by $\pre$ and $\cup$ by $\union$. 
-
-\todo{call of pre, mention the precondition weakly acyclic and why it is fulfilled}
+The rest of the adapted operation remains very close to \autoref{alg:bw}. Each gray line on the right from the previous algorithm can be exactly mapped to a line of the adapted operation including the table on the left. The sets $\mathcal{M}, \mathcal{M}_{\text{old}}, \mathcal{M}_{\text{pre}}$ are encoded by the nodes $q,q_{\text{old}},q_{\text{pre}}$. The start marking $M_{0}$ corresponds to $q_{0}$. 
+As already presented with \autoref{fig:markingtonode}, $\ppre$ is replaced by $\pre$, and $\cup$ by $\union$. 
 
 
-A slight difference between the algorithms is present in line 10. In the previous algorithm on the right we calculate if the start marking exists in the set $\mathcal{M}$. However, in the adapted algorithm we calculate the intersection of two nodes instead of simply checking, if node $q$ accepts the word $q_{0}$. The reason for this is that some of the benchmark instances use a set of start markings instead of the single $M_{0}$.
-\todo{write reason of intersection here or only foreshadow?}
+A slight difference between the algorithms is present in line 10. In the previous algorithm on the right we calculate if the start marking exists in the set $\mathcal{M}$. However, in the adapted algorithm we calculate the intersection of two nodes instead of simply checking if node $q$ accepts the word $q_{0}$. The reason behind this is that some of the benchmark instances use a set of start markings instead of the single $M_{0}$. By using $\inter$ we can also deal with a $q_{0}$ encoding a set of start markings.
+
 %The set union $\cup$ from line 5 in \autoref{alg:bw} is performed with the already introduced $\union$ operation of the table in line 9 of \autoref{alg:bw_wwa}. Furthermore, we use the $\inter$ operation of the table in line 10 to verify, if the start marking is contained in the predecessor set, corresponding to line 6 of the previous algorithm. The equality check of sets in line 8 of the abstract version can be transferred directly into an equality check of node ids in line 12 of the adapted version.
 
 \par 
 
-The only question remaining is the connection between the table operation $\pre$ described in \autoref{chapter:datastructure} and the $\ppre$ set from \autoref{alg:bw}. In fact, we construct the transducer $\mathcal{T}$ from the transitions of a Petri net in line 2 in a way, which makes both of these operations equivalent by expressing the same set of predecessor markings.
+%The only questions remaining are about the specific mapping between nodes and markings, and the connection between the table operation $\pre$ described in \autoref{chapter:datastructure} and the $\ppre$ set from \autoref{alg:bw}. We want to construct the transducer $\mathcal{T}$ from the transitions of a Petri net in line 2 in a way, which makes both of these operations equivalent by expressing the same set of predecessor markings.
 
-\par 
-
-The next two subsections describe the encoding we chose for the markings and the corresponding construction of the transducer based on this encoding, before the final Backwards Reachability Algorithm with the table is presented.
+The only questions remaining are about the specific mapping between nodes and markings, and the connection between the table operation $\pre$ described in \autoref{chapter:datastructure} and the $\ppre$ set from \autoref{alg:bw}.
+The next two subsections describe the encoding for the markings and the corresponding construction of the transducer for $\pre$ before the final version of the Backwards Reachability Algorithm with the Table of Nodes is presented.
 
 \subsection{A Weakly Acyclic Encoding for Markings}
-Recall, that a marking $M$ is defined as a mapping from places in $P$ to a natural number, which shows how many tokens are assigned to a place by the marking. 
-We define a fixed order on the places $P = (p_{1},p_{2},\dots,p_{n})$ of the Petri net $N$. Then a marking can be represented by a $n$-dimensional tuple $M = (m_{1},m_{2},\dots,m_{n})$, where $m_{i}$ is the number of tokens in place $p_{i}$ in that marking.
+Recall that a marking $M$ is defined as a mapping from places of a Petri net to a natural number, which shows how many tokens are assigned to a place by the marking. 
+We define a fixed order on the places $P = (p_{1},p_{2},\dots,p_{n})$ of the Petri net $N$. Then a marking can be represented by an $n$-dimensional tuple $M = (m_{1},m_{2},\dots,m_{n})$, where $m_{i}$ is the number of tokens in place $p_{i}$ in that marking.
 
 \par 
 
@@ -235,20 +229,15 @@ For a marking $M = (m_{1},m_{2},\dots,m_{n})$ we define its \emph{(ordinary) enc
 
 %We look for an encoding for those marking vectors. Using the approach of an unary encoding for natural numbers, we limit the alphabet to $\Sigma = \{\bm{1}, \square\}$. 
 
-As Definition~\autoref{def:encoding} illustrates, the token numbers in $M$ are encoded unary with $\bm{1}$s and the different positions in $M$ are separated with a separator symbol $\square$. For instance, the marking $M = (2,3,1)$ for a Petri net with 3 places is encoded into the language $L(\bm{11 \square 111 \square 1 \square})$. 
-\todo{one marking is language of a single world}
+As Definition~\autoref{def:encoding} illustrates, the token numbers in $M$ are encoded unary with $\bm{1}$s and the different positions in $M$ are separated with a separator symbol $\square$. For instance, the marking $M = (2,3,1)$ for a Petri net with 3 places is encoded into the language $L(\bm{11 \square 111 \square 1 \square})$. This encoding maps every single marking to a single word over $\Sigma = \{\bm{1}, \square\}$.
 \par 
-With this straight-forward representation we can construct new table operations $\encode$ and $\encodeUp$, which have been applied in the Backwards Reachability Algorithm with the table \autoref{alg:bw_wwa}. 
+With this straight-forward representation we can construct new table operations $\encode$ and $\encodeUp$, which have been applied in \autoref{alg:bw_wwa}. 
 % maybe put this only into encode section 
 %Both functions build string $s$ into a regular expression for the language of the marking based on our encoding, and then passes the string to $\create$. The table operation $\create$, which has been presented in \autoref{chapter:datastructure}, creates the node and all its successors into the table before returning its identifier.
 \par
-The $\encode$ function is sketched in \autoref{alg:encode} and returns the node identifier of the language for the input marking $M$. In the adapted Backwards Reachability algorithm it computes the node for the start marking $M_{0}$ in line 3. The function builds string $\str$ into a regular expression for the language of the marking based on our encoding $f$, and then passes the string to $\create$. The table operation $\create$, which has been presented in \autoref{chapter:datastructure}, creates the node and all its successors into the table before returning its identifier.
+The $\encode$ function is sketched in \autoref{alg:encode} and returns the node identifier of the language for the input marking $M$. In the adapted Backwards Reachability Algorithm it computes the node for the start marking $M_{0}$ in line 3. The function builds a string $\str$ into a regular expression for the language of the marking based on our encoding $f$, and then passes the string to $\create$. The table operation $\create$, which has been presented in \autoref{sec:create}, creates the node and all its successors into the table before returning its identifier.
 
-\par
-There are two nested loops, where the outer one iterates over all elements of $M$. Inside the inner loop, we iteratively append $\texttt{1}$ to the string $\str$ until the amount $m_{i}$. After all the $\texttt{1}$s have been added for the current place $p_{i}$ of the net, we insert the separator $\square$ in line 5.
-Finally, we pass the complete string to the $\create$ method. 
-
-\begin{figure}
+\begin{figure}[H]
 \begin{minipage}[t]{0.46\textwidth}
 \begin{algorithm}[H]
 \caption{$\encode$ $\strut$}\label{alg:encode}
@@ -288,17 +277,19 @@ Finally, we pass the complete string to the $\create$ method.
 \end{minipage}
 \end{figure}
 
-The $\encodeUp$ operation also takes a marking $M$ as input. Instead of creating the language of the marking, $\encodeUp$ creates the language for the upward closed set with $M$ as the only minimal marking. In the Backwards Reachability Algorithm it is used to create the upward closed set for the end configuration  in line 4 of \autoref{alg:bw_wwa}.
-\par
-For the marking $M=(m_{1},m_{2},\dots,m_{n})$, $\encodeUp$ returns the language for the set $\{M': m'_{i} \ge m_{i} \ \forall i\}$. Based on the encoding in Definition~\autoref{def:encoding}, this is described by the language $L(\bm{1}^{m_{1}}\bm{1^{*}} \square \bm{1}^{m_{2}}\bm{1^{*}} \square \ldots \bm{1}^{m_{n}}\bm{1^{*}} \square)$. 
-By adding $\bm{1^{*}}$ after every $\bm{1}^{m_{i}}$, we allow for each place $p_{i}$ to have at least $m_{i}$ tokens.
+There are two nested loops in \autoref{alg:encode}, with the outer one iterating over all elements of $M$. Inside the inner loop, we iteratively append $\texttt{1}$ to the string $\str$ until the amount $m_{i}$. After all the $\texttt{1}$s have been added for the current place $p_{i}$ of the net, we insert the separator $\square$ in line 5.
+Finally, we pass the complete string to the $\create$ method. 
 
+The $\encodeUp$ operation also takes a marking $M$ as input. Instead of creating the language of one marking, $\encodeUp$ creates the language for the upward closed set with $M$ as the only minimal marking. In the Backwards Reachability Algorithm it is used to create the upward closed set for the end configuration  in line 4 of \autoref{alg:bw_wwa}.
+\par
+For the marking $M=(m_{1},m_{2},\dots,m_{n})$, $\encodeUp$ returns the language for the set $\{M': m'_{i} \ge m_{i} \ \forall i \in \{1,\dots,n\}\}$. Based on the encoding in Definition~\autoref{def:encoding}, this is described by the language $L(\bm{1}^{m_{1}}\bm{1^{*}} \square \bm{1}^{m_{2}}\bm{1^{*}} \square \ldots \bm{1}^{m_{n}}\bm{1^{*}} \square)$. 
+By adding $\bm{1^{*}}$ after every $\bm{1}^{m_{i}}$, we allow for each place $p_{i}$ to have at least $m_{i}$ tokens. Note here that every upward closed set is encoded into a weakly acyclic language, as the automaton for these expressions can not contain cycles, which are not self-loops.
 \par
 Using this, a slight modification of \autoref{alg:encode} leads to \autoref{alg:encodeUp} for the table operation $\encodeUp$. We only need to append the string $\texttt{1*}$ after the inner for loop in line 5 of \autoref{alg:encodeUp} and the rest of the operation stays unchanged. 
 
 \subsection{Representing a Petri Net with a Transducer}
 After having fixed the encoding scheme in Definition~\autoref{def:encoding} last section, we now want to develop a consistent construction  of the transducer $\mathcal{T}$, which corresponds to the operation $\nettrans$ in line 2 of \autoref{alg:bw_wwa}. 
-The transducer must be designed in a way, such that the $\pre$ of the table yields the same set of predecessor markings like $\ppre_{N}(\mathcal{M})$  we have defined in \autoref{sec:abstractbw}.
+The transducer must be designed in a way, such that the $\pre$ of the table yields the same set of predecessor markings like $\ppre_{N}(\mathcal{M})$  we have defined in \autoref{def:ppre}.
 
 \par
 
@@ -310,11 +301,11 @@ Recall the Pre language and the Predecessor set we have defined. Here for the Pr
 \ppre_{N}(\mathcal{M}) = \bigcup_{t \in \Tr} \{M : M \xrightarrow{t} M', M' \in \mathcal{M} \}
 \end{equation*}
 
-We aim to design $\mathcal{T}$, such that the words $w$ in $\Pre_{\mathcal{T}}(L)$ are encoding the predecessor markings $M$ in $\ppre_{N}(\mathcal{M})$:
+We aim to design $\mathcal{T}$ in a way such that the words $w$ in $\Pre_{\mathcal{T}}(L)$ are encoding the predecessor markings $M$ in $\ppre_{N}(\mathcal{M})$:
 \begin{equation*}
 f(\ppre_{N}(\mathcal{M})) = \Pre_{\mathcal{T}}(f(\mathcal{M}))
 \end{equation*}
-For this, the following must hold:
+For this, the following equivalence must hold:
 \begin{equation*}
 (w,v) \in L(\mathcal{T}) \iff \exists M,M' \text{ and } t \text{ such that } w = f(M), v = f(M') \text{ and } M \xrightarrow{t} M' 
 \end{equation*}
@@ -336,8 +327,8 @@ Therefore, the transducer needs to encode all transitions of the Petri net and m
 
 \subsubsection{Introducing Another Encoding}
 A Petri net has a set of transitions $\Tr$, which are connected to the places $P$ by the flow relation $F$. 
-\todo{describe $F$ more}
-With the fixed order of the places $P = (p_{1},p_{2},\dots,p_{n})$, we can describe the effect/change in the places induced by firing a single transition $t$ with a pair of $n$-dimensional tuples $t = (g,h)$, where $g$ is the preset and $h$ is the postset of transition $t$. In $g$, the element on position $i$, denoted by $g_{i}$, indicates, how many tokens from place $p_{i}$ are necessary to enable $t$. By firing $t$, this amount of tokens are removed from $p_{i}$. In $h$, the $i$-th element $h_{i}$ expresses, how many tokens are added into place $p_{i}$ after the firing of $t$. Therefore, the complete Petri net $N$ can be described by a set of transition pairs $t = (g,h)$. 
+
+With the fixed order of the places $P = (p_{1},p_{2},\dots,p_{n})$, we can describe the effect in the places induced by firing a single transition $t$ with a pair of $n$-dimensional tuples $t = (g,h)$, where $g$ is the preset and $h$ is the postset of transition $t$. In $g$, the element on position $i$, denoted by $g_{i}$, indicates how many tokens from place $p_{i}$ are necessary to enable $t$. By firing $t$, this amount of tokens are removed from $p_{i}$. In $h$, the $i$-th element $h_{i}$ expresses how many tokens are added into place $p_{i}$ after firing $t$. Therefore, the complete Petri net $N$ can be described by a set of transition pairs $t = (g,h)$. 
 
 %\begin{figure}[htb]
 %\centering 
@@ -465,17 +456,17 @@ Imagine a Petri net with a single transition $t=(g,h)$ with $g = (1,1,0)$ and $h
 \end{minipage}
 \end{figure}
 
-The encoding $f(M)$ for this marking is the language of the word $w = \bm{1 \square 111 \square 11 \square}$. With this configuration transition $t_{1}$ is enabled and the firing of $t_{1}$ leads to the marking $M'=(1,3,5)$ in \autoref{fig:markprime}. This marking is encoded by the word $v = \bm{1 \square 111 \square 11111 \square}$. 
+The encoding $f(M)$ for this marking is the language of the word $w = \bm{1 \square 111 \square 11 \square}$. With the marking shown in \autoref{fig:mark} transition $t_{1}$ is enabled and the firing of $t_{1}$ leads to the marking $M'=(1,3,5)$ in \autoref{fig:markprime}. This marking is encoded by the word $v = \bm{1 \square 111 \square 11111 \square}$. 
 
-For this Petri net, the corresponding transducer needs to accept the word \break ${(\bm{1 \square 11 \square 111 \square},\bm{1 \square 11111 \square 111 \square})}$. However, the length of these words $w$ and $v$ is not the same, but any transducer can only recognize a pair of words with equal length. 
+For this Petri net, the corresponding transducer needs to accept the word \break ${(\bm{1 \square 11 \square 111 \square},\bm{1 \square 11111 \square 111 \square})}$. However, the length of these words $w$ and $v$ is not the same but any transducer can only accept a pair of words with equal length. 
 
-To address this problem of different lengths of encodings, we introduce a padding symbol $\Diamond$ to the alphabet with the purpose to pad $w$ and $v$ to the same length and adapt the definition of the encoding.
+To address this problem, we introduce a padding symbol $\Diamond$ to the alphabet with the purpose to pad $w$ and $v$ to the same length and adapt the definition of the encoding.
 
 \begin{definition}\label{def:encodingv2}
 For a marking $M = (m_{1},m_{2},\dots,m_{n})$ we define its \emph{padded encoding} $f'(M)$ as the language $L(\bm{1}^{m_{1}} \Diamond^{\bm{*}} \square \bm{1}^{m_{2}} \Diamond^{\bm{*}}  \square \ldots \bm{1}^{m_{n}} \Diamond^{\bm{*}}  \square)$ over $\Sigma = \{\bm{1}, \square, \Diamond \}$.
 \end{definition}
 
-The idea is to use the ordinary encoding $f$ for all operations in the Backwards Reachability Algorithm except of the ones involving the transducer $\mathcal{T}$. We will define $\mathcal{T}$ for a transition $t$ in a way, such that it will map specific padded encodings $w$ to other specific padded encodings $v$. Only for the construction of the transducer and the $\pre$ procedure, we represent a node with these specific padded encodings. 
+The idea is to use the ordinary encoding $f$ for all operations in the Backwards Reachability Algorithm except of the ones involving the transducer $\mathcal{T}$. We will define $\mathcal{T}$ for a transition $t$ so that it will map specific padded encodings $w$ to other specific padded encodings $v$. Only for the construction of the transducer and the $\pre$ procedure, we represent a node with these specific padded encodings. 
 
 
 %\begin{equation*}
@@ -490,7 +481,7 @@ The idea is to use the ordinary encoding $f$ for all operations in the Backwards
 
 With the introduced padded encoding from Definition~\autoref{def:encodingv2} we now want to construct a transducer $\mathcal{T}$ for a Petri net transition $t$. The following property should be satisfied:
 \begin{itemize}[-,noitemsep]
-\item For all markings $M,M'$ and transition $t$, where $M \xrightarrow{t} M'$, there exist some padded encodings $w \in f'(M)$ and $v \in f'(M')$, such that $\mathcal{T}$ accepts $(w,v)$.
+\item For all markings $M,M'$ and transition $t$, where $M \xrightarrow{t} M'$, there exist some padded encodings $w \in f'(M)$ and $v \in f'(M')$ such that $\mathcal{T}$ accepts $(w,v)$.
 \end{itemize}
 
 
@@ -574,7 +565,7 @@ For this Petri net the constructed transducer is illustrated in \autoref{fig:tra
 %\label{fig:net2trans}
 %\end{figure}
 
-We can have a closer look at the structure of the transducer. In \autoref{fig:petri-trans-ex} we have three places, which correspond to the three parts of the transducer with different level and color. Each level reads in an amount of tokens for the respective place. The different levels are connected by reading in a pair of separators $(\square,\square)$, which are the vertical transitions in \autoref{fig:transfortrans}. The final $(\square,\square)$ from the last level leads into an accepting final state of the transducer.
+We can have a closer look at the structure of the transducer. In \autoref{fig:petri-trans-ex} we have three places, which correspond to the three parts of the transducer with different level and color. Each level reads in an amount of tokens for the respective place. The different levels are connected by reading in a pair of separators $(\square,\square)$, which are the vertical transitions in \autoref{fig:transfortrans}. The final $(\square,\square)$ from the last level leads into the sole accepting state of the transducer.
 
 
 \begin{figure}[H]
@@ -665,10 +656,10 @@ The first subexpression is of the form $(\bm{1},\bm{1})^{h_{i}}$. Before the exe
 
 The second part of the expression is $(\bm{1},\bm{1})^{\bm{*}}$, which is mapped to the self-loop of the middle level in \autoref{fig:transfortrans}. This allows the place to have an arbitrary amount of further tokens. 
 
-The final subexpression $(\bm{1},\Diamond)^{g_{i}-h_{i}}$ adds padding symbols. After firing the transition, the number of tokens in place $p_{i}$ decreases by $g_{i}-h_{i}$. Thus, we pad $g_{i}-h_{i}$ many $\bm{1}$s in the first position (expressing the marking before firing $t$) by as many $\Diamond$s in the second position (marking after firing $t$). This is shown by the $1$ transition ($g_{2}-h_{2} = 1$) with $(\bm{1},\Diamond)$ at the end of the middle level for $p_{2}$ in \autoref{fig:transfortrans}.
+The final subexpression $(\bm{1},\Diamond)^{g_{i}-h_{i}}$ adds padding symbols. After firing the transition, the number of tokens in place $p_{i}$ decreases by $g_{i}-h_{i}$. Thus, we pad $g_{i}-h_{i}$ many $\bm{1}$s in the first position (expressing the marking before firing $t$) by as many $\Diamond$s in the second position (marking after firing $t$). This is shown by the one transition ($g_{2}-h_{2} = 1$) with $(\bm{1},\Diamond)$ at the end of the middle level for $p_{2}$ in \autoref{fig:transfortrans}.
 
 \paragraph{Case 2: $g_{i} \le h_{i}$.}
-This case is symmetrical to the previous one. The only difference is in the third fragment of the transducer. Instead of $(\bm{1},\Diamond)$ we read in $(\Diamond,\bm{1})$, because after firing the transition the number of tokens in $p_{i}$ increases. Therefore, the expression recognized for this case is of the form $(\bm{1},\bm{1})^{g_{i}}(\bm{1},\bm{1})^{\bm{*}}(\Diamond,\bm{1})^{h_{i}-g_{i}}$. In the concrete example in \autoref{fig:net2trans}, this can be seen in the bottom level for $p_{3}$.
+This case is symmetrical to the previous one. The only difference is in the third fragment of the transducer. Instead of $(\bm{1},\Diamond)$ we read in $(\Diamond,\bm{1})$, because after firing the transition the number of tokens in $p_{i}$ increases. Therefore, the expression recognized for this case is of the form $(\bm{1},\bm{1})^{g_{i}}(\bm{1},\bm{1})^{\bm{*}}(\Diamond,\bm{1})^{h_{i}-g_{i}}$. In the concrete example in \autoref{fig:net2trans}, this case can be seen in the bottom level for $p_{3}$.
 
 
 
@@ -689,22 +680,22 @@ This case is symmetrical to the previous one. The only difference is in the thir
 
 \subsubsection{Preprocess and Postprocess}
 
-As mentioned, the constructed transducer only maps specific padded encodings dependent on the transition. In the concrete example in \autoref{fig:transfortrans} the transducer only maps a word of the form $w = \bm{11}^{k}\square\bm{111}^{k}\bm{1}\square\bm{11}^{k}\Diamond\square$ to another word $v = \bm{11}^{k}\square\bm{111}^{k}\Diamond\square\bm{11}^{k}\bm{1}\square$.
+As mentioned, the constructed transducer only maps specific padded encodings dependent on the transition. In the concrete example in \autoref{fig:transfortrans} the transducer only maps a word of the form $w = \bm{11}^{k}\square\bm{111}^{k}\bm{1}\square\bm{11}^{k}\Diamond\square$ to another word $v = \bm{11}^{k}\square\bm{111}^{k}\Diamond\square\bm{11}^{k}\bm{1}\square$. However, besides the construction of the transducer in line 2 of \autoref{alg:bw_wwa}, we only use the padded encodings for the $\pre$ operation in line 8. The rest of the algorithm is operating with the ordinary encoding from \autoref{def:encoding}.
 
 Therefore, further table operations $\prep$ and $\post$ are required to convert between nodes of the transducer specific padded encoding and nodes of the ordinary encoding. Since the transducer is only used in the $\pre$ function, these two new operations are only performed before and after $\pre$. 
 
-$\prep$ converts a node in the ordinary encoding into an equivalent node in the padded encoding specific to the image of the transducer by adding $\Diamond$ transitions. The node returned by $\prep$ is then passed on to the $\pre$ operation. $\post$ converts the result of $\pre$, which is a node in the specific padded encoding of the pre-image of the transducer, back to the correct ordinary encoding, removing $\Diamond$ transitions in the process.
+$\prep$ converts a node in the ordinary encoding into an equivalent node in the padded encoding specific to the image of the transducer by adding $\Diamond$ transitions. The node returned by $\prep$ is then passed on to the $\pre$ operation. $\post$ converts the result of $\pre$, which is a node in the specific padded encoding of the preimage of the transducer, back to the correct ordinary encoding, removing $\Diamond$ transitions in the process.
 
 The question remains, how many padding transitions need to be added or removed.
-As can be seen in \autoref{fig:net2trans}, we construct the transducer in a way, that the amount of paddings before the $i$-th separator $\square$ is fixed for both pre-image and image of the transducer. Therefore, we can use this property to add or remove that fixed amount of $\Diamond$ symbols. Taking the transducer in \autoref{fig:transfortrans} as an example, here $\prep$ needs to add one $\Diamond$ before the second $\square$, while $\post$ will remove one $\Diamond$ before the third $\square$.
+As can be seen in \autoref{fig:net2trans}, we construct the transducer in a way, that the amount of paddings before the $i$-th separator $\square$ is fixed for both preimage and image of the transducer. Therefore, we can use this property to add or remove that fixed amount of $\Diamond$ symbols. Taking the transducer in \autoref{fig:transfortrans}, $\prep$ needs to add one $\Diamond$ before the second $\square$, while $\post$ will remove one $\Diamond$ before the third $\square$ for this concrete case.
 
 
 
-\autoref{fig:prepost} visualizes the two operations. The \autoref{fig:beforeprep} on the left shows a subautomaton $\prep$ is currently processing starting with the node $q$. A second input given to $\prep$ is a counter $i$, which indicates that the next $\square$ is the $i$-th separator symbol. There are only successors for $\bm{1}$ and $\square$, because the automaton given to $\prep$ is still in the ordinary encoding and does not contain any $\Diamond$s. 
+\autoref{fig:prepost} visualizes the $\prep$ operation. \autoref{fig:beforeprep} on the left shows a subautomaton $\prep$ is currently processing starting with the node $q$. A second input given to $\prep$ is a counter $i$, which indicates that the next $\square$ is the $i$-th separator symbol encountered so far. There are only successors for $\bm{1}$ and $\square$, because the automaton given to $\prep$ is still in the ordinary encoding and does not contain any $\Diamond$s. 
 
 Assume that in the image of the transducer, there are $k$ padding symbols before the $i$-th separator symbol. Then $\prep$ needs to add $k$ new nodes $q_{1},\dots,q_{k}$ between $q$ and $q'$, as depicted on the right in \autoref{fig:afterprep}. The $\square$ transition of $q$ is removed and one $\Diamond$ transition from $q$ to $q_{1}$ is added. From $q_{1}$ to $q_{k}$ there are $k-1$ further $\Diamond$ transitions. Eventually, the $\square$ transition is inserted from $q_{k}$ to $q'$. Finally, $\prep$ makes recursive calls for $q''$ and $q'$. Note here, that for the call with $q''$ we will pass on the same counter $i$, but for the call with $q'$ we increase the counter by one, as the next $\square$ after $q'$ will be the $i+1$-th separator.
 
-The $\post$ operation works in the reverse direction from \autoref{fig:afterprep} to \autoref{fig:beforeprep}. Instead of adding new nodes, we remove $q_{1},\dots,q_{k}$ by removing the $\Diamond$ transition from $q$ and adding the $\square$ transition directly to $q'$.
+The $\post$ operation works in the reverse direction from \autoref{fig:afterprep} to \autoref{fig:beforeprep}. Instead of adding new nodes, we remove $q_{1},\dots,q_{k}$ by removing the $\Diamond$ transition from $q$ and adding a $\square$ transition from $q$ directly to $q'$.
 
 
 
@@ -768,8 +759,7 @@ The $\post$ operation works in the reverse direction from \autoref{fig:afterprep
      	\end{tikzpicture}
     	\caption{after $\prep$} \label{fig:afterprep}
     \end{subfigure}
-     \caption{Visualization of $\pre$}\label{fig:prepost}
-     \label{fig:pre}
+     \caption{Visualization of $\prep$}\label{fig:prepost}
 \end{figure}
 
 
@@ -864,11 +854,12 @@ The $\post$ operation works in the reverse direction from \autoref{fig:afterprep
 %\par
 %
 %We decided to apply the second alternative for the implementation. 
+\newpage
 
 \subsubsection{Final Backwards Reachability Algorithm with the Table of Nodes}
-With the described construction of the transducer and the two new table operations $\prep$ and $\post$, we achieve a final version of the Backwards Reachability Algorithm shown in \autoref{alg:bw_wwa_final}. 
+With the described construction of the transducer and the two new table operations $\prep$ and $\post$, we achieve a final version of the Backwards Reachability Algorithm shown in \autoref{alg:bw_wwa_final}. The difference to the previous version in \autoref{alg:bw_wwa} is again highlighted in blue.
 
-In line 2, instead of constructing one transducer we build a list $\mathcal{T}^{*}$ of transducers, where each $\mathcal{T} \in \mathcal{T}^{*}$ represents one transition of the Petri net $N$. Therefore, we need to add an inner loop in line 8, which iterates over all $\mathcal{T}$. Inside this loop, we use $\prep$ and $\post$ before and after the $\pre$ operation. $\prep$ converts the ordinary encoded $q$ into the padded encoded $q'$ in line 9. After the $\pre$ operation returns $q_{\text{pre}}$, which is also in the form of a padded encoding, we use $\post$ to convert back into the ordinary encoding returning node $q''$.
+In line 2, instead of constructing one transducer we build a list $\mathcal{T}^{*}$ of transducers, where each $\mathcal{T} \in \mathcal{T}^{*}$ represents one transition of the Petri net $N$. Therefore, we need to add an inner loop in line 8, which iterates over all $\mathcal{T}$. Inside this loop, we use $\prep$ and $\post$ before and after the $\pre$ operation. In line 9 $\prep$ converts the ordinary encoded $q$ into the node $q'$ in the padded encoding. After the $\pre$ operation returns $q_{\text{pre}}$, which is also in the form of a padded encoding, we use $\post$ to convert back into the ordinary encoding returning node $q''$.
 
 \begin{algorithm}[htb]
 \caption{Final Version of Backwards Reachability Algorithm with Table of Nodes}\label{alg:bw_wwa_final}

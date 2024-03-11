@@ -1,13 +1,13 @@
 \chapter{A Data Structure for Weakly Acyclic DFAs}\label{chapter:datastructure}
-In order to use weakly acyclic languages efficiently, a data structure for storing the automata efficiently and offering binary set operations is required. This chapter introduces a possible implementation approach for the data structure as well as required operations
+In order to use weakly acyclic languages efficiently, a data structure for storing the automata efficiently and offering language operations is required. This chapter introduces a possible implementation approach for the data structure and presents algorithms for interesting operations.
 
 \section{Master Automaton}\label{sec:master-aut}
-We first look at how multiple weakly acyclic DFAs can be combined/united in theory, by establishing the concept of the master automaton. 
-\begin{definition}\label{def:master-aut}
-The master automaton over alphabet $\Sigma$ is tuple $M = (Q_{M},\Sigma,\delta_{M},F_{M})$, where 
+We first take a look at how multiple weakly acyclic DFAs can be combined in theory by establishing the concept of the master automaton. 
+\begin{definition}[\cite{blondin_24}]\label{def:master-aut}
+The master automaton over an alphabet $\Sigma$ is a tuple $M = (Q_{M},\Sigma,\delta_{M},F_{M})$ where 
 \begin{itemize}[--,noitemsep]
 \item $Q_{M}$ is the set of all weakly acyclic languages over $\Sigma$
-\item $\delta_{M}: Q_{M} \times \Sigma \rightarrow Q_{M} \quad \delta_{M}(L,a) = L^{a}$ for every $q \in Q_{M} \ , a \in \Sigma$
+\item $\delta_{M}: Q_{M} \times \Sigma \rightarrow Q_{M}$  with $\delta_{M}(L,a) = L^{a}$ for every $q \in Q_{M} \ , a \in \Sigma$
 \item $L \in F_{M} \iff \epsilon \in L$
 \end{itemize}
 \end{definition}
@@ -15,20 +15,18 @@ As depicted formally in Definition \autoref{def:master-aut}, the master automato
 
 \par
 
-Given a state $L$ of the master automaton, which is characterizing the weakly acyclic language $L$, the language recognized from that state is $L$ \cite[Proposition~8]{blondin_24}. This means, that a DFA for any weakly acyclic language $L$ exists as a finite subautomaton in the master automaton. 
-\newline
-Formally, that DFA $A_{L}$ is the tuple $(Q_{L},\Sigma,\delta_{L},q_{0L},F_{L})$ where 
+Given a state $L$ of the master automaton characterizing the weakly acyclic language $L$, the language recognized from that state is $L$ \cite[Proposition~8]{blondin_24}. This means that a DFA for any weakly acyclic language $L$ exists as a finite subautomaton in the master automaton. Formally, that DFA $A_{L}$ is the tuple $(Q_{L},\Sigma,\delta_{L},q_{0L},F_{L})$ where 
 \begin{itemize}[--,noitemsep]
 \item $Q_{L}$ is the set of states of the master automaton reachable from state $L$
 \item $q_{0L}$ is the state $L$
 \item $\delta_{L}$ is the projection of $\delta_{M}$ onto $Q_{L}$
 \item $F_{L}$ is the intersection of $F_{M}$ and $Q_{L}$
 \end{itemize}
-Furthermore, for every weakly acyclic language $L$, $A_{L}$ is also the unique minimal DFA for recognizing $L$ \cite[Proposition~9]{blondin_24}. 
+Furthermore, for every weakly acyclic language $L$, the automaton $A_{L}$ is also the unique minimal DFA for recognizing $L$ \cite[Proposition~9]{blondin_24}. 
 
 \par
 
-We can define the relation $\preceq$ on the set of all weakly acyclic languages $Q_{M}$, where $L_{1} \preceq L_{2}$ if $L_{1} = L_{2}^{w}$ for some word $w$. By the definition of weakly acyclic DFAs $\preceq$ must be a partial order. The minimal elements of the order satisfy $L = L^{a}$ for every $a \in \Sigma$, which are only $\emptyset$ and $\Sigma^{*}$.
+We can define the relation $\preceq$ on the set of all weakly acyclic languages $Q_{M}$ where $L_{1} \preceq L_{2}$ if $L_{1} = L_{2}^{w}$ for some word $w$. By the definition of weakly acyclic DFAs $\preceq$ must be a partial order. The minimal elements of the order satisfy $L = L^{a}$ for every $a \in \Sigma$, which are only $\emptyset$ and $\Sigma^{*}$.
 %We can imagine the order as an infinite directed acyclic graph, where an edge from $L_{1}$ to $L_{2}$ means $L_{1} \preceq L_{2}$. Then, the only nodes without outgoing edges in this graph are the languages $\emptyset$ and $\Sigma^{*}$. 
 %\newline
 %This structure allows for recursive property proofs.
@@ -40,22 +38,21 @@ Using the idea of the master automaton, we can construct a data structure to sto
 
 \par 
 
-As the transitions of the master automaton are defined using residual languages, we can describe each node uniquely by its direct successor nodes for every letter and if it is a final state.
+As the transitions of the master automaton are defined using residual languages, we can describe each node uniquely by its direct successor nodes for every letter and if it is a final state \cite{blondin_24}.
 
 \par
 
-For an alphabet $\Sigma = \{a_{1}, a_{2},\dots,a_{n} \}$ we define a \emph{node} as a tuple $(q,s,b)$, where
+For an alphabet $\Sigma = \{a_{1}, a_{2},\dots,a_{n} \}$ we define a \emph{node} as a tuple $(q,s,b)$ where
 \begin{itemize}[--,noitemsep]
 \item $q$ is the \emph{node identifier}
-\item $s = [q_{1},q_{2},\dots,q_{n}]$ is the \emph{successor array} of $q$, where $q_{i}$ is the identifier for the node of the residual language of $q$ with respect to the letter $a_{i}$
+\item $s = [q_{1},q_{2},\dots,q_{n}]$ is the \emph{successor array} of $q$ where $q_{i}$ is the identifier for the node of the residual language of $q$ with respect to the letter $a_{i}$
 \item $b \in \{0,1\}$ is the \emph{final flag} and tells if $q$ is an accepting state ($1$) or not ($0$)
 \end{itemize}
 For instance, the node for the language $\emptyset$ is $(q_{\emptyset},[q_{\emptyset},\dots,q_{\emptyset}],0)$ and the language of the empty word $\epsilon$ is $(q_{\epsilon},[q_{\emptyset},\dots,q_{\emptyset}],1)$.
 
 \par
 
-The Table of Nodes stores a collection of these nodes and contains a bidirectional mapping between the node identifier and the node's pair of successor array and final flag. Concretely, given the table $T$, $T[q]$ returns the pair of successor array and final flag $(s,b)$ in one direction, and $T[(s,b)]$ gives back the identifier $q$ of the node in the other direction. 
-\todo{bidirectional $T[q] = (s,b)$ and $T[(s,b)] = q$}
+The Table of Nodes stores a collection of these nodes and contains a bidirectional mapping between the node identifier and the node's pair of successor array and final flag. Concretely, with $T$ as the table, $T[q]$ returns the pair of successor array and final flag $(s,b)$ in one direction, and $T[(s,b)]$ gives back the identifier $q$ of the node in the other direction. 
 
 \par
 
@@ -110,27 +107,25 @@ $q_{5}$&$[q_{\emptyset}, q_{3}]$&$0$\\
 \end{floatrow}
 \end{figure}   	
     	
-We define the operations $\Succ$ and $\final$ to access node elements by the node identifier.
+We define the operations $\Succ$ and $\final$ to access node elements by the node identifier for future algorithms.
 Given a node identifier $q$ and a letter $a_{i} \in \Sigma$, $\Succ(q,a_{i})$ returns the successor element $q_{i}$ for letter $a_{i}$ in the successor array $s$ of the node for $q$. 
 %$\allSucc(q)$ returns the whole successor array $s$ of the node. 
 The final flag $b$ of the node identified by $q$ is returned by $\final(q)$.
-\todo{$q_{\emptyset}$ , $q_{\Sigma^{*}}$ and $q_{\epsilon}$ already exist when creating an empty table}
+%\todo{$q_{\emptyset}$ , $q_{\Sigma^{*}}$ and $q_{\epsilon}$ already exist when creating an empty table}
 
 \par 
 
-The following sections are dedicated to introduce methods, which are defined on the Table Of Nodes. 
-\todo{here make clear, that this are class methods ? }
+The following sections are dedicated to introducing and discussing important procedures, which are defined on the Table Of Nodes. 
 
 \section{Creation of Nodes into the Table}
-This section introduces operations on the table with the purpose to add new nodes. $\make$ is responsible for the creation of new nodes and is the only operation, which can directly change the nodes in the table. $\create$ uses $\make$ to create nodes for a certain restricted language given as input.
+This section introduces operations on the table with the purpose to add new nodes. $\make$ is responsible for the creation of new nodes and is the only operation, which can directly add new nodes to the table. $\create$ uses $\make$ to create nodes for a certain restricted language given as input.
 
 \subsection{$\make$ - Adding Nodes to the Table}
-Naturally, the data structure needs an operation for adding new nodes. We define a procedure $\make$, which takes a successor array $s$ and a flag $b$ as input. An intuitive procedure is presented in \autoref{alg:make1}. 
+Naturally, the data structure needs an operation for adding new nodes. We define a procedure $\make$, which takes a successor array $s$ and a final flag $b$ as input. 
 
-\par
-
+An intuitive procedure is presented in \autoref{alg:make1}.
 The operation is defined on an existing Table of Nodes $T$.
-The require statement expresses the precondition, that all nodes in $s$ must already exist in the table. In the first two lines, we check if a node with the same successors and final value already exists. If there is this node already in $T$, we return its identifier. If it does not exist, we create a new id for the new node in line 4 and add it into the table $T$. Note, that in addition to the mapping from id to node in line 5, the reverse direction also needs to be inserted into the table in line 6. The new identifier is finally returned.
+The require statement expresses the precondition that all successor nodes in $s$ must already exist in the table. In the first two lines, we check if a node with the same successors and final value already exists. If there is this node already in $T$, we return its identifier. If it does not exist, we create a new id for the new node in line 4 and add it into the table $T$. Note that in addition to the mapping from id to node in line 5, the reverse direction also needs to be inserted into the table in line 6. The new identifier is finally returned.
 
 \begin{algorithm}
 \caption{First Version $\make$ (wrong)}\label{alg:make1}
@@ -149,16 +144,16 @@ The require statement expresses the precondition, that all nodes in $s$ must alr
 \end{algorithmic}
 \end{algorithm}
 
-However, this straight-forward algorithm for $\make$ is not completely correct. If we imagine adding a new node with self-loops for every letter, the identifier of this new node is unknown at this point in time. Therefore, we are not able to construct the successor array $s$ correctly. In order to address this issue, we introduce a special identifier $\self$, which indicates, that the successor is the current node itself. This special id is only used for the creation of a new node in $\make$ and will not appear in later operations with the node. 
+However, this straight-forward algorithm for $\make$ is not completely correct. If we imagine adding a new node with self-loops for every letter, the identifier of this new node is unknown at this point in time. Therefore, we are not able to construct the successor array $s$ correctly. In order to address this issue, we introduce a special identifier $\self$, which indicates that the successor is the current node itself. This special id is only used for the creation of a new node in $\make$ and will not appear in later operations with the node. 
 For creating the node for $\emptyset$, we then give $\make$ the arguments $s = [\self,\dots,\self]$ and $b = 0$.
 
 \par
 
-Using this treatment for self-loops, we can derive a more complicated but correct version of $\make$. The major problem with the introduction of $\self$ is its interchangeability with the node identifier. Imagine the table already contains the a node $q_{1}$ with $s=[q_{1},q_{1},q_{2},q_{3}]$. If we create a node with $s=[\self,\self,q_{2},q_{3}]$ and the same $b$ as $q_{1}$, the existing $q_{1}$ represents this node already and should be returned. But also for $s=[q_{1},\self,q_{2},q_{3}]$, $s=[\self,q_{1},q_{2},q_{3}]$ and $s=[q_{1},q_{1},q_{2},q_{3}]$ the same holds. In fact, all possible combinations between the node id and $\self$ depict the same successor array. In order for the lookup for existing nodes to work correctly, we thus have to add all of these combinations during the creation of $q_{1}$.
+Using this treatment for self-loops, we can derive a more complicated but correct version of $\make$. The major problem with the introduction of $\self$ is its interchangeability with the node identifier. Imagine the table already contains the a node $q_{1}$ with $s=[q_{1},q_{1},q_{2},q_{3}]$. If we create a node with $s=[\self,\self,q_{2},q_{3}]$ and the same $b$ as $q_{1}$, the existing $q_{1}$ represents this node already and should be returned. But also for $s=[q_{1},\self,q_{2},q_{3}]$, $s=[\self,q_{1},q_{2},q_{3}]$ and $s=[q_{1},q_{1},q_{2},q_{3}]$ the same holds. In fact, all possible combinations between the node id and $\self$ characterize the same successor array. In order for the lookup for existing nodes to work correctly, we thus have to add all of these combinations during the creation of $q_{1}$.
 
 \par 
 
-This is the main change in the next $\make$ procedure in \autoref{alg:makev1}. The first part with the lookup for an existing node stays the same as in \autoref{alg:make1}. But if the node does not exist yet, we add all possible combinations, denoted by $\pi(s)$, in lines 5 and 6. For the mapping from id to $s$ and $b$, the successor array without $\self$s is used. This is performed by line 7, where $s_{[\self / q_{\text{new}}]}$ denotes the array $s$, with the only difference, that each $\self$ is substituted by $q_{\text{new}}$. 
+This is the main change in the next $\make$ procedure in \autoref{alg:makev1}. The first part with the lookup for an existing node stays the same as in \autoref{alg:make1}. But if the node does not exist yet, we add all possible combinations, denoted by $\pi(s)$, in lines 5 and 6. For the mapping from identifier to $s$ and $b$, the successor array without $\self$s is used. This is performed by line 7, where $s_{[\self / q_{\text{new}}]}$ denotes the array $s$, with the only difference that each $\self$ is substituted by $q_{\text{new}}$. 
 \par
 \begin{algorithm}[htb]
 \centering
@@ -185,49 +180,15 @@ This is the main change in the next $\make$ procedure in \autoref{alg:makev1}. T
 \EndIf
 \end{algorithmic}
 \end{algorithm}
-This adapted procedure is much more expensive than the simple one before. Given a successor array with $n$ self-loops, there are $\sum_{k=0}^{n} \binom{n}{k} = 2^{n}$ many ways of combining $\self$ and the actual node id. Thus, the number of permutations are exponential in the number of $\self$s in the successor array. By inserting all of them, not only the time efficiency of $\make$ suffers, but also the table might grow very large.
+This adapted procedure is much more expensive than the simple one before. Given a successor array with $n$ self-loops, there are $\sum_{k=0}^{n} \binom{n}{k} = 2^{n}$ many ways of combining $\self$ and the actual node id. Thus, the number of permutations are exponential in the number of $\self$s in the successor array. By inserting all of them, not only the time efficiency of $\make$ suffers, but also the table containing the mappings might grow very large.
 \par
 To avoid some of these issues, another approach for $\make$ is portrayed in \autoref{alg:makev2}. 
 %First, a distinction is made between the existence of $\self$ in the successor array $s$. If there is none, we can just perform the simple $\make$ from \autoref{alg:make1}.
-The insight is, that besides the two cases, where the successor array only contains either $\self$ or the actual identifier and no combination of both, in all other cases, the only possible nodes to consider for equality are the non-$\self$ identifiers in the array. Therefore, when adding a new node, the table only needs to store those two cases for the lookup. This happens in line 9 with the only $\self$ case, and then in line 11 with the only actual id case, after we replaced every $\self$ with the correct new id.
-If nothing has been found in the lookup, the for loop from line 4 to 7 iterates over all non-$\self$ ids $q_{i}$ present in $s$ and inspects if they are identical to the current successors. This happens, by replacing all $\self$ ids with $q_{i}$ into the variable $s_{i}$ and examining the equivalence of $(s_{i},b)$ and the successors and final flag of $q_{i}$ in line 5 and 6.
-\todo{mention optimization with check if self even exists}
-\par
-Although \autoref{alg:makev2} returns the correct node, it is inefficient to iterate over all successors in the case without any $\self$ present in $s$. Therefore, a real implementation would first examine, if a $\self$ exists in $s$ and in that occasion perform the intuitive $\make$ from \autoref{alg:make1}.
-\par 
-\autoref{alg:makev2} does not have a very fast lookup compared to \autoref{alg:makev1}, as all the non $\self$ nodes need to be iterated over. Especially in cases, where there are very few $\self$s and lot of different identifiers, this approach can become more inefficient compared to \autoref{alg:makev1}. However, the exponential number of permutations in \autoref{alg:makev1} is replaced here with a procedure linear in the length of the successor array $s$.
-\par 
-In our implementation, a variation of \autoref{alg:makev1} has been implemented. The alphabet we are using is very small containing 3 letters, and in the table we are constructing, only a maximum of one $\self$ exists in any successor array. Therefore, even with the exponential approach, only two insertions into table need to be performed, one with only $\self$s instead the node id and one the other way around.
+The insight is that besides the two cases where the successor array only contains either $\self$ or the actual identifier and no combination of both, in all other cases, the only possible nodes to consider for equality are the non-$\self$ identifiers in the successor array. Therefore, when adding a new node, we only store those two cases for the lookup. This happens in line 8 with the only $\self$ case, and then in line 10 with the only real identifier case, after we have replaced every $\self$ with the correct new id in line 9.
+If nothing has been found in the lookup, the loop from line 4 to 7 iterates over all non-$\self$ ids $q_{i}$ present in $s$ and inspects if they are identical to the current successors. This happens, by replacing all $\self$ ids with $q_{i}$ into the array $s_{i}$ and examining the equivalence of $(s_{i},b)$ and the successors and final flag of $q_{i}$ in line 5 and 6.
 
-%\begin{minipage}{0.46\textwidth}
-%\begin{algorithm}
-%\centering
-%\caption{$\make$ Variant 1}\label{alg:makev1}
-%\begin{algorithmic}[1]
-%\Input {$s,b$}
-%%\Input {$s = [q_{1},\dots,q_{n}], b \in \{0,1\}$}
-%%\Require {$\forall q_{i} \in s: q_{i} \in T$}
-%\If{$\exists q = T[(s,b)]$}
-%\Return $q$
-%\Else
-%\State $q_{\text{new}} \gets \textsf{newId()}$
-%\ForEach{$s' \in \pi(s)$}
-%\State $T[(s',b)] \gets q_{new}$
-%\EndFor
-%\ForEach{$q_{i} \in s$}
-%\If{$q_{i} = \self$}
-%\State $q_{i} \gets q_{\text{new}}$
-%\EndIf
-%\EndFor
-%\State $T[q_{\text{new}}] \gets s$
-%\Return $q_{\text{new}}$
-%\EndIf
-%\end{algorithmic}
-%\end{algorithm}
-%%\end{minipage}
-%\hfill
-%\begin{minipage}{0.46\textwidth}
-\begin{algorithm}[htb]
+
+\begin{algorithm}[H]
 \caption{Third Version $\make$}\label{alg:makev2}
 \begin{algorithmic}[1]
 \Input {$s,b$}
@@ -255,34 +216,20 @@ In our implementation, a variation of \autoref{alg:makev1} has been implemented.
 %\EndIf
 \end{algorithmic}
 \end{algorithm}
-%\end{minipage}
 
-\subsection{$\create$ - Adding Nodes for a Specific Language}
+
+Although \autoref{alg:makev2} returns the correct node, it is inefficient to iterate over all successors in the case without any $\self$ present in $s$. Therefore, a real implementation would first examine, if a $\self$ exists in $s$. If there is none, we can simply perform the intuitive $\make$ from \autoref{alg:make1}.
+\par 
+\autoref{alg:makev2} does not have a very fast lookup compared to \autoref{alg:makev1}, as all the non $\self$ nodes need to be iterated over. Especially in cases, where there are very few $\self$s and lot of different identifiers, this approach can become more inefficient compared to \autoref{alg:makev1}. However, the exponential number of permutations in \autoref{alg:makev1} is replaced here with a procedure linear in the length of the successor array $s$.
+\par 
+In our implementation, a variation of \autoref{alg:makev1} has been implemented. The alphabet we are using for our application is very small containing only 3 letters. Furthermore, the table we are constructing will only contain a maximum of one $\self$ in any successor array. Therefore, even with the exponential approach, only two insertions into table need to be performed, one with only $\self$s instead of the real node id and one the other way around.
+
+\subsection{$\create$ - Adding Nodes for a Specific Language}\label{sec:create}
 The operation $\create$ allows to create nodes for a weakly acyclic language given a string $\str$. The string only contains letters of the alphabet $\Sigma$ or the Kleene star $*$. $\create$ processes the string character by character and recursively calls itself with shorter substrings. 
 
 For instance, with $\str = \texttt{ab*c*d*a}$ as input $\create$ constructs the node for $L(\bm{ab^{*}c^{*}d^{*}a})$ and returns its identifier. The recursive calls for this input are shown in \autoref{tab:create}. The first column shows the $\create$ call with a string as argument. The second and third column show the successor array $s$ and final flag $b$ we construct for that input string. We use this table to describe how $\create$ works. 
 
-First, the operation distinguishes between two cases. 
-In the first one, the input string starts with a letter not followed by the Kleene star \texttt{*} character. This corresponds to the first row of the table, where there is no $\texttt{*}$ directly after the first character $\texttt{a}$. In this scenario, we create a node, which only has one successor for the letter $\bm{a}$ and all other successors in the successor array $s$ are set to $q_{\emptyset}$.
-
-The second case is about having a letter followed by $\texttt{*}$ at the start of the input string. Obviously, the node we construct needs a self-loop for this letter. This can be seen in the middle three rows of \autoref{tab:create}, where the $\self$ identifier is put into the corresponding position. 
-Furthermore, if there are more letter-star pairs following, we need to identify the first letter without a $\texttt{*}$ immediately afterwards. In the call depicted in the second row of the table, we need to iterate over $\texttt{c*}$ and $\texttt{d*}$, before we find the letter $\texttt{a}$. Because $\bm{c^{*}}$ and $\bm{d^{*}}$ could both potentially be empty, reading in an $\bm{a}$ from the current node is also possible. Therefore, for the successor position of $\bm{a}$ we make another $\create$ call with the substring after $\texttt{a}$, which in this case is the empty string.
-For the successor node for $\bm{d}$, again $\bm{c^{*}}$ might be empty, and thus we also make a 
-$\create$ call with the substring after $\texttt{c*}$. Analogous to this, for the successor with respect to letter $\bm{c}$ we call $\create$ with the substring after $\texttt{b*}$. 
-
-However, there are some input strings, which the operation does not process correctly. Consider the input $\texttt{a*a}$. $\create$ will start constructing a self-loop for the first state, but will replace the self-loop by a transition with letter $\bm{a}$. 
-These special cases are not handled, as they will not be a problem for the future use of $\create$ and would slow down the otherwise simple procedure. 
-
-%Assume the alphabet $\Sigma = \{a_{1},a_{2},\dots,a_{n} \}$. The operation distinguishes between two cases. 
-%%Either the input string starts with a single letter $a_{i}$ not followed by a $\textt{*}$ or it a letter followed by a Kleene star $a_{i}*$. 
-%\paragraph{Case 1: $\str = a_{i}a_{j}...$.}
-%Here the input starts with the letter $a_{i}$ not followed by $*$. For this, we need to create a node, which only has one successor for the letter $a_{i}$ and all other successors in the successor array $s$ are $q_{\emptyset}$. Therefore, for the successor $s[i]$ we recursively call $\create$ with the rest of string $a_{j}...$.
-%
-%\paragraph{Case 2: $\str = a_{i}*...$.}
-%For the second case with $a_{i}*$., we are creating a node with a self loop for the letter $a_{i}$. To correctly compute the successors, we need to read in the two characters following $a_{i}*$. If both characters are letters with $a_{j}$ being the one directly after $a_{i}*$, again we recursively call $\create$ for $s[j]$ with the rest of the string. If the second character is a Kleene star, 
-
-
-\begin{table}
+\begin{table}[H]
 \centering
 \caption{Example for $\create$}\label{tab:create}
 \begin{tabular}[t]{ccc}
@@ -299,9 +246,28 @@ $\create()$&$[q_{\emptyset},q_{\emptyset},q_{\emptyset},q_{\emptyset}]$&$1$\\
 \end{table}
 
 
+First, the operation distinguishes between two cases. 
+In the first one, the input string starts with a letter not followed by the Kleene star \texttt{*} character. This corresponds to the first row of the table, where there is no $\texttt{*}$ directly after the first character $\texttt{a}$. In this scenario, we create a node, which only has one successor for the letter $\bm{a}$ and all other successors in the successor array $s$ are set to $q_{\emptyset}$. For the successor with respect to $\bm{a}$ we make a recursive call with the substring starting from the character after \texttt{a}.
+
+The second case is about having a letter followed by $\texttt{*}$ at the start of the input string. Obviously, the node we construct needs a self-loop for this letter. This can be seen in the middle three rows of \autoref{tab:create}, where the $\self$ identifier is put into the corresponding position. 
+Furthermore, if there are more letter-star pairs following, we need to identify the first letter without the $\texttt{*}$ immediately afterwards. In the call depicted in the second row of the table, we need to iterate over $\texttt{c*}$ and $\texttt{d*}$, before we find the letter $\texttt{a}$. Because $\bm{c^{*}}$ and $\bm{d^{*}}$ could both potentially be empty, reading in an $\bm{a}$ from the current node is also possible. Therefore, for the successor position of $\bm{a}$ we make another $\create$ call with the substring after $\texttt{a}$, which in this case is the empty string.
+For the successor node for $\bm{d}$, again $\bm{c^{*}}$ might be empty, and thus we also make a 
+$\create$ call with the substring after $\texttt{c*}$. Analogous to this, for the successor with respect to letter $\bm{c}$ we call $\create$ with the substring after $\texttt{b*}$. 
+
+However, there are some input strings, which the operation does not process correctly. Consider the input $\texttt{a*a}$. $\create$ will start constructing a self-loop for the first state, but will replace the self-loop by a transition with letter $\bm{a}$. 
+These special cases are not handled, as they will not be a problem for the future use of $\create$ and would slow down the otherwise simple procedure. 
+
+%Assume the alphabet $\Sigma = \{a_{1},a_{2},\dots,a_{n} \}$. The operation distinguishes between two cases. 
+%%Either the input string starts with a single letter $a_{i}$ not followed by a $\textt{*}$ or it a letter followed by a Kleene star $a_{i}*$. 
+%\paragraph{Case 1: $\str = a_{i}a_{j}...$.}
+%Here the input starts with the letter $a_{i}$ not followed by $*$. For this, we need to create a node, which only has one successor for the letter $a_{i}$ and all other successors in the successor array $s$ are $q_{\emptyset}$. Therefore, for the successor $s[i]$ we recursively call $\create$ with the rest of string $a_{j}...$.
+%
+%\paragraph{Case 2: $\str = a_{i}*...$.}
+%For the second case with $a_{i}*$., we are creating a node with a self loop for the letter $a_{i}$. To correctly compute the successors, we need to read in the two characters following $a_{i}*$. If both characters are letters with $a_{j}$ being the one directly after $a_{i}*$, again we recursively call $\create$ for $s[j]$ with the rest of the string. If the second character is a Kleene star, 
+
 
 \section{Recursive Algorithms on the Table}
-The acyclic structure from the partial order $\preceq$ from \autoref{sec:master-aut} with minimal elements $\emptyset$ and $\Sigma^{*}$ allows us to define operations on the table recursively with $q_{\emptyset}$ and $q_{\Sigma^{*}}$ as the recursion base cases.
+The acyclic structure of the partial order $\preceq$ from \autoref{sec:master-aut} with minimal elements $\emptyset$ and $\Sigma^{*}$ allows us to define operations on the table recursively with $q_{\emptyset}$ and $q_{\Sigma^{*}}$ as the recursion base cases.
 \par
 An example for such a recursive algorithm is given with the $\union$ operation in \autoref{alg:union}. The input $q_{1}$ and $q_{2}$ are two existing nodes in the table and the output is the node of their union, which is added into the table during the procedure. A $\cache$ stores already computed union results.
 \begin{algorithm}[htb]
@@ -329,20 +295,20 @@ An example for such a recursive algorithm is given with the $\union$ operation i
 \EndProcedure
 \end{algorithmic}
 \end{algorithm}
-In the first two lines, a lookup in the cache is performed. If there is nothing found in the cache, the boundary cases with the minimal elements are examined. The union of a node with $\Sigma^{*}$ is always $\Sigma^{*}$, which is handled in line 4 and 5. Lines $6-9$ address the cases with $q_{\emptyset}$, where the union of a node with $\emptyset$ is the node itself. 
-If this is also not the case, we are constructing the successor array and final flag for this node to pass it to $\make$. 
+In the first two lines, a lookup in the cache is performed. If nothing is found, the boundary cases with the minimal elements are examined. The union of a node with $\Sigma^{*}$ is always $\Sigma^{*}$, which is handled in line 4 and 5. Lines 6 to 9 address the cases with $q_{\emptyset}$, where the union of a node with $\emptyset$ is the node itself. 
+If this is also not the case, we are constructing the correct successor array and final flag for this node to pass it to $\make$. 
 
 \par 
 
-The calculation of $b$ is shown in line 10. If either one of $q_{1}$ and $q_{2}$ is an accepting node, then their union is accepting too. For the derivation of the successor nodes, the residual of the union of $q_{1}$ and $q_{2}$ with respect to a letter is required. We use the equality $(L_{1} \cup L_{2})^{a} = L_{1}^{a} \cup L_{2}^{a}$. For every letter $a_{i}$ in $\Sigma$, we recursively perform $\union$ with the successor nodes of both $q_{1}$ and $q_{2}$ for $a_{i}$ in line 14.
+The calculation of $b$ is shown in line 10. If either one of $q_{1}$ and $q_{2}$ is an accepting node, then their union is accepting too. For the derivation of the successor nodes, the residual of the union of $q_{1}$ and $q_{2}$ with respect to a letter is required. We use the equality $(L_{1} \cup L_{2})^{a} = L_{1}^{a} \cup L_{2}^{a}$. For every letter $a_{i}$ in $\Sigma$, we recursively perform $\union$ with the successor nodes of both $q_{1}$ and $q_{2}$ with respect to $a_{i}$ in line 14.
 
 \par 
 
-After the construction of $s$ and $b$, we give them to $\make$ and write $q_{\text{union}}$, the id given back by $\make$, into the cache in line 15, before returning it.
+After the construction of $s$ and $b$, we give them to $\make$ and write the id given back by $\make$ into the cache in line 15 before returning it.
 
 \par
 
-Similar to the $\make$ procedure, the possibility of self-loops remain a small obstacle for $\union$. If there is a letter $a$, where both $q_{1} = \Succ(q_{1},a)$ and $q_{2} = \Succ(q_{2},a)$, the successor array of the union also has a self-loop for letter $a$. Consequently, the special id $\self$ has to be written into the position of letter $a$ in $s$. We can achieve this quite elegantly, by writing $\self$ into the cache for $\{q_{1},q_{2}\}$ in line 11 before the computation of $s$. If $\union(q_{1},q_{2})$ is called in line 14, line 2 will return the $\self$ identifier, which has been written into the cache line 11 on the last recursion level. We only need to overwrite the $\self$ in the cache with the correct identifier afterwards in line 16.
+Similar to the $\make$ procedure, the possibility of self-loops remain a small obstacle for $\union$. If there is a letter $a$ where both $q_{1} = \Succ(q_{1},a)$ and $q_{2} = \Succ(q_{2},a)$, the successor array of the union also has a self-loop for letter $a$. Consequently, the special id $\self$ has to be written into the position of letter $a$ in $s$. We can achieve this quite elegantly, by writing $\self$ into the cache for $\{q_{1},q_{2}\}$ in line 11 before the computation of $s$. If $\union(q_{1},q_{2})$ is called in line 14, line 2 will return the $\self$ identifier, which has been written into the cache line 11 on the last recursion level. We only need to overwrite the $\self$ in the cache with the correct identifier afterwards in line 16.
 \par
 Other recursive methods on the table, like $\inter$ for the computation of the intersection of two nodes, have a very similar structure. There is always a cache, which stores already calculated results. The boundary cases in the beginning involve $q_{\emptyset}$ and $q_{\Sigma^{*}}$, the nodes in the successor array are iterated over, and a recursive call is made for each successor node. 
 
@@ -353,22 +319,24 @@ Other recursive methods on the table, like $\inter$ for the computation of the i
 
 \section{$\pre$ - An Algorithm for Computing the Pre-Image of a Transducer}\label{sec:pre}
 
-\subsection{The Pre Language}\label{sec:pre_theory}
-Recall, that a transducer $\mathcal{T}$ is an NFA over $\Sigma \times \Sigma$ and defines a mapping from words of one regular language to words of another regular language. The transitions $\delta_{\mathcal{T}}$ can be described by the tuple $(p,(a_{1},a_{2}),p')$, where the transducer state $p$ transitions to state $p'$ when reading the letters $(a_{1},a_{2})$.
+In this section we present the important operation $\pre$, which computes the preimage of a transducer given a weakly acyclic DFA. We begin by introducing the Pre language, which is a formal description of that preimage, before we sketch an intuitive but wrong algorithm for $\pre$ computing this language. We show, where the problem lies and add appropriate measures to achieve the correct final version of $\pre$.
 
-\begin{definition}\label{def:pre}
+\subsection{The Pre Language}\label{sec:pre_theory}
+Recall that a transducer $\mathcal{T}$ is an NFA over $\Sigma \times \Sigma$ and defines a mapping from words of one regular language to words of another regular language. The transitions $\delta_{\mathcal{T}}$ can be described by the tuple $(p,(a_{1},a_{2}),p')$, where the transducer state $p$ transitions to state $p'$ when reading the pair $(a_{1},a_{2})$.
+
+\begin{definition}[\cite{blondin_24}]\label{def:pre}
 $\Pre_{\mathcal{T}}(A) = \{ w \in \Sigma^{*}: (w,v) \in L(\mathcal{T}), v \in L(A) \}$
 is the \emph{Pre language} of a transducer $\mathcal{T} = (Q_{\mathcal{T}},\Sigma,q_{0\mathcal{T}},\delta_{\mathcal{T}},F_{\mathcal{T}})$ with respect to a DFA $A = (Q_{A},\Sigma,q_{0A}, \delta_{A}, F_{A})$. 
 \end{definition}
 
 A word $w$ is in the Pre language, if the transducer maps $w$ to a word $v$, which is also accepted by automaton $A$.
-Therefore, $\Pre_{\mathcal{T}}(A)$ is the pre-image of transducer $\mathcal{T}$ corresponding to the image $L(A)$. 
+Therefore, $\Pre_{\mathcal{T}}(A)$ is the preimage of transducer $\mathcal{T}$ corresponding to the image $L(A)$. 
 
 \par
 
-A concrete example is depicted in \autoref{fig:pre} with a transducer on the top left and a DFA on the right. The trap state is left out in the figure of the DFA. The language of $A$ in this case is $L(\bm{(a+b)^{*}c})$. The transducer $\mathcal{T}$ in \autoref{fig:pre-transducer} maps words of the form $\bm{b}^{k}\bm{a}$ to $\bm{a}^{k}\bm{c}$ with $k \in \mathbb{N}$. 
+A concrete example is depicted in \autoref{fig:pre} with a transducer on the left and a DFA on the right. The trap state is left out in the figure of the DFA. The language of $A$ in this case is $L(\bm{(a+b)^{*}c})$. The transducer $\mathcal{T}$ in \autoref{fig:pre-transducer} maps words of the form $\bm{b}^{k}\bm{a}$ to $\bm{a}^{k}\bm{c}$ with $k \in \mathbb{N}$. 
 Since here the complete image of the transducer $L(\bm{a^{*}c})$ is contained in $L(A)$, $\Pre_{\mathcal{T}}(A)$ is the language $L(\bm{b^{*}a})$. 
-\todo{here for dfa trap state left out}
+
 \begin{figure}[htb]
 \centering 
 	\begin{subfigure}{.45\textwidth}	
@@ -396,7 +364,7 @@ Since here the complete image of the transducer $L(\bm{a^{*}c})$ is contained in
 \end{figure}
 
 \begin{lemma}\label{lem:b}
-The Pre language $\Pre_{\mathcal{T}}(A)$ can be described by the NFA $B = (Q_{B},\Sigma,q_{0B},\delta_{B},F_{B})$, where 
+The Pre language $\Pre_{\mathcal{T}}(A)$ can be described by the NFA $B = (Q_{B},\Sigma,q_{0B},\delta_{B},F_{B})$ where 
 \begin{itemize}[--,noitemsep]
 \item $Q_{B} = Q_{\mathcal{T}} \times Q_{A}$
 \item $q_{0B} = (q_{0\mathcal{T}},q_{0A})$
@@ -406,25 +374,12 @@ The Pre language $\Pre_{\mathcal{T}}(A)$ can be described by the NFA $B = (Q_{B}
 \end{lemma}
 
 Lemma~\autoref{lem:b} defines a construction of an NFA $B$, which accepts the Pre language from Definition~\autoref{def:pre}. 
-The structure of $B$ shows similarities with the product construction for the intersection of two DFAs. In fact, $B$ can be viewed precisely as the NFA for the pre-image of the intersection of a DFA with the image of a transducer. Each state in $B$ is a pair of a state in $\mathcal{T}$ and a state in $A$. The initial state $q_{0B}$ is the pair of initial states of $\mathcal{T}$ and $A$, like depicted in \autoref{fig:pre}. The final states are the pairs of final states of both $\mathcal{T}$ and $A$.
+The structure of $B$ shows similarities with the product construction for the intersection of two DFAs. In fact, $B$ can be viewed precisely as the product of the intersection of the DFA $A$ with the image of the transducer $\mathcal{T}$. 
+
+\autoref{fig:pre-result} shows $B$ for the example in \autoref{fig:pre}.
+Each state in $B$ is a pair of a state in $\mathcal{T}$ and a state in $A$. The initial state $q_{0B}$ is the pair of initial states of $\mathcal{T}$ and $A$, in \autoref{fig:pre-result} this is the pair $(q_{1},q_{3})$. The final states are the pairs of final states of both $\mathcal{T}$ and $A$. In \autoref{fig:pre-result} the state $(q_{2},q_{4})$ is final, as $q_{2}$ and $q_{4}$ are also final in the transducer and the DFA.
  
-\par
-
-The transition function $\delta_{B}$ takes a state $(p,q)$, where $p$ is a state of the transducer and $q$ a state of the DFA, and a letter $x$. The set of states given back are all $(p',q')$, where there is a letter $y$ with the following conditions:
-\begin{itemize}[--,noitemsep]
-\item in transitions of $\mathcal{T}$ there exists the transition $p \xrightarrow{(x,y)} p'$
-\item in transitions of $A$ there exists the transition $q \xrightarrow{y} q'$
-\end{itemize}
-
-Taking \autoref{fig:pre} as an example, there exists a transition from $(p,q)=(q_{1},q_{3})$ to $(p',q')=(q_{2},q_{4})$ with letter $x=\bm{a}$ in $B$, because there is $y=\bm{c}$ such that:
-
-\begin{itemize}[--,noitemsep]
-\item in transitions of $\mathcal{T}$ there exists the transition $q_{1} \xrightarrow{(\bm{a},\bm{c})} q_{2}$ (\autoref{fig:pre-transducer})
-\item in transitions of $A$ there exists the transition $q_{3} \xrightarrow{\bm{c}} q_{4}$ (\autoref{fig:pre-dfa})
-\end{itemize}
-Using this construction, the resulting NFA $B$ for the example in \autoref{fig:pre} is depicted in \autoref{fig:pre-result} and characterizes the language $L(\bm{b^{*}a})$ as expected.
-
-\begin{figure}[htb]
+\begin{figure}[H]
 		\begin{tikzpicture}[>={Stealth[round]}]
     	\node[state, initial] (q1) {$(q_1,q_3)$};
     	\node[state, accepting, right of=q1] (q2) {$(q_2,q_4)$};
@@ -434,21 +389,35 @@ Using this construction, the resulting NFA $B$ for the example in \autoref{fig:p
     	\caption{$\Pre_{\mathcal{T}}(A)$ for \autoref{fig:pre}}\label{fig:pre-result}
 \end{figure}
 
-As we operate with weakly acyclic languages on the Table Of Nodes, an important question arises, if weakly acyclic languages are also closed under the pre-image. Specifically, given a weakly acyclic $A$ and weakly acyclic $\mathcal{T}$, we wonder if $\Pre_{\mathcal{T}}(A)$ also remains weakly acyclic. Note here, that we call a transducer weakly acyclic, if the underlying NFA is weakly acyclic. Blondin et al. have shown, that this is not the case in general. They introduce an additional syntactically defined property for transducers, which guarantees the weakly acyclicity for the result of $\Pre_{\mathcal{T}}(A)$\cite{blondin_24}.
+The transition function $\delta_{B}$ takes a state $(p,q)$, where $p$ is a state of the transducer, $q$ a state of the DFA and a letter $x$. The set of states given back are all $(p',q')$, where there is a letter $y$ with the following conditions:
+\begin{itemize}[--,noitemsep]
+\item in transitions of $\mathcal{T}$ there exists the transition $p \xrightarrow{(x,y)} p'$
+\item in transitions of $A$ there exists the transition $q \xrightarrow{y} q'$
+\end{itemize}
+
+Taking \autoref{fig:pre-result} as an example, there exists a transition from $(p,q)=(q_{1},q_{3})$ to $(p',q')=(q_{2},q_{4})$ with letter $x=\bm{a}$ in $B$, because there is $y=\bm{c}$ such that:
+
+\begin{itemize}[--,noitemsep]
+\item in transitions of $\mathcal{T}$ there exists the transition $q_{1} \xrightarrow{(\bm{a},\bm{c})} q_{2}$ (\autoref{fig:pre-transducer})
+\item in transitions of $A$ there exists the transition $q_{3} \xrightarrow{\bm{c}} q_{4}$ (\autoref{fig:pre-dfa})
+\end{itemize}
+Using this construction, the complete NFA $B$ in \autoref{fig:pre-result} characterizes the language $L(\bm{b^{*}a})$ as expected.
+
+As we operate with weakly acyclic languages on the Table Of Nodes, an important question arises, if weakly acyclic languages are also closed under the Pre language. Specifically, given a weakly acyclic $A$ and a weakly acyclic $\mathcal{T}$ we wonder if $\Pre_{\mathcal{T}}(A)$ also remains weakly acyclic. Note here that we call a transducer weakly acyclic if the underlying NFA is weakly acyclic. Blondin et al. have shown that this is not the case in general. They introduce an additional syntactically defined property for transducers, which guarantees the weakly acyclicity for the result of $\Pre_{\mathcal{T}}(A)$ \cite{blondin_24}.
 
 \subsection{A Simple but Wrong Algorithm}
-We aim to incorporate the calculation of the Pre language into the Table Of Nodes with the operation $\pre$. For a transducer $\mathcal{T}$ and a node with id $q$, $\pre$ returns the node for $\Pre_{\mathcal{T}}(q)$, which either was already present in the table, or has been added during this operation.
+We aim to incorporate the calculation of the Pre language into the Table Of Nodes with the operation $\pre$. For a transducer $\mathcal{T}$ and a node with id $q$, $\pre$ returns the node for $\Pre_{\mathcal{T}}(q)$, which either has already been present in the table or has been added during this operation.
 
 \par
 
-We already encounter two impediments with the integration into the table. The first one, already mentioned in the last chapter, is about the result of the $\pre$ operation not always being weakly acyclic. This is a substantial problem, as the table has been created for storing weakly acyclic languages, and the operations on the table take advantage of the properties of this specific class of languages.
-The second problem reflects, that the result automaton $B$ in Lemma~\ref{lem:b} is an NFA and might be non-deterministic. The table only stores weakly acyclic DFAs, so another step of determinizing $B$ into an equivalent DFA $C$ is required.
+We already encounter two impediments with the integration into the table. The first one, already mentioned in the last chapter, is about the result of the $\pre$ operation not always being weakly acyclic. This is a substantial problem as the table has been created for storing weakly acyclic languages, and the operations on the table take advantage of the properties of this specific class of languages.
+The second problem reflects that the result automaton $B$ in Lemma~\ref{lem:b} is an NFA and might be non-deterministic. The table only stores weakly acyclic DFAs, so another step of determinizing $B$ into an equivalent DFA $C$ is required.
 
 %Even though weakly acyclic languages are not closed under the pre-image in general, we construct an algorithm $\pre$, which returns the correct node for $\text{Pre}_{\mathcal{T}}(A)$, if the result is weakly acyclic. If the result is not weakly acyclic, an error identifier is given back. 
 
 \par
 
-For the first impediment, we are not introducing any restrictions on the transducer to ensure, that the resulting language is weakly acyclic. We guarantee a correct result of the operation if the result is weakly acyclic. However, if this is not fulfilled, the algorithm is behaving undefined. 
+For the first impediment, we are not introducing any restrictions on the transducer to ensure that the resulting language is weakly acyclic. We guarantee a correct result of the operation if the result is weakly acyclic. However, if this is not fulfilled, the algorithm will behave undefined.
 
 \par
 
@@ -456,20 +425,20 @@ To address the issue of non-determinism, we use the idea behind the powerset con
 
 \par 
 
-Using these ideas, we develop the following conceptual approach for $\pre$ with the precondition, that $\Pre_{\mathcal{T}}(A)$ is a weakly acyclic language:
+Using these ideas, we develop the following conceptual approach for $\pre$ with the precondition that $\Pre_{\mathcal{T}}(A)$ is a weakly acyclic language:
 \begin{itemize}[-,noitemsep]
 \item construct NFA $B$ for $\Pre_{\mathcal{T}}(A)$ according to Lemma~\ref{lem:b}
 \item determinize NFA $B$ into the DFA $C$ using the power set construction
 \end{itemize}
 
-We first present a more simple but erroneous algorithm of $\pre$ implementing this approach, which is sketched in \autoref{alg:pre}. We write $Q_{T}$ for all nodes and $F_{T}$ for all accepting nodes in the table $T$. Analogous to the last section, the transducer $\mathcal{T} = (Q_{\mathcal{T}},\Sigma,q_{0\mathcal{T}},\delta_{\mathcal{T}},F_{\mathcal{T}})$.
+We first present a more simple but erroneous algorithm of $\pre$ implementing this approach, which is sketched in \autoref{alg:pre}. We write $Q_{T}$ for all nodes and $F_{T}$ for all accepting nodes in the table $T$. Analogous to the last section, the transducer $\mathcal{T}$ is of the form $(Q_{\mathcal{T}},\Sigma,q_{0\mathcal{T}},\delta_{\mathcal{T}},F_{\mathcal{T}})$.
 
 By operating with sets of states from the NFA $B$ throughout the whole algorithm, we immediately generate the corresponding states of the determinized DFA $C$.
-Therefore, the first argument $S$ of $\pre$ represents a state in the DFA $C$ and is composed of states from NFA $B$.  
-Each state in $B$ is a pair containing a state of the transducer ($ p \in Q_{\mathcal{T}}$) in the first position and a state of the table ($ q \in Q_{T}$) in the second position.
+Therefore, the first argument $S$ of $\pre$ represents a single state in the DFA $C$ and is composed of states from NFA $B$.  
+Each state in $B$ is a pair containing a state of the transducer ($ p \in Q_{\mathcal{T}}$) in the first position and a state of the table ($ q \in Q_{T}$) in the second position as described in Lemma~\autoref{lem:b}.
 
-In order to construct the right node for the Pre language, we compute the correct final flag $b$ in line 4 and successor array $s$ in the loop from line 6 to 13. After the inner loop from line 8 to 9, $S'$ represents the successor state in DFA $C$ for $S$ with respect to the letter $a_{i}$. This happens by accumulating all $\delta_{B}((p,q),a_{i})$ from Lemma~\autoref{lem:b} into $S'$ in line 9. Recall, that $\Succ(q,a_{i})$ returns the node for the successor language with respect to the letter $a_{i}$, which agrees with $\delta_{A}(q,a_{i})$ from Lemma~\autoref{lem:b}.
-After the loop, in line 14 we pass the constructed $s$ and $b$ to the $\make$ operation, which creates the node into the table.
+In order to construct the right node for the Pre language, we compute the correct final flag $b$ in line 4 and successor array $s$ in the loop from line 6 to 13. After the inner loop from line 8 to 9, the variable $S'$ represents the successor state in DFA $C$ for $S$ with respect to the letter $a_{i}$. This happens by accumulating all $\delta_{B}((p,q),a_{i})$ from Lemma~\autoref{lem:b} into $S'$ in line 9. Recall that $\Succ(q,a_{i})$ returns the node for the successor language with respect to the letter $a_{i}$, which agrees with $\delta_{A}(q,a_{i})$ from Lemma~\autoref{lem:b}.
+After the loop in line 14, we pass the constructed $s$ and $b$ to the $\make$ operation, which creates the node into the table.
 
 
 
@@ -516,7 +485,7 @@ After the loop, in line 14 we pass the constructed $s$ and $b$ to the $\make$ op
 \end{algorithmic}
 \end{algorithm}
 
-This algorithm is not functioning for all cases, where the Pre language is weakly acyclic. Consider the example given in \autoref{fig:pre-counter} with $\Sigma = \{\bm{a},\bm{b}\}$. The NFA $B$ for the Pre language in \autoref{fig:pre-b} is portraying the language $L(\bm{(a+b)^{*}})$, which is weakly acyclic since its minimal automaton is only one state with self loop for $\bm{a}$ and $\bm{b}$. However, after determinizing $B$, the result automaton $C$ shown in \autoref{fig:pre-det-b} is not weakly acyclic and contains a cycle, which is not a self-loop. This poses a serious problem for the $\pre$ procedure we established in \autoref{alg:pre0}.
+This algorithm is not functioning for all cases, where the Pre language is weakly acyclic. Consider the example given in \autoref{fig:pre-counter} with $\Sigma = \{\bm{a},\bm{b}\}$. The NFA $B$ for the Pre language in \autoref{fig:pre-b} is portraying the language $L(\bm{(a+b)^{*}})$, which is weakly acyclic since its minimal automaton is only one state with a self-loop for $\bm{a}$ and $\bm{b}$. However, after determinizing $B$, the result automaton $C$ shown in \autoref{fig:pre-det-b} is not weakly acyclic and contains a cycle. This poses a serious problem for the $\pre$ procedure we established in \autoref{alg:pre0}.
 %This means for our \autoref{alg:pre0}, that it will fall into an infinity loop. 
 
 \begin{figure}[htb]
@@ -579,8 +548,8 @@ This algorithm is not functioning for all cases, where the Pre language is weakl
 %\end{forest}
 
 
-Imagine the example from \autoref{fig:pre-counter} as input for the \autoref{alg:pre0}. A recursion call tree for this concrete case is drawn in \autoref{fig:rectree}.
-In detail, the algorithm starts with input $S=\{(q_{1},q_{3})\}$, which is the initial node in \autoref{fig:pre-det-b} and the root of the recursion tree. In the first iteration of the loop for letter $\bm{a}$ starting from line 6, the set $S'$ is the same as $S$, as can be also seen in in \autoref{fig:pre-det-b} with the self loop in state $(q_{1},q_{3})$. Therefore, the condition in line 10 evaluates to true and no recursive call is made in this iteration. In the tree this case is depicted in the left child of the root. 
+Imagine the example from \autoref{fig:pre-counter} as input for \autoref{alg:pre0}. A recursion call tree for this concrete case is drawn in \autoref{fig:rectree}.
+The algorithm starts with the input $S=\{(q_{1},q_{3})\}$, which is the initial node in \autoref{fig:pre-det-b} and the root of the recursion tree. In the first iteration of the loop for letter $\bm{a}$ starting from line 6, the set $S'$ is the same as $S$, as can be also seen in in \autoref{fig:pre-det-b} with the self loop in state $(q_{1},q_{3})$. Therefore, the condition in line 10 evaluates to true and no recursive call is made in this iteration. In the tree this case is depicted in the left child of the root. 
 In the second iteration with letter $\bm{b}$, $\pre$ is called with $S'= \{(q_{1},q_{3}),(q_{2},q_{3})\}$ in line 13, which is the right child of the root in the recursion tree. 
 \par
 Now we are one recursion level down and the current input $S=\{(q_{1},q_{3}),(q_{2},q_{3})\}$. Again, we iterate over the successors starting with letter $\bm{a}$ and compute $S'=\{(q_{1},q_{3})\}$. At this point, $\pre$ with argument $S'=\{(q_{1},q_{3})\}$ is called in line 13. This recursive call is illustrated in the bottom node of the recursion tree. However, we can notice that this is exactly the same $\pre$ function call we performed in the beginning in the root, both marked in red in \autoref{fig:rectree}. Therefore, for this example \autoref{alg:pre0} will run into an infinite loop without terminating, even though the Pre language is a weakly acyclic language.
@@ -669,7 +638,7 @@ We can then adapt \autoref{alg:pre0} to also construct that DFA into the Table o
 \end{algorithm}
 
 \autoref{alg:proof} describes a procedure for constructing the minimal weakly acyclic DFA $\widetilde{C}$, which recognizes $\Pre_{\mathcal{T}}(A)$. The precondition states that $\Pre_{\mathcal{T}}(A)$ is a weakly acyclic language. Again like in the last subsection, the NFA $B$ is formed and determinized into $C$. As we have seen with the example in \autoref{fig:pre-counter}, this might produce a not weakly acyclic $C$. Therefore, in the loop from line 3 to 4 all cycles beyond self loops are removed by collapsing the states part of the cycle. Here, collapsing $q_{1},q_{2},\dots,q_{k}$ into one state means removing all nodes in the DFA except $q_{1}$ and redirecting any incoming transitions of $q_{2},\dots,q_{k}$ to $q_{1}$. Line 6 performs a minimization on $C$ returning $\widetilde{C}$.
-With Lemma~\autoref{lem:preproof} we show, that this procedure yields a correct weakly acyclic DFA for the language $\Pre_{\mathcal{T}}(A)$.
+With Lemma~\autoref{lem:preproof} we show that this procedure yields a correct weakly acyclic DFA for the language $\Pre_{\mathcal{T}}(A)$.
 
 \begin{lemma}\label{lem:preproof}
 After execution of \autoref{alg:proof}, $\widetilde{C}$ is a minimal weakly acyclic automaton for the Pre language $Pre_{\mathcal{T}}(A)$.
@@ -685,14 +654,14 @@ Let $C_{0}$ denote $C$ before entering the loop, $C_{j}$ be $C$ after the $j$-th
 
 With Lemma~\ref{lem:b} we have $L(B) = \Pre_{\mathcal{T}}(A)$ after line 1. For the DFA $C_{0}$ constructed by the power set construction in line 4, it holds that $L(C_{0}) = L(B) = \Pre_{\mathcal{T}}(A)$. Moreover $L(C_{n}) = L(\widetilde{C})$ because the minimization step in line 5 does not change the language recognized by the automaton.
 
-Therefore, to show $L(\widetilde{C}) = \Pre_{\mathcal{T}}(A)$ we only need to prove, that the loop iterations do not change the language of the automaton: $L(C_{j}) = L(C_{j+1}) \ \forall \ 0 \le j < n$. \\
+Therefore, to show $L(\widetilde{C}) = \Pre_{\mathcal{T}}(A)$ we only need to prove that the loop iterations do not change the language of the automaton: $L(C_{j}) = L(C_{j+1}) \ \forall \ 0 \le j < n$. \\
 
 %Let $\widetilde{C_{0}}$ denote the unique minimal automaton of $C_{0}$. Each state in $\widehat{C}$ recognizes a distinct language and $L(\widehat{C}) = L(C)$. Let $L_{M}(p)$ denote the language recognized from state $p$ in an automaton $M$.
 
-Let $\widehat{C}$ denote the unique minimal automaton of $C_{0}$. Each state in $\widehat{C}$ recognizes a distinct language and trivially $L(\widehat{C}) = L(C_{0})$. Recall, that $L_{A}(q)$ denotes the language of state $p$ in automaton $A$. 
+Let $\widehat{C}$ denote the unique minimal automaton of $C_{0}$. Each state in $\widehat{C}$ recognizes a distinct language and trivially $L(\widehat{C}) = L(C_{0})$. Recall that $L_{A}(q)$ denotes the language of state $p$ in automaton $A$. 
 %Furthermore, as we chose $i$ to be minimal, $L(\widehat{C}) = L(C_{0}) = \Pre_{\mathcal{T}}(A)$. Recall, that $L_{A}(q)$ is the language of state $p$ in automaton $A$.
 
-Assume for contradiction there exists a minimal $i<n$ such that  $L(C_{i}) \neq L(C_{i+1})$. This means, in the $i+1$-th iteration of the loop in \autoref{alg:proof} non-equivalent states have been collapsed.
+Assume for contradiction there exists a minimal $i<n$ such that  $L(C_{i}) \neq L(C_{i+1})$. This means in the $i+1$-th iteration of the loop in \autoref{alg:proof} non-equivalent states have been collapsed.
 Specifically, there exist two distinct states $p,q$, which are part of a cycle in $C_{i}$ and have been collapsed into one state of $C_{i+1}$, but $L_{C_{i}}(p) \neq L_{C_{i}}(q)$.
 
 As $p,q$ form a cycle in $C_{i}$, there exist non-empty words $v,w \in \Sigma^{*}$ such that $\delta_{C_{i}}(p,v) = q$ and $\delta_{C_{i}}(q,w) = p$. 
@@ -724,7 +693,7 @@ However, $L(\widehat{C}) = L(C_{0}) = \Pre_{\mathcal{T}}(A)$ and $\Pre_{\mathcal
 
 \subsection{Implementing the Final Version}
 Finally, we are integrating the idea from \autoref{alg:proof} into the $\pre$ procedure of the Table of Nodes. The previous \autoref{alg:pre0} already covered the first two lines from \autoref{alg:proof}. What needs to be added at this point is the handling of possible cycles.
-\autoref{alg:pre} shows the adapted $\pre$ function, which is an implementation of the abstract \autoref{alg:proof}. The blue colored lines demonstrate, what has been extended to the first version of $\pre$ in \autoref{alg:pre0}.
+\autoref{alg:pre} shows the adapted $\pre$ function, which is an implementation of the abstract \autoref{alg:proof}. The blue colored lines demonstrate, what has been extended to the first version in \autoref{alg:pre0}.
 
 
 \begin{algorithm}[ht]
@@ -775,20 +744,20 @@ Finally, we are integrating the idea from \autoref{alg:proof} into the $\pre$ pr
 
 
 
-We add the special identifier $\invalid$, which is used to recognize the existence of a cycle. In line 4 of \autoref{alg:pre} we write $\invalid$ into the cache and only when the node has been added into the table in line 23, this $\invalid$ is overwritten with the correct id $q_{\text{pre}}$. Therefore, during the construction of the successor array $s$ of the current $S$, this special identifier stays in the cache. If we encounter $\invalid$ in the cache for $S'$ in line 13, the successors for $S'$ are currently still being constructed, which means a future successor of $S'$ is again $S'$. Furthermore, this future successor is not a direct successor of $S'$, as the self loop case has been handled in lines 11 and 12 before.
+We add the special identifier $\invalid$, which is used to recognize the existence of a cycle. In line 4 of \autoref{alg:pre} we write $\invalid$ into the cache and only when the node has been added into the table, this $\invalid$ is overwritten with the correct id $q_{\text{pre}}$ in line 23. Therefore, during the construction of the successor array $s$ of the current $S$, this special identifier stays in the cache. If we encounter $\invalid$ in the cache for $S'$ in line 13, the successors for $S'$ are currently still being constructed, which means a future successor of $S'$ is again $S'$. Furthermore, this future successor is not a direct successor of $S'$ as the self-loop case has already been handled in lines 11 and 12 before.
 
 \par
 
-With Lemma~\autoref{lem:preproof} we can use the approach of collapsing to handle the cycles recognized with $\invalid$. When we come across $\invalid$ for $S'$ in line 13, we move up all recursion levels until we are in the level where the node for that $S'$ is constructed and we collapse this cycle over multiple layers into a self loop. 
+With Lemma~\autoref{lem:preproof} we can use the approach of collapsing to handle the cycles recognized with $\invalid$. When we come across $\invalid$ for $S'$ in line 13, we move up all recursion levels until we are in the level where the node for that $S'$ is constructed, and we collapse this cycle over multiple layers into a self loop. 
 Concretely, the recognition of a cycle happens in line 13, after which we return a special abort pair in line 14. 
 The first element of this pair is the label $\abort$, indicating we are in the process of wandering up the recursion layers, and the second element is $S'$, which is showing where the cycle started from. 
-In line 17, we handle the occurrence of the abort pair. If we have reached the correct level the cycle began, checked in line 18, we set this successor $s[i]$ to a self loop. Otherwise, we are still in a recursion level in between and we just pass on what has been returned in line 21.
+In line 17, we handle the occurrence of the abort pair. If we have reached the correct level where the cycle began, checked in line 18, we set this successor $s[i]$ to a self-loop. Otherwise, we are still in a recursion level in between and we just pass on what has been returned in line 21.
 
 \par 
 
-The last line of \autoref{alg:proof} yields the minimal automaton for the Pre language, which is necessary for the table, as it only stores minimal weakly acyclic DFAs. This step is implicitly resolved by the $\make$ operation in line 22. There can not be two nodes in the table characterizing the same language, because their successor array and final flag are equivalent and $\make$ only constructs creates unique nodes.
+The last line of \autoref{alg:proof} yields the minimal automaton for the Pre language, which is necessary for the table, as it only stores minimal weakly acyclic DFAs. This step is implicitly resolved by the $\make$ operation in line 22 of \autoref{alg:pre}. There can not be two nodes in the table characterizing the same language, because their successor array and final flag are equivalent and $\make$ only creates unique nodes.
 Therefore, the adapted \autoref{alg:pre} poses as a correct implementation for the computation of the node for a weakly acyclic Pre language.
 
 \par 
 
-For the future use of $\pre$, we want to calculate the Pre language of a transducer $\mathcal{T}$ with respect to an existing node $q$ of the table. However, the first argument of $\pre$, as we have defined it, expects the set $S \subseteq Q_{\mathcal{T}} \times Q_{T}$ and not a single node of the table. Therefore, when making the first $\pre$ call for the node $q$ and transducer $\mathcal{T}$, we pass the set $S = \{ (q_{0\mathcal{T}},q) \}$, which is exactly the initial state of the automaton for the Pre language according to Lemma~\autoref{lem:b}.
+For the future use of $\pre$ we want to calculate the Pre language of a transducer $\mathcal{T}$ with respect to an existing node $q$ of the table. However, the first argument of $\pre$, as we have defined it, expects the set $S \subseteq Q_{\mathcal{T}} \times Q_{T}$ and not a single node of the table. Therefore, when making the first $\pre$ call for the node $q$ and transducer $\mathcal{T}$, we pass the set $S = \{ (q_{0\mathcal{T}},q) \}$, which is exactly the initial state of the automaton for the Pre language according to Lemma~\autoref{lem:b}.
