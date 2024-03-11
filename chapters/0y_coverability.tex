@@ -24,7 +24,7 @@ In line 1, we initialize the set $\mathcal{M}$ with the upward closed set with $
 
 \begin{algorithm}[htb]
 \caption{Backwards Reachability Algorithm}\label{alg:bw}
-\begin{algorithmic}[1]
+\begin{algorithmic}[1]\smallskip
 \Input {$N, M_{0}, M$}
 \State $\mathcal{M} \gets \{ M^{'} : M^{'} \ge M \}$
 \State $\mathcal{M}_{\text{old}} \gets \emptyset$
@@ -39,6 +39,7 @@ In line 1, we initialize the set $\mathcal{M}$ with the upward closed set with $
     \Return false
 \EndIf
 \EndWhile
+\smallskip
 \end{algorithmic}
 \end{algorithm}
 
@@ -149,7 +150,7 @@ Analogous to \autoref{alg:bw}, the input are a Petri net, a start marking and a 
 \begin{algorithm}[htb]
 \caption{First Version of Backwards Reachability Algorithm with Table of Nodes}\label{alg:bw_wwa}
 \begin{minipage}[t]{0.6\textwidth}
-\begin{algorithmic}[1]
+\begin{algorithmic}[1]\smallskip
 \Input {$N, M_{0}, M$}
 \State $\tbl \gets \text{EmptyTableOfNodes}$
 \State $\mathcal{T} \gets \textsf{net2transducer}(N)$
@@ -167,11 +168,12 @@ Analogous to \autoref{alg:bw}, the input are a Petri net, a start marking and a 
     \Return false
 \EndIf
 \EndWhile
+\smallskip
 \end{algorithmic}
 \end{minipage}
 \begin{algocolor}
 \begin{minipage}[t]{0.37\textwidth}
-\begin{algorithmic}
+\begin{algorithmic}\smallskip
 \Input {$N, M_{0}, M$}
 \State 
 \State 
@@ -189,6 +191,7 @@ Analogous to \autoref{alg:bw}, the input are a Petri net, a start marking and a 
     \Return false
 \EndIf
 \EndWhile
+\smallskip
 \end{algorithmic}
 \end{minipage}
 \end{algocolor}
@@ -241,7 +244,7 @@ The $\encode$ function is sketched in \autoref{alg:encode} and returns the node 
 \begin{minipage}[t]{0.46\textwidth}
 \begin{algorithm}[H]
 \caption{$\encode$ $\strut$}\label{alg:encode}
-\begin{algorithmic}[1]
+\begin{algorithmic}[1]\smallskip
 \Input {$M = (m_{1},m_{2},\dots,m_{n})$}
 \State $\str \gets \text{empty string}$
 \ForEach {$m_{i} \in M$}
@@ -259,7 +262,7 @@ The $\encode$ function is sketched in \autoref{alg:encode} and returns the node 
 \begin{minipage}[t]{0.46\textwidth}
 \begin{algorithm}[H]
 \caption{$\encodeUp$ $\strut$}\label{alg:encodeUp}
-\begin{algorithmic}[1]
+\begin{algorithmic}[1]\smallskip
 \Input {$M = (m_{1},m_{2},\dots,m_{n})$}
 \State $\str \gets \text{empty string}$
 \ForEach {$m_{i} \in M$}
@@ -678,7 +681,7 @@ This case is symmetrical to the previous one. The only difference is in the thir
 %This case is symmetrical to the previous one. The only difference is in the third fragment of the transducer. Instead of $(\bm{1},\Diamond)$ we read in the correct number of $(\Diamond,\bm{1})$, because after firing $t_{1}$, the number of tokens in $s_{3}$ increases.
 
 
-\subsubsection{Preprocess and Postprocess}
+\subsubsection{$\prep$ and $\post$}
 
 As mentioned, the constructed transducer only maps specific padded encodings dependent on the transition. In the concrete example in \autoref{fig:transfortrans} the transducer only maps a word of the form $w = \bm{11}^{k}\square\bm{111}^{k}\bm{1}\square\bm{11}^{k}\Diamond\square$ to another word $v = \bm{11}^{k}\square\bm{111}^{k}\Diamond\square\bm{11}^{k}\bm{1}\square$. However, besides the construction of the transducer in line 2 of \autoref{alg:bw_wwa}, we only use the padded encodings for the $\pre$ operation in line 8. The rest of the algorithm is operating with the ordinary encoding from \autoref{def:encoding}.
 
@@ -735,7 +738,7 @@ The $\post$ operation works in the reverse direction from \autoref{fig:afterprep
     	\node[state, initial] (q1) {$q$};
     	\node[state, right of=q1, accepting] (q2) {$q'$};
     	\node[state, above right of=q1, accepting] (q3) {$q''$};
-    	\draw (q1) edge[above] node{$\bm{1}$} (q3);
+    	\draw (q1) edge[above left] node{$\bm{1}$} (q3);
     	\draw (q1) edge[above] node{$\square$} (q2);
 %            	(q1) edge[above] node{$(\bm{a},\bm{c})$} (q2);
      	\end{tikzpicture}
@@ -746,16 +749,30 @@ The $\post$ operation works in the reverse direction from \autoref{fig:afterprep
 		\begin{tikzpicture}[node distance=1.8cm,every initial by arrow/.style={dashed}, >={Stealth[round]},accepting/.style=accepting by arrow, every accepting by arrow/.style={dashed}]
     	\node[state, initial] (q1) {$q$};
     	\node[state, right of=q1] (q4) {$q_{1}$};
-    	\node[state, right of=q4] (q5) {$q_{2}$};
+    	\node[right of=q4] (q5) {$\cdots$};
     	\node[state, right of=q5] (q6) {$q_{k}$};
     	\node[state, right of=q6, accepting] (q2) {$q'$};
-    	\node[state, above right of=q1, accepting] (q3) {$q''$};
-    	\draw (q1) edge[above] node{$\bm{1}$} (q3);
+    	\node[state, above right of=q1] (q3) {$q''$};
+    	\draw (q1) edge[above left] node{$\mathbf{1}$} (q3);
     	\draw (q1) edge[above] node{$\Diamond$} (q4);
     	\draw (q4) edge[above] node{$\Diamond$} (q5);
-    	\draw (q5) edge[above, dashed] node{$\Diamond$} (q6);
+    	\draw (q5) edge[above] node{$\Diamond$} (q6);
     	\draw (q6) edge[above] node{$\square$} (q2);
-%            	(q1) edge[above] node{$(\bm{a},\bm{c})$} (q2);
+    	\draw[dashed] (q3) -> ++(1.0,0);
+    	
+%    	\node[state, initial] (q1) {$q$};
+%    	\node[state, right of=q1] (q4) {$q_{1}$};
+%    	\node[right of=q4] (q7) {$\cdots$};
+%%    	\node[state, right of=q4] (q5) {$q_{2}$};
+%    	\node[state, right of=q7] (q6) {$q_{k}$};
+%    	\node[state, right of=q6, accepting] (q2) {$q'$};
+%    	\node[state, above right of=q1, accepting] (q3) {$q''$};
+%    	\draw (q1) edge[above left] node{$\bm{1}$} (q3);
+%    	\draw (q1) edge[above] node{$\Diamond$} (q4);
+%    	%\draw (q4) edge[above] node{$\Diamond$} (q5);
+%    	%\draw (q5) edge[above, dashed] node{$\Diamond$} (q6);
+%    	\draw (q6) edge[above] node{$\square$} (q2);
+%%            	(q1) edge[above] node{$(\bm{a},\bm{c})$} (q2);
      	\end{tikzpicture}
     	\caption{after $\prep$} \label{fig:afterprep}
     \end{subfigure}
@@ -863,7 +880,7 @@ In line 2, instead of constructing one transducer we build a list $\mathcal{T}^{
 
 \begin{algorithm}[htb]
 \caption{Final Version of Backwards Reachability Algorithm with Table of Nodes}\label{alg:bw_wwa_final}
-\begin{algorithmic}[1]
+\begin{algorithmic}[1]\smallskip
 \Input {$N, M_{0}, M$}
 \State $\tbl \gets \text{EmptyTableOfNodes}$
 \color{blue!75}
@@ -891,6 +908,7 @@ In line 2, instead of constructing one transducer we build a list $\mathcal{T}^{
     \Return false
 \EndIf
 \EndWhile
+\smallskip
 \end{algorithmic}
 \end{algorithm}
 

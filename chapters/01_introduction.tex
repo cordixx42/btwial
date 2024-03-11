@@ -34,13 +34,13 @@ In detail, we make the following contributions:
 
 \begin{itemize}[-]
 \setlength\itemsep{0.2em}
-\item we introduce the class of weakly acyclic languages, which are a subset of regular languages (\autoref{chapter:weakly_acyclic_language})
-\item we design a data structure Table of Nodes for representing weakly acyclic automata efficiently (\autoref{chapter:datastructure})
-\item we implement important operations on this data structures (\autoref{chapter:datastructure})
-\item we define a bidirectional mapping between weakly acyclic automata and Petri net configurations (\autoref{chapter:coverability})
-\item we construct a bidirectional mapping between a transducer - an automaton with input and output - and a Petri net (\autoref{chapter:coverability})
-\item we integrate the Table of Nodes into the Backwards Reachability Algorithm (\autoref{chapter:coverability})
-\item we perform benchmarks on our implementation and compare it to other coverability tools (\autoref{chapter:evaluation})
+\item We introduce the class of weakly acyclic languages, which are a subset of regular languages (\autoref{chapter:weakly_acyclic_language}),
+\item we design a data structure Table of Nodes for representing weakly acyclic automata efficiently (\autoref{chapter:datastructure}),
+\item we implement important operations on this data structures (\autoref{chapter:datastructure}),
+\item we define a bidirectional mapping between weakly acyclic automata and Petri net configurations (\autoref{chapter:coverability}),
+\item we construct a transducer -- an automaton with input and output -- from a Petri net (\autoref{chapter:coverability}),
+\item we integrate the Table of Nodes into the Backwards Reachability Algorithm (\autoref{chapter:coverability}), and
+\item we perform benchmarks on our implementation and compare it to other coverability tools (\autoref{chapter:evaluation}).
 \end{itemize}
 
 The benchmarks show that our approach can characterize the infinite sets of markings compactly with the data structure we developed. Furthermore, comparisons with existing tools emphasize that our implementation is able to compete with state-of-the-art solvers for the coverability problem.

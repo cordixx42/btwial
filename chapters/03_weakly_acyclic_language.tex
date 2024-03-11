@@ -70,7 +70,7 @@ See {\cite[Proposition~4]{blondin_24}}
 \section{Other Representations}
 
 As with regular languages, there are equivalent ways to represent weakly acyclic languages. Let $\alpha(w)$ be the set of letter, which occur within in word $w$. 
-Blondin et al. have shown that weakly acyclic DFAs, weakly acyclic NFAs and weakly acyclic expressions represent the same class of weakly acyclic languages \cite{blondin_24}. 
+Blondin et al. have shown that weakly acyclic DFAs, weakly acyclic NFAs and weakly acyclic expressions represent the same class of weakly acyclic languages \cite{blondin_24}. The following definitions have been adapted from \cite{blondin_24}.
 
 
 %It can further be shown, that if a weakly acyclic DFA $A$ accepts the language $L(A)$, then the minimal automata for this language is also weakly acyclic \cite{blondin_24}. 
@@ -78,7 +78,7 @@ Blondin et al. have shown that weakly acyclic DFAs, weakly acyclic NFAs and weak
 \subsection{Weakly Acyclic NFAs}
 An NFA $(Q, \Sigma, q_{0},\delta,F)$ is \textit{weakly acyclic} if 
 \begin{itemize}[--,noitemsep]
-	\item $q \in \delta(q,w)$ implies $\delta(q,a) = {q}$ for every $a \in \alpha(w)$
+	\item $q \in \delta(q,w)$ implies $\delta(q,a) = {q}$ for every $a \in \alpha(w)$, or
 	\item the underlying directed graph does not contain any simple cycle except from self-loops and non-determinism with a letter $a$ can only appear from a state with no self-loop of $a$.
 \end{itemize}
 
@@ -91,19 +91,21 @@ r \Coloneqq \emptyset \mid \Gamma^{*} \mid \Lambda^{*} a r \mid r + r \quad \tex
 % TODO: propositions proving the equivalence of dfa nfa and regex in supplementary materials
 
 \section{Properties}
+This section describes some interesting properties of weakly acyclic languages, which have been shown by Blondin et al \cite{blondin_24}. 
 \subsection{Position in Language Hierarchy}
 Weakly acyclic languages lie strictly in between finite and regular languages, as illustrated in \autoref{fig:hierar}.
-They are within the regular languages, as they can be characterized with DFAs, NFAs and regular expressions. Furthermore, every finite language is weakly acyclic, as only a self-loop in the trap state is necessary to represent a finite set of words.
 
 \begin{figure}[H]
 \centering 
-\includegraphics[scale=0.42]{./figures/languages.png}
+\includegraphics[scale=0.41]{./figures/languages_v3.png}
 \caption{Weakly Acyclic Classes in the Language Hierarchy}\label{fig:hierar}
 \end{figure}
 
 
+They are within the regular languages, as they can be characterized with DFAs, NFAs and regular expressions. Furthermore, every finite language is weakly acyclic, as only a self-loop in the trap state is necessary to represent a finite set of words.
+
 \subsection{Closure Properties}
-Weakly acyclic languages are closed under union, intersection and complementation, but not under concatenation or Kleene star \cite{blondin_24}. 
+Weakly acyclic languages are closed under union, intersection and complementation, but not under concatenation or Kleene star. 
 \par 
 As weakly acyclic languages can be described by DFAs, complementing a DFA still preserves its weakly acyclic structure. Furthermore, union is already present in the definition of weakly acyclic expressions in \autoref{sec:weakly_acyclic_regex}. Therefore, this class is also closed under intersection, which can be expressed with the combination of union and complementation. 
 \par

@@ -129,7 +129,7 @@ The require statement expresses the precondition that all successor nodes in $s$
 
 \begin{algorithm}
 \caption{First Version $\make$ (wrong)}\label{alg:make1}
-\begin{algorithmic}[1]
+\begin{algorithmic}[1]\smallskip
 \Input {$s = [q_{1},\dots,q_{n}], b \in \{0,1\}$}
 \Require {$\forall q_{i} \in s: q_{i} \in T$}
 %\If{$\exists q \in T: \allSucc(q) = s \land \final(q) = b$}
@@ -158,7 +158,7 @@ This is the main change in the next $\make$ procedure in \autoref{alg:makev1}. T
 \begin{algorithm}[htb]
 \centering
 \caption{Second Version $\make$}\label{alg:makev1}
-\begin{algorithmic}[1]
+\begin{algorithmic}[1]\smallskip
 \Input {$s,b$}
 %\Input {$s = [q_{1},\dots,q_{n}], b \in \{0,1\}$}
 %\Require {$\forall q_{i} \in s: q_{i} \in T$}
@@ -190,7 +190,7 @@ If nothing has been found in the lookup, the loop from line 4 to 7 iterates over
 
 \begin{algorithm}[H]
 \caption{Third Version $\make$}\label{alg:makev2}
-\begin{algorithmic}[1]
+\begin{algorithmic}[1]\smallskip
 \Input {$s,b$}
 %\Input {$s = [q_{1},\dots,q_{n}], b \in \{0,1\}$}
 %\Require {$\forall q_{i} \in s: q_{i} \in T$}
@@ -270,9 +270,9 @@ These special cases are not handled, as they will not be a problem for the futur
 The acyclic structure of the partial order $\preceq$ from \autoref{sec:master-aut} with minimal elements $\emptyset$ and $\Sigma^{*}$ allows us to define operations on the table recursively with $q_{\emptyset}$ and $q_{\Sigma^{*}}$ as the recursion base cases.
 \par
 An example for such a recursive algorithm is given with the $\union$ operation in \autoref{alg:union}. The input $q_{1}$ and $q_{2}$ are two existing nodes in the table and the output is the node of their union, which is added into the table during the procedure. A $\cache$ stores already computed union results.
-\begin{algorithm}[htb]
+\begin{algorithm}[H]
 \caption{Union of Two Nodes}\label{alg:union}
-\begin{algorithmic}[1]
+\begin{algorithmic}[1]\smallskip
 \Procedure{union}{$q_{1},q_{2}$}
 \If{$\cache[\{q_{1},q_{2}\}]$}
 	\Return $\cache[\{q_{1},q_{2}\}]$
@@ -317,7 +317,7 @@ Other recursive methods on the table, like $\inter$ for the computation of the i
 %\par 
 %Two sets storing the initial states, and the end states of the transducer.
 
-\section{$\pre$ - An Algorithm for Computing the Pre-Image of a Transducer}\label{sec:pre}
+\section{$\pre$ - An Algorithm for Computing the Preimage of a Transducer}\label{sec:pre}
 
 In this section we present the important operation $\pre$, which computes the preimage of a transducer given a weakly acyclic DFA. We begin by introducing the Pre language, which is a formal description of that preimage, before we sketch an intuitive but wrong algorithm for $\pre$ computing this language. We show, where the problem lies and add appropriate measures to achieve the correct final version of $\pre$.
 
@@ -363,7 +363,7 @@ Since here the complete image of the transducer $L(\bm{a^{*}c})$ is contained in
      \label{fig:pre}
 \end{figure}
 
-\begin{lemma}\label{lem:b}
+\begin{lemma}[\cite{blondin_24}]\label{lem:b}
 The Pre language $\Pre_{\mathcal{T}}(A)$ can be described by the NFA $B = (Q_{B},\Sigma,q_{0B},\delta_{B},F_{B})$ where 
 \begin{itemize}[--,noitemsep]
 \item $Q_{B} = Q_{\mathcal{T}} \times Q_{A}$
@@ -457,7 +457,7 @@ After the loop in line 14, we pass the constructed $s$ and $b$ to the $\make$ op
 
 \begin{algorithm}
 \caption{First Version $\pre$ (wrong)}\label{alg:pre0}
-\begin{algorithmic}[1]
+\begin{algorithmic}[1]\smallskip
 \Input {$S \subseteq Q_{\mathcal{T}} \times Q_{T}, \mathcal{T}$}
 \Procedure{pre}{$S, \mathcal{T}$}
 \If{$\cache[S]$}		
@@ -576,14 +576,14 @@ Now we are one recursion level down and the current input $S=\{(q_{1},q_{3}),(q_
     text width=5em
   },
   root/.style={
-    fill=blue!5,
+    fill=blue!10,
     rounded corners=6pt,
     text width=16em,
     align=center,
     anchor=north
   },
   child node/.style={
-    fill=blue!5,
+    fill=blue!10,
     rounded corners=6pt,
     text width=16em,
     align=center,
@@ -621,7 +621,7 @@ We can then adapt \autoref{alg:pre0} to also construct that DFA into the Table o
 
 \begin{algorithm}[H]
 \caption{Construction of Weakly Acyclic DFA for Pre language}\label{alg:proof}
-\begin{algorithmic}[1]
+\begin{algorithmic}[1]\smallskip
 \Input {transducer $\mathcal{T}$, weakly acyclic DFA $A$}
 \Output {minimal weakly acyclic DFA $\widetilde{C}$}
 \Require {$\Pre_{\mathcal{T}}(A)$ is weakly acyclic}
@@ -634,6 +634,7 @@ We can then adapt \autoref{alg:pre0} to also construct that DFA into the Table o
 %\State remove all loops in $C$ by collapsing states of a cycle into a single node, into weakly acyclic DFA $\widetilde{C}$
 %\State construct the unique minimal weakly acyclic quotient automaton $\tilde{C}_{\approx}$ of DFA $\tilde{C}$
 %\Ensure{$\widetilde{C}$ is a minimal weakly acyclic automaton for  $\Pre_{\mathcal{T}}(A)$}
+\smallskip
 \end{algorithmic}
 \end{algorithm}
 
@@ -698,7 +699,7 @@ Finally, we are integrating the idea from \autoref{alg:proof} into the $\pre$ pr
 
 \begin{algorithm}[ht]
 \caption{Final Version $\pre$}\label{alg:pre}
-\begin{algorithmic}[1]
+\begin{algorithmic}[1]\smallskip
 %\Require { $L \subseteq Q_{\mathcal{T}} \times  Q_{T}$} 
 \Procedure{pre}{$S \subseteq Q_{\mathcal{T}} \times Q_{T}, \mathcal{T}$}
 \If{$\cache[S]$}

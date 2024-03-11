@@ -17,7 +17,7 @@ This chapter aims to define a standardized formal notation of the theoretical co
 
 \subsubsection{Residual Languages}
 
-The residual language of the language $L$ with respect to a letter $a$ is defined as \break
+The \emph{residual language} of the language $L$ with respect to a letter $a$ is defined as \break
 $L^{a} = \{ w \in \Sigma^{*} : aw \in L \}$.
 
 We can extend this definition to the residual language with respect to a word $v \in \Sigma^{*}$ to \break
@@ -29,15 +29,13 @@ For a state $q$ in an automaton $A$, we define the language $L_{A}(q)$, which co
 
 \subsubsection{Transducer}
 
-A transducer $\mathcal{T}$ over $\Sigma$ is an NFA over the alphabet $\Sigma \times \Sigma$. $\mathcal{T}$ accepts the pair of words $(w,v)$ with $w = w_{1}w_{2}...w_{n}$ and $v=v_{1}v_{2}...v_{n}$, if it accepts $(w_{1},v_{1})(w_{2},v_{2})...(w_{n},v_{n})$.
+A \emph{transducer} $\mathcal{T}$ over $\Sigma$ is an NFA over the alphabet $\Sigma \times \Sigma$. $\mathcal{T}$ accepts the pair of words $(w,v)$ with $w = w_{1}w_{2}...w_{n}$ and $v=v_{1}v_{2}...v_{n}$, if it accepts $(w_{1},v_{1})(w_{2},v_{2})...(w_{n},v_{n})$.
 We call the set of all $w$ the preimage and the set of all $v$ the image of transducer $\mathcal{T}$.
 
 
 \section{Petri nets}
 
-\subsubsection{Petri net}
-
-A petri net $N$ is a tuple $(P,\Tr,F)$ where 
+A \emph{Petri net} $N$ is a tuple $(P,\Tr,F)$ where 
 \begin{itemize}[-,noitemsep]
 	\item $P$ is a finite set of \emph{places}
 	\item $\Tr$ is a finite set of \emph{transitions} disjoint from $S$
@@ -47,7 +45,7 @@ A petri net $N$ is a tuple $(P,\Tr,F)$ where
 In drawings of Petri nets, the places are usually represented by circles, the transitions by rectangles and the flow relation is shown by numbered arrows between places and transitions.
 
 \subsubsection{Marking}
-A marking of a Petri net is a mapping $M : P \rightarrow \mathbb{N}$ from the places of the net to the natural numbers, assigning each place a certain amount of tokens. In drawings, the markings are commonly represented by black dots inside the places.
+A \emph{marking} of a Petri net is a mapping $M : P \rightarrow \mathbb{N}$ from the places of the net to the natural numbers, assigning each place a certain amount of tokens. In drawings, the markings are commonly represented by black dots inside the places.
 
 
 \subsubsection{Firing Rule}
@@ -75,7 +73,7 @@ If $M \xrightarrow{\sigma} M'$ for some markings $M,M'$ and some sequence $\sigm
 For markings $M$ and $M'$, we write $M \ge M'$, if for every place $p$ of a Petri net $M(p) \ge M'(p)$. This means that $M$ assigns at least as many tokens to every state as $M'$. We say that marking $M$ \emph{covers} marking $M'$.
 
 
-A set $\mathcal{M}$ of markings of the Petri net $N$ is upward closed if $M \in \mathcal{M}$ and $M' \ge M$ imply $M' \in \mathcal{M}$. In other words, if a marking exists in the upward closed set, then all other markings, which cover this one marking are also part of the set.
+A set $\mathcal{M}$ of markings of the Petri net $N$ is \emph{upward closed} if $M \in \mathcal{M}$ and $M' \ge M$ imply $M' \in \mathcal{M}$. In other words, if a marking exists in the upward closed set, then all other markings, which cover this one marking are also part of the set.
 
 A marking $M$ of an upward closed set $\mathcal{M}$ is minimal, if $\nexists M' \in \mathcal{M}$ such that $M' \le M$. Every upward closed set $\mathcal{M}$ can be uniquely identified by a finite set of minimal elements. 
 %Furthermore, every $\mathcal{M}$ has finitely many minimal elements.

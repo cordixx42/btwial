@@ -28,7 +28,7 @@ Finally, the solve time and an estimation for the maximal memory usage of the th
 \begin{tabular}{c c c c c c c c c c}
 \toprule
 
-\multicolumn{1}{c}{} & \multicolumn{1}{c}{} & \multicolumn{2}{c}{\textbf{Petri net}} & \multicolumn{3}{c}{\textbf{solve time (ms)}} & \multicolumn{3}{c}{\textbf{max memory (MB)}} \\
+\multicolumn{1}{c}{} & \multicolumn{1}{c}{} & \multicolumn{2}{c}{\textbf{Petri net}} & \multicolumn{3}{c}{\textbf{solve time (ms)}} & \multicolumn{3}{c}{\textbf{max memory (MiB)}} \\
 \cmidrule(rl){3-4} \cmidrule(rl){5-7} \cmidrule(rl){8-10}
 
 \textbf{instance} & \textbf{result} & places & trans & \textit{ptm}& \textit{mist} & \textit{qcov} & \textit{ptm} & \textit{mist} & \textit{qcov} \\
@@ -71,18 +71,18 @@ Finally, the solve time and an estimation for the maximal memory usage of the th
 \end{table}
 
 
-First, we can observe there is no consistent relation between the number of places and transitions with the difficulty of the instance. For example, the mesh3x2 instance with over 50 places and transitions is solved by all three tools in under 4 seconds, while the kanban instance with 16 places and transitions takes around 159 seconds for \textit{mist} and even times out for \textit{qcov}.
+First, we can observe there is no consistent relation between the number of places and transitions with the difficulty of the instance. For example, the \instance{mesh3x2} instance with over 50 places and transitions is solved by all three tools in under 4 seconds, while the \instance{kanban} instance with 16 places and transitions takes around 159 seconds for \textit{mist} and even times out for \textit{qcov}.
 
 Looking at the time columns, we can see that \textit{ptm} is able to solve  24 out of the 27 instances within the timeout of 300 seconds, while \textit{mist} finds the solution for 23 and \textit{qcov} for 26 instances.
 
-Comparing the times more closely, we recognize that there is similar trend of the solve times from \textit{ptm} and \textit{mist}. Still, there exist some problems where \textit{ptm} performs significantly better, like kanban or extendedread-write-sc, and others where \textit{mist} solves the problems a lot faster, which is the case for newdekker or fms\_attic. But the overall fluctuations are mostly consistent between these two tools. 
-\textit{qcov} on the other hand shows very stable times for most of the instances, being mostly between 2 and 4 seconds. Only for pncsacover, bingham\_h250\_attic and kanban, \textit{qcov} needs more than 4 seconds. The reason for this patter could be that \textit{qcov} needs a certain amount of processing time independent of the instance structure. In general, \textit{ptm} and \textit{mist} are faster in a lot of smaller problems but have more difficulties processing some more demanding instances, where they are significantly slower than \textit{qcov}. 
+Comparing the times more closely, we recognize that there is similar trend of the solve times from \textit{ptm} and \textit{mist}. Still, there exist some problems where \textit{ptm} performs significantly better, like \instance{kanban} or \instance{extendedread-write-sc}, and others where \textit{mist} solves the problems a lot faster, which is the case for \instance{newdekker} or \instance{fms\_attic}. But the overall fluctuations are mostly consistent between these two tools. 
+\textit{qcov} on the other hand shows very stable times for most of the instances, being mostly between 2 and 4 seconds. Only for \instance{pncsacover}, \instance{bingham\_h250\_attic} and \instance{kanban} \textit{qcov} needs more than 4 seconds. The reason for this pattern could be that \textit{qcov} needs a certain amount of processing time independent of the instance structure. In general, \textit{ptm} and \textit{mist} are faster in a lot of smaller problems but have more difficulties processing some more demanding instances, where they are significantly slower than \textit{qcov}. 
 
 Looking at the memory usage for the three tools, we can observe a clear positive correlation to the solve times. The timed out instances of \textit{ptm} consume gigabytes of memory. Similar to the solve times, the memory consumption for \textit{qcov} stays very stable around 80 megabytes. The memory measured of \textit{mist} is very low with only a few megabytes for most of the instances and even the highest value measured is below 500 megabytes.
 
-Altogether, the solve time of our tool \textit{ptm} is competitive to the other two tools. While in the smaller instances, \textit{ptm} is often a little slower than \textit{mist}, it solves the more difficult kanban and kanban\_bounded instances roughly 20 times faster than \textit{mist}.
-Against \textit{qcov}, our \textit{ptm} has a clear advantage for solving smaller instances and is also much faster for the kanban instance.
-The overall memory measurements show good results for \textit{ptm} in the easier instances, but they are an enormous amount higher than the other two tools in numerous instances like extended-read-write-sc or pncsacover.
+Altogether, the solve time of our tool \textit{ptm} is competitive to the other two tools. While in the smaller instances, \textit{ptm} is often a little slower than \textit{mist}, it solves the more difficult \instance{kanban} and \instance{kanban\_bounded} instances roughly 20 times faster than \textit{mist}.
+Against \textit{qcov}, our \textit{ptm} has a clear advantage for solving smaller instances and is also much faster for the \instance{kanban} instance.
+The overall memory measurements show good results for \textit{ptm} in the easier instances, but they are an enormous amount higher than the other two tools in numerous instances like \instance{extended-read-write-sc} or \instance{pncsacover}.
 
 \bigbreak
 
@@ -92,9 +92,7 @@ To have a better comparison of the memory usage we want to take a closer look at
 The tool \textit{qcov} is left out in these comparisons, as we have not found a good way to compare its memory consumption fairly with the other two tools. 
 \bigbreak
 
-\autoref{tab:mist-results-datastruct} depict more information about these data structures from \textit{ptm} and \textit{qcov}.
-The column iter shows the number of iterations before the algorithm terminates, which for these instances stays mostly below 30 iterations.
-
+\autoref{tab:mist-results-datastruct} depicts more information about these data structures from \textit{ptm} and \textit{qcov}.
 The four columns under \textit{ptm} in \autoref{tab:mist-results-datastruct} show properties of our implementation with the Table of Nodes.
 
 The column iter shows the number of iterations before the Backwards Reachability Algorithm terminates, which for these instances stays mostly below 30.
@@ -125,21 +123,21 @@ The table size shows the complete amount of nodes in the table, which have been 
 \instance{leabasicapproach} & 40 & 11 & 2 & 4030 & 180 & 180 & 162 \\
 \instance{newdekker} & 1167 & 56 & 8 & 51804 & 1468 & 895 & 341 \\
 \instance{kanban} & 7503 & 158863 & 11 & 571617 & 6635 & 1132 & 1594 \\
-\instance{kanban\_bounded & 8774 & 160560 & 18 & 574675 & 6635 & 768 & 720 \\
-multipool & 221 & 286 & 6 & 11731 & 137 & 116 & 196 \\
-fms & 799 & 36 & 15 & 15827 & 285 & 247 & 233 \\
-fms\_attic & 16381 & 827 & 27 & 228830 & 2735 & 2431 & 881 \\
-extendedread-write-sc & 15508 & 94171 & 24 & 322684 & 2769 & 1245 & 758 \\
-extendedread-write & - & - & - & - & - & - & - \\
-bingham\_h25 & 1525 & 248 & 27 & 48969 & 161 & 161 & 253 \\
-pncsasemiliv & 6133 & 836 & 7 & 340348 & 6375 & 1652 & 2139 \\
-pncsacover & 128721 & - & 15 & 7015463 & 80180 & 779 & - \\
-mesh2x2 & 512 & 129 & 5 & 30142 & 271 & 271 & 344 \\
-mesh3x2 & 4000 & 1381 & 8 & 202945 & 914 & 796 & 987 \\
-bingham\_h50 & 11059 & 3461 & 52 & 316044 & 311 & 311 & 503 \\
-bingham\_h150 & - & - & - & - & - & - & - \\
-bingham\_h250\_attic & 127682 & 9902 & 4 & 2869137 & 3547 & 2914 & 4512 \\
-bingham\_h250 & - & - & - & - & - & - & - \\
+\instance{kanban\_bounded} & 8774 & 160560 & 18 & 574675 & 6635 & 768 & 720 \\
+\instance{multipool} & 221 & 286 & 6 & 11731 & 137 & 116 & 196 \\
+\instance{fms} & 799 & 36 & 15 & 15827 & 285 & 247 & 233 \\
+\instance{fms\_attic} & 16381 & 827 & 27 & 228830 & 2735 & 2431 & 881 \\
+\instance{extendedread-write-sc} & 15508 & 94171 & 24 & 322684 & 2769 & 1245 & 758 \\
+\instance{extendedread-write} & - & - & - & - & - & - & - \\
+\instance{bingham\_h25} & 1525 & 248 & 27 & 48969 & 161 & 161 & 253 \\
+\instance{pncsasemiliv} & 6133 & 836 & 7 & 340348 & 6375 & 1652 & 2139 \\
+\instance{pncsacover} & 128721 & - & 15 & 7015463 & 80180 & 779 & - \\
+\instance{mesh2x2} & 512 & 129 & 5 & 30142 & 271 & 271 & 344 \\
+\instance{mesh3x2} & 4000 & 1381 & 8 & 202945 & 914 & 796 & 987 \\
+\instance{bingham\_h50} & 11059 & 3461 & 52 & 316044 & 311 & 311 & 503 \\
+\instance{bingham\_h150} & - & - & - & - & - & - & - \\
+\instance{bingham\_h250\_attic} & 127682 & 9902 & 4 & 2869137 & 3547 & 2914 & 4512 \\
+\instance{bingham\_h250} & - & - & - & - & - & - & - \\
         \bottomrule
 \end{tabular}%
 }
@@ -150,12 +148,12 @@ bingham\_h250 & - & - & - & - & - & - & - \\
 The column max node in the middle indicates the size of the largest node $q$ after any iteration of the Backwards Reachability Algorithm from \autoref{alg:bw_wwa_final}. The size we mean in this context is the amount of states of the automaton for $q$. This value is a better estimation for the peak memory used during the computation than the complete table size, as this represents the maximal automaton size the algorithm is processing at any point in the algorithm. Comparing this column with the table size, we can see for most instances there is a difference of a factor over 30. 
 %This makes sense, as the number of iterations between the instance does not differ a lot and 
 
-The end node is the size of the node $q$ from \autoref{alg:bw_wwa_final} right before terminating. For the uncoverable safe instances, this is the size needed to represent the fully computed predecessor set containing all backwards reachable markings. We can observe that for most instances, the size is in a similar magnitude as the max node size. There are some cases, like pncsacover or kanban\_bounded, where the end size is much smaller compared to the max node size. 
+The end node is the size of the node $q$ from \autoref{alg:bw_wwa_final} right before terminating. For the uncoverable safe instances, this is the size needed to represent the fully computed predecessor set containing all backwards reachable markings. We can observe that for most instances, the size is in a similar magnitude as the max node size. There are some cases, like \instance{pncsacover} or \instance{kanban\_bounded}, where the end size is much smaller compared to the max node size. 
 %But note that all of these three instances are unsafe, which means the end node might not represent the complete predecessor set, as the algorithm terminates earlier.
 
 Finally, the last column of \autoref{tab:mist-results-datastruct} beneath \textit{mist} depicts the size of the final Interval Sharing Tree of \textit{mist} also representing the set of predecessors.
 
-We can compare the end node size of \textit{ptm} with the end size of  \textit{mist} to get an overview, how much memory the respective data structures need to represent the same predecessor set of markings. It is noticeable that for all instances the respective sizes are in a very similar order of magnitude. There are some cases, where the tree of \textit{mist} has a smaller representation, like for newdekker or fms\_attic, which are also the instances \textit{mist} is much faster than \textit{ptm}. But for bingham\_250\_attic or mesh3x2 the underlying automaton of \textit{ptm} is more compact. 
+We can compare the end node size of \textit{ptm} with the end size of  \textit{mist} to get an overview, how much memory the respective data structures need to represent the same predecessor set of markings. It is noticeable that for all instances the respective sizes are in a very similar order of magnitude. There are some cases, where the tree of \textit{mist} has a smaller representation, like for \instance{newdekker} or \instance{fms\_attic}, which are also the instances \textit{mist} is much faster than \textit{ptm}. But for \instance{bingham\_250\_attic} or \instance{mesh3x2} the underlying automaton of \textit{ptm} is more compact. 
 % unsafe instances, not the same set, but ptm end size smaller
 
 \bigbreak 
@@ -213,11 +211,10 @@ table[x=ITER,y=MARKINGSIZE,col sep=comma]{./csv-plot/mesh3x2.csv};
 \end{figure}
 
 \autoref{fig:qgrowth} shows how the size of the node $q$, characterizing the predecessors, evolves from iteration to iteration. 
-We can observe that almost all of the depicted instances have a steep rise in the size during the first couple of iterations. After the maximal peak size is reached, which is exactly the max node in \autoref{tab:mist-results-datastruct}, the size gradually begins to fall again. The speed of the decline is varying for the instances, with the size of pncsacover or kanban\_bounded falling by a greater amount and speed compared to extended-read-write-sc.
-Only the plot of the bingham\_25 instance behaves very differently to the others. The size of $q$ slowly increases here with more iterations and in the end there is even a small leap before the algorithm terminates. 
+We can observe that almost all of the depicted instances have a steep rise in the size during the first couple of iterations. After the maximal peak size is reached, which is exactly the max node in \autoref{tab:mist-results-datastruct}, the size gradually begins to fall again. The speed of the decline is varying for the instances, with the size of \instance{pncsacover} or \instance{kanban\_bounded} falling by a greater amount and speed compared to \instance{extended-read-write-sc}.
+Only the plot of the \instance{bingham\_25} instance behaves very differently to the others. The size of $q$ slowly increases here with more iterations and in the end there is even a small leap before the algorithm terminates. 
 
-\autoref{fig:tabgrowth} is sketching the growth of the table with the iterations. For all instances we can perceive logarithmic growth curves. A maximum point is reached in the first couple of iterations, and after that the table size is slowly approaching a limit. Comparing this with the growth of $q$, we can see that the peaks in 
-\autoref{fig:qgrowth} correspond with the iterations, where the steep growth of the curves in \autoref{fig:tabgrowth} is subsiding.
+\autoref{fig:tabgrowth} is sketching the growth of the table with the iterations. For all instances we can perceive logarithmic growth curves. A maximum point is reached in the first couple of iterations, and after that the table size is slowly approaching a limit. Comparing this with the growth of $q$, we can see that the peaks in \autoref{fig:qgrowth} correspond with the iterations, where the steep growth of the curves in \autoref{fig:tabgrowth} is subsiding.
 
 %This shows, that for most cases the size of $q$ is not growing 
 
@@ -289,7 +286,7 @@ However, it is very desirable to validate the formal correctness of our tool by 
 
 For all the benchmarks, which we performed and did not time out, the coverability decision results of our tool always aligned with the other two tools \textit{mist} and \textit{qcov}, which is a reassuring outcome. 
 
-To verify our tool on a more thorough level, we have implemented another operation for the table called $\sanity$. This operation takes a node $q$ in the table, and computes the set of minimal markings for the upward closed set $q$ represents. In the following we provide a simple sketch on how the procedure works.
+To verify our tool on a more thorough level, we have implemented another operation for the table called $\sanity$. This operation takes a node $q$ in the table and computes the set of minimal markings for the upward closed set $q$ represents. In the following we provide a simple sketch on how the procedure works.
 
 The operation starts by computing a topological order on the nodes for the automaton of $q$ corresponding to the relation $\preceq$ from \autoref{sec:master-aut}. After this, we iterate over each node starting from $q$ by this topological order. Since we have knowledge about the specific encoding (Definition~\autoref{def:encoding}), we can easily map back from each node to the part of the marking it is characterizing, by remembering the amount of $\bm{1}$ and $\square$ transitions we have encountered so far. Here, we can ignore all the self-loop transitions, because they do not play a relevant role for the minimal markings.
 With this approach, at each node we collect a set of markings, extract the minimal markings of this set by removing non-minimal elements, and pass the minimized set over to the successors of the node. When we reach the accepting node $q_{\epsilon}$ at last, the set of markings here are the minimal markings represented by $q$.
