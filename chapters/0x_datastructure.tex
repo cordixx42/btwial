@@ -6,9 +6,9 @@ We first take a look at how multiple weakly acyclic DFAs can be combined in theo
 \begin{definition}[\cite{blondin_24}]\label{def:master-aut}
 The master automaton over an alphabet $\Sigma$ is a tuple $M = (Q_{M},\Sigma,\delta_{M},F_{M})$ where 
 \begin{itemize}[--,noitemsep]
-\item $Q_{M}$ is the set of all weakly acyclic languages over $\Sigma$
-\item $\delta_{M}: Q_{M} \times \Sigma \rightarrow Q_{M}$  with $\delta_{M}(L,a) = L^{a}$ for every $q \in Q_{M} \ , a \in \Sigma$
-\item $L \in F_{M} \iff \epsilon \in L$
+\item $Q_{M}$ is the set of all weakly acyclic languages over $\Sigma$;
+\item $\delta_{M}: Q_{M} \times \Sigma \rightarrow Q_{M}$  with $\delta_{M}(L,a) = L^{a}$ for every $q \in Q_{M} \text{ and } a \in \Sigma$;
+\item $L \in F_{M} \iff \epsilon \in L$.
 \end{itemize}
 \end{definition}
 As depicted formally in Definition \autoref{def:master-aut}, the master automaton is a DFA without an initial state but with an infinite number of states, where each state is representing a distinct weakly acyclic language. The transitions $\delta_{M}$ are described using the notion of the residual language with respect to a letter (\autoref{chapter:preliminaries}).
@@ -17,10 +17,10 @@ As depicted formally in Definition \autoref{def:master-aut}, the master automato
 
 Given a state $L$ of the master automaton characterizing the weakly acyclic language $L$, the language recognized from that state is $L$ \cite[Proposition~8]{blondin_24}. This means that a DFA for any weakly acyclic language $L$ exists as a finite subautomaton in the master automaton. Formally, that DFA $A_{L}$ is the tuple $(Q_{L},\Sigma,\delta_{L},q_{0L},F_{L})$ where 
 \begin{itemize}[--,noitemsep]
-\item $Q_{L}$ is the set of states of the master automaton reachable from state $L$
-\item $q_{0L}$ is the state $L$
-\item $\delta_{L}$ is the projection of $\delta_{M}$ onto $Q_{L}$
-\item $F_{L}$ is the intersection of $F_{M}$ and $Q_{L}$
+\item $Q_{L}$ is the set of states of the master automaton reachable from state $L$;
+\item $q_{0L}$ is the state $L$;
+\item $\delta_{L}$ is the projection of $\delta_{M}$ onto $Q_{L}$;
+\item $F_{L}$ is the intersection of $F_{M}$ and $Q_{L}$.
 \end{itemize}
 Furthermore, for every weakly acyclic language $L$, the automaton $A_{L}$ is also the unique minimal DFA for recognizing $L$ \cite[Proposition~9]{blondin_24}. 
 
@@ -44,9 +44,9 @@ As the transitions of the master automaton are defined using residual languages,
 
 For an alphabet $\Sigma = \{a_{1}, a_{2},\dots,a_{n} \}$ we define a \emph{node} as a tuple $(q,s,b)$ where
 \begin{itemize}[--,noitemsep]
-\item $q$ is the \emph{node identifier}
-\item $s = [q_{1},q_{2},\dots,q_{n}]$ is the \emph{successor array} of $q$ where $q_{i}$ is the identifier for the node of the residual language of $q$ with respect to the letter $a_{i}$
-\item $b \in \{0,1\}$ is the \emph{final flag} and tells if $q$ is an accepting state ($1$) or not ($0$)
+\item $q$ is the \emph{node identifier};
+\item $s = [q_{1},q_{2},\dots,q_{n}]$ is the \emph{successor array} of $q$ where $q_{i}$ is the identifier for the node of the residual language of $q$ with respect to the letter $a_{i}$;
+\item $b \in \{0,1\}$ is the \emph{final flag} and tells if $q$ is an accepting state ($1$) or not ($0$).
 \end{itemize}
 For instance, the node for the language $\emptyset$ is $(q_{\emptyset},[q_{\emptyset},\dots,q_{\emptyset}],0)$ and the language of the empty word $\epsilon$ is $(q_{\epsilon},[q_{\emptyset},\dots,q_{\emptyset}],1)$.
 
@@ -118,7 +118,7 @@ The final flag $b$ of the node identified by $q$ is returned by $\final(q)$.
 The following sections are dedicated to introducing and discussing important procedures, which are defined on the Table Of Nodes. 
 
 \section{Creation of Nodes into the Table}
-This section introduces operations on the table with the purpose to add new nodes. $\make$ is responsible for the creation of new nodes and is the only operation, which can directly add new nodes to the table. $\create$ uses $\make$ to create nodes for a certain restricted language given as input.
+This section introduces operations on the table with the purpose to add new nodes. $\make$ is responsible for the creation of new nodes and is the only operation which can directly add new nodes to the table. $\create$ uses $\make$ to create nodes for a certain restricted language given as input.
 
 \subsection{$\make$ - Adding Nodes to the Table}
 Naturally, the data structure needs an operation for adding new nodes. We define a procedure $\make$, which takes a successor array $s$ and a final flag $b$ as input. 
@@ -130,7 +130,7 @@ The require statement expresses the precondition that all successor nodes in $s$
 \begin{algorithm}
 \caption{First Version $\make$ (wrong)}\label{alg:make1}
 \begin{algorithmic}[1]\smallskip
-\Input {$s = [q_{1},\dots,q_{n}], b \in \{0,1\}$}
+\Input {$s = [q_{1},\dots,q_{n}], \ b \in \{0,1\}$}
 \Require {$\forall q_{i} \in s: q_{i} \in T$}
 %\If{$\exists q \in T: \allSucc(q) = s \land \final(q) = b$}
 \If{$\exists q = T[(s,b)]$}
@@ -159,7 +159,7 @@ This is the main change in the next $\make$ procedure in \autoref{alg:makev1}. T
 \centering
 \caption{Second Version $\make$}\label{alg:makev1}
 \begin{algorithmic}[1]\smallskip
-\Input {$s,b$}
+\Input {$s = [q_{1},\dots,q_{n}], \ b \in \{0,1\}$}
 %\Input {$s = [q_{1},\dots,q_{n}], b \in \{0,1\}$}
 %\Require {$\forall q_{i} \in s: q_{i} \in T$}
 \If{$\exists q = T[(s,b)]$}
@@ -191,7 +191,7 @@ If nothing has been found in the lookup, the loop from line 4 to 7 iterates over
 \begin{algorithm}[H]
 \caption{Third Version $\make$}\label{alg:makev2}
 \begin{algorithmic}[1]\smallskip
-\Input {$s,b$}
+\Input {$s = [q_{1},\dots,q_{n}], \ b \in \{0,1\}$}
 %\Input {$s = [q_{1},\dots,q_{n}], b \in \{0,1\}$}
 %\Require {$\forall q_{i} \in s: q_{i} \in T$}
 %\If{$\exists \self \in s$}
@@ -254,8 +254,10 @@ Furthermore, if there are more letter-star pairs following, we need to identify 
 For the successor node for $\bm{d}$, again $\bm{c^{*}}$ might be empty, and thus we also make a 
 $\create$ call with the substring after $\texttt{c*}$. Analogous to this, for the successor with respect to letter $\bm{c}$ we call $\create$ with the substring after $\texttt{b*}$. 
 
-However, there are some input strings, which the operation does not process correctly. Consider the input $\texttt{a*a}$. $\create$ will start constructing a self-loop for the first state, but will replace the self-loop by a transition with letter $\bm{a}$. 
-These special cases are not handled, as they will not be a problem for the future use of $\create$ and would slow down the otherwise simple procedure. 
+However, there are some input strings for which the operation does not process correctly. Consider the input $\texttt{a*a}$. $\create$ will start constructing a self-loop for the first state, but will replace the self-loop by a transition with letter $\bm{a}$. 
+
+Concretely, for all strings where a character \texttt{a} followed by \texttt{*} occurs and the first character not followed by \texttt{*} thereafter is exactly \texttt{a}, our procedure does not create the correct language.
+This special case is not handled, as it will not be a problem for the future use of $\create$ and would slow down the otherwise simple procedure. 
 
 %Assume the alphabet $\Sigma = \{a_{1},a_{2},\dots,a_{n} \}$. The operation distinguishes between two cases. 
 %%Either the input string starts with a single letter $a_{i}$ not followed by a $\textt{*}$ or it a letter followed by a Kleene star $a_{i}*$. 
@@ -325,7 +327,7 @@ In this section we present the important operation $\pre$, which computes the pr
 Recall that a transducer $\mathcal{T}$ is an NFA over $\Sigma \times \Sigma$ and defines a mapping from words of one regular language to words of another regular language. The transitions $\delta_{\mathcal{T}}$ can be described by the tuple $(p,(a_{1},a_{2}),p')$, where the transducer state $p$ transitions to state $p'$ when reading the pair $(a_{1},a_{2})$.
 
 \begin{definition}[\cite{blondin_24}]\label{def:pre}
-$\Pre_{\mathcal{T}}(A) = \{ w \in \Sigma^{*}: (w,v) \in L(\mathcal{T}), v \in L(A) \}$
+$\Pre_{\mathcal{T}}(A) = \{ w \in \Sigma^{*}: \exists  v \in L(A) \text{ s.t. } (w,v) \in L(\mathcal{T}) \}$
 is the \emph{Pre language} of a transducer $\mathcal{T} = (Q_{\mathcal{T}},\Sigma,q_{0\mathcal{T}},\delta_{\mathcal{T}},F_{\mathcal{T}})$ with respect to a DFA $A = (Q_{A},\Sigma,q_{0A}, \delta_{A}, F_{A})$. 
 \end{definition}
 
@@ -366,10 +368,10 @@ Since here the complete image of the transducer $L(\bm{a^{*}c})$ is contained in
 \begin{lemma}[\cite{blondin_24}]\label{lem:b}
 The Pre language $\Pre_{\mathcal{T}}(A)$ can be described by the NFA $B = (Q_{B},\Sigma,q_{0B},\delta_{B},F_{B})$ where 
 \begin{itemize}[--,noitemsep]
-\item $Q_{B} = Q_{\mathcal{T}} \times Q_{A}$
-\item $q_{0B} = (q_{0\mathcal{T}},q_{0A})$
-\item $F_{B} = F_{\mathcal{T}} \times F_{A}$
-\item $\delta_{B}((p,q),x) = \{(p',q'): \exists y \in \Sigma \text{ such that } p' \in \delta_{\mathcal{T}}(q,(x,y)), q' = \delta_{A}(q,y)\}$
+\item $Q_{B} = Q_{\mathcal{T}} \times Q_{A}$;
+\item $q_{0B} = (q_{0\mathcal{T}},q_{0A})$;
+\item $F_{B} = F_{\mathcal{T}} \times F_{A}$;
+\item $\delta_{B}((p,q),x) = \{(p',q'): \exists y \in \Sigma \text{ such that } p' \in \delta_{\mathcal{T}}(q,(x,y)), q' = \delta_{A}(q,y)\}$.
 \end{itemize}
 \end{lemma}
 
@@ -391,15 +393,15 @@ Each state in $B$ is a pair of a state in $\mathcal{T}$ and a state in $A$. The 
 
 The transition function $\delta_{B}$ takes a state $(p,q)$, where $p$ is a state of the transducer, $q$ a state of the DFA and a letter $x$. The set of states given back are all $(p',q')$, where there is a letter $y$ with the following conditions:
 \begin{itemize}[--,noitemsep]
-\item in transitions of $\mathcal{T}$ there exists the transition $p \xrightarrow{(x,y)} p'$
-\item in transitions of $A$ there exists the transition $q \xrightarrow{y} q'$
+\item In the transitions of $\mathcal{T}$ there exists the transition $p \xrightarrow{(x,y)} p'$, and
+\item in the transitions of $A$ there exists the transition $q \xrightarrow{y} q'$.
 \end{itemize}
 
 Taking \autoref{fig:pre-result} as an example, there exists a transition from $(p,q)=(q_{1},q_{3})$ to $(p',q')=(q_{2},q_{4})$ with letter $x=\bm{a}$ in $B$, because there is $y=\bm{c}$ such that:
 
 \begin{itemize}[--,noitemsep]
-\item in transitions of $\mathcal{T}$ there exists the transition $q_{1} \xrightarrow{(\bm{a},\bm{c})} q_{2}$ (\autoref{fig:pre-transducer})
-\item in transitions of $A$ there exists the transition $q_{3} \xrightarrow{\bm{c}} q_{4}$ (\autoref{fig:pre-dfa})
+\item In the transitions of $\mathcal{T}$ there exists the transition $q_{1} \xrightarrow{(\bm{a},\bm{c})} q_{2}$ (\autoref{fig:pre-transducer}), and
+\item In the transitions of $A$ there exists the transition $q_{3} \xrightarrow{\bm{c}} q_{4}$ (\autoref{fig:pre-dfa}).
 \end{itemize}
 Using this construction, the complete NFA $B$ in \autoref{fig:pre-result} characterizes the language $L(\bm{b^{*}a})$ as expected.
 
@@ -427,8 +429,8 @@ To address the issue of non-determinism, we use the idea behind the powerset con
 
 Using these ideas, we develop the following conceptual approach for $\pre$ with the precondition that $\Pre_{\mathcal{T}}(A)$ is a weakly acyclic language:
 \begin{itemize}[-,noitemsep]
-\item construct NFA $B$ for $\Pre_{\mathcal{T}}(A)$ according to Lemma~\ref{lem:b}
-\item determinize NFA $B$ into the DFA $C$ using the power set construction
+\item Construct NFA $B$ for $\Pre_{\mathcal{T}}(A)$ according to Lemma~\ref{lem:b}.
+\item Determinize NFA $B$ into the DFA $C$ using the power set construction.
 \end{itemize}
 
 We first present a more simple but erroneous algorithm of $\pre$ implementing this approach, which is sketched in \autoref{alg:pre}. We write $Q_{T}$ for all nodes and $F_{T}$ for all accepting nodes in the table $T$. Analogous to the last section, the transducer $\mathcal{T}$ is of the form $(Q_{\mathcal{T}},\Sigma,q_{0\mathcal{T}},\delta_{\mathcal{T}},F_{\mathcal{T}})$.
@@ -641,6 +643,8 @@ We can then adapt \autoref{alg:pre0} to also construct that DFA into the Table o
 \autoref{alg:proof} describes a procedure for constructing the minimal weakly acyclic DFA $\widetilde{C}$, which recognizes $\Pre_{\mathcal{T}}(A)$. The precondition states that $\Pre_{\mathcal{T}}(A)$ is a weakly acyclic language. Again like in the last subsection, the NFA $B$ is formed and determinized into $C$. As we have seen with the example in \autoref{fig:pre-counter}, this might produce a not weakly acyclic $C$. Therefore, in the loop from line 3 to 4 all cycles beyond self loops are removed by collapsing the states part of the cycle. Here, collapsing $q_{1},q_{2},\dots,q_{k}$ into one state means removing all nodes in the DFA except $q_{1}$ and redirecting any incoming transitions of $q_{2},\dots,q_{k}$ to $q_{1}$. Line 6 performs a minimization on $C$ returning $\widetilde{C}$.
 With Lemma~\autoref{lem:preproof} we show that this procedure yields a correct weakly acyclic DFA for the language $\Pre_{\mathcal{T}}(A)$.
 
+\pagebreak
+
 \begin{lemma}\label{lem:preproof}
 After execution of \autoref{alg:proof}, $\widetilde{C}$ is a minimal weakly acyclic automaton for the Pre language $Pre_{\mathcal{T}}(A)$.
 \end{lemma}
@@ -672,9 +676,9 @@ As we chose $i$ to be minimal, $L(C_{i}) = L(C_{0}) = L(\widehat{C})$, which mea
 
 Then it holds that
 \begin{itemize}[-,noitemsep]
-\item $\delta_{\widehat{C}}(p',v) = q'$ because $L_{\widehat{C}}(p')^{v} = L_{C_{i}}(p)^{v} = L_{C_{i}}(q) = L_{\widehat{C}}(q')$
+\item $\delta_{\widehat{C}}(p',v) = q'$ because $L_{\widehat{C}}(p')^{v} = L_{C_{i}}(p)^{v} = L_{C_{i}}(q) = L_{\widehat{C}}(q')$;
 \item $\delta_{\widehat{C}}(q',w) = p'$ because
-$L_{\widehat{C}}(q')^{w} = L_{C_{i}}(q)^{w} = L_{C_{i}}(p) = L_{\widehat{C}}(p')$
+$L_{\widehat{C}}(q')^{w} = L_{C_{i}}(q)^{w} = L_{C_{i}}(p) = L_{\widehat{C}}(p')$.
 %\item $\delta_{\widehat{C}}(p',vw) = \delta_{\widehat{C}}(\delta_{\widehat{C}}(p',v),w) = \delta_{\widehat{C}}(q',w) = p'$
 \end{itemize}
 %$\delta_{C_{\approx}}(p',v) = q'$ because $L_{C_{\approx}}(p')^{v} = L_{C}(p)^{v} = L_{C}(q) = L_{C_{\approx}}(q')$.
@@ -757,7 +761,7 @@ In line 17, we handle the occurrence of the abort pair. If we have reached the c
 \par 
 
 The last line of \autoref{alg:proof} yields the minimal automaton for the Pre language, which is necessary for the table, as it only stores minimal weakly acyclic DFAs. This step is implicitly resolved by the $\make$ operation in line 22 of \autoref{alg:pre}. There can not be two nodes in the table characterizing the same language, because their successor array and final flag are equivalent and $\make$ only creates unique nodes.
-Therefore, the adapted \autoref{alg:pre} poses as a correct implementation for the computation of the node for a weakly acyclic Pre language.
+Therefore, the adapted \autoref{alg:pre} is a correct implementation for the computation of the node for a weakly acyclic Pre language.
 
 \par 
 

@@ -15,6 +15,22 @@ This chapter aims to define a standardized formal notation of the theoretical co
 
 \section{Formal Languages}
 
+\subsubsection{DFA}
+A \emph{deterministic finite automaton} (DFA) is a tuple $A = (Q, \Sigma, q_{0},\delta,F)$ where
+\begin{itemize}[-,noitemsep]
+\item $Q$ is a finite set of states;
+\item $\Sigma$ is a finite alphabet;
+\item $q_{0} \in Q$ is a start state;
+\item $\delta : Q \times \Sigma \rightarrow Q$ is a transition function;
+\item $F \subseteq Q$ is a set of accepting final states.
+\end{itemize}
+
+\subsubsection{NFA}
+A \emph{nondeterministic finite automaton} (NFA) is a tuple $B = (Q, \Sigma, q_{0},\delta,F)$ where all elements are equivalently defined as for a DFA except the transition function:
+\begin{itemize}[-,noitemsep]
+\item $\delta : Q \times \Sigma \rightarrow P(Q)$ where $P(Q)$ denotes the power set of all states $Q$.
+\end{itemize}
+
 \subsubsection{Residual Languages}
 
 The \emph{residual language} of the language $L$ with respect to a letter $a$ is defined as \break
@@ -29,7 +45,16 @@ For a state $q$ in an automaton $A$, we define the language $L_{A}(q)$, which co
 
 \subsubsection{Transducer}
 
-A \emph{transducer} $\mathcal{T}$ over $\Sigma$ is an NFA over the alphabet $\Sigma \times \Sigma$. $\mathcal{T}$ accepts the pair of words $(w,v)$ with $w = w_{1}w_{2}...w_{n}$ and $v=v_{1}v_{2}...v_{n}$, if it accepts $(w_{1},v_{1})(w_{2},v_{2})...(w_{n},v_{n})$.
+A \emph{transducer} $\mathcal{T}$ over $\Sigma$ is an NFA over the alphabet $\Sigma \times \Sigma$. 
+It is a tuple $\mathcal{T} = (Q,\Sigma,q_{0},\delta,F)$ where 
+\begin{itemize}[-,noitemsep]
+\item $Q$ is a finite set of states;
+\item $\Sigma$ is a finite alphabet;
+\item $q_{0} \in Q$ is a start state;
+\item $\delta : Q \times (\Sigma \times \Sigma) \rightarrow P(Q)$ is a transition function;
+\item $F \subseteq Q$ is a set of accepting final states.
+\end{itemize}
+$\mathcal{T}$ accepts the pair of words $(w,v)$ with $w = w_{1}w_{2} \ldots w_{n}$ and $v=v_{1}v_{2} \ldots v_{n}$, if it accepts $(w_{1},v_{1})(w_{2},v_{2}) \ldots (w_{n},v_{n})$.
 We call the set of all $w$ the preimage and the set of all $v$ the image of transducer $\mathcal{T}$.
 
 
@@ -37,9 +62,9 @@ We call the set of all $w$ the preimage and the set of all $v$ the image of tran
 
 A \emph{Petri net} $N$ is a tuple $(P,\Tr,F)$ where 
 \begin{itemize}[-,noitemsep]
-	\item $P$ is a finite set of \emph{places}
-	\item $\Tr$ is a finite set of \emph{transitions} disjoint from $S$
-	\item $F \subseteq (P \times \Tr \times \mathbb{N}) \cup (\Tr \times P \times \mathbb{N})$ is a \emph{flow relation}
+	\item $P$ is a finite set of \emph{places};
+	\item $\Tr$ is a finite set of \emph{transitions} disjoint from $S$;
+	\item $F \subseteq (P \times \Tr \times \mathbb{N}) \cup (\Tr \times P \times \mathbb{N})$ is a \emph{flow relation}.
 \end{itemize}
 
 In drawings of Petri nets, the places are usually represented by circles, the transitions by rectangles and the flow relation is shown by numbered arrows between places and transitions.

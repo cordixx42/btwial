@@ -12,9 +12,9 @@ The coverability problem decides for a Petri Net, a start marking $M_{0}$ and a 
 \par
 %There are various procedures aiming to solve the difficult problem of coverability. For instance, Rackoff's algorithm uses the construction of the reachability graph until a certain depth for . 
 %\par
-The method, which is used in this thesis for solving this problem is the Backwards Reachability Algorithm. This method iteratively calculates the set of all predecessor markings, which can cover $M$ and verifies if $M_{0}$ is part of the set. Formally, we define this set as the following:
+The method used in this thesis for solving this problem is the Backwards Reachability Algorithm. This method iteratively calculates the set of all predecessor markings, which can cover $M$ and verifies if $M_{0}$ is part of the set. Formally, we define this set as the following:
 \begin{definition}\label{def:ppre}
-$\ppre_{N}(\mathcal{M}) = \bigcup_{t \in \Tr} \{M : M \xrightarrow{t} M' \ , \ M' \in \mathcal{M} \}$ is the \emph{Predecessor set} and contains the set of all markings $M$, which evolve into a marking in $\mathcal{M}$ by firing one transition $t$ of the Petri net $N = (P,\Tr,F)$.
+$\ppre_{N}(\mathcal{M}) = \bigcup_{t \in \Tr} \ \{M : \exists  M' \in \mathcal{M} \text{ s.t. }  M \xrightarrow{t} M'\}$ is the \emph{Predecessor set} and contains the set of all markings $M$, which evolve into a marking in $\mathcal{M}$ by firing one transition $t$ of the Petri net $N = (P,\Tr,F)$.
 \end{definition}
 \par 
 The abstract procedure of the Backwards Reachability Algorithm is presented in \autoref{alg:bw}. The input are the Petri net $N$, the start marking $M_{0}$ and the target marking $M$. 
@@ -80,9 +80,9 @@ As described in the chapter on the preliminaries, each upward closed set can be 
 %If $\mathcal{M}$ is upward closed, then $\ppre(\mathcal{M})$ is also upward closed.
 %\end{lemma}
 
-\section{Using the Table of Nodes for the Backwards Reachability}
+\section{Using the Table of Nodes for Backwards Reachability}
 %For our approach we want to describe the infinite upward closed sets in the Backwards Reachability Algorithm with finite representations of automata. We use the nodes in the table, which characterize weakly acyclic languages, to encode markings and upward closed set of markings. 
-\autoref{alg:bw} is working with infinite upward-closed sets of markings, like $\mathcal{M}$ and $\mathcal{M}_{\text{old}}$. Since automata are characterizing languages, which are a set of words, they are a way to describe these infinite sets in a compact finite representation. For our approach, we want to implement the Backwards Reachability Algorithm with the Table of Nodes data structure from \autoref{chapter:datastructure} by modelling the markings of Petri nets with weakly acyclic languages. 
+\autoref{alg:bw} is working with infinite upward closed sets of markings, like $\mathcal{M}$ and $\mathcal{M}_{\text{old}}$. Since automata are characterizing languages, which are a set of words, they are a way to describe these infinite sets in a compact finite representation. For our approach, we want to implement the Backwards Reachability Algorithm with the Table of Nodes data structure from \autoref{chapter:datastructure} by modelling the markings of Petri nets with weakly acyclic languages. 
 \autoref{fig:markingtonode} shows the mapping between the infinite sets and the nodes in the table. 
 \par 
 
@@ -298,10 +298,10 @@ The transducer must be designed in a way, such that the $\pre$ of the table yiel
 
 Recall the Pre language and the Predecessor set we have defined. Here for the Pre language we define the input $L$ to directly express a language.
 \begin{equation*}
-\Pre_{\mathcal{T}}(L) = \{ w \in \Sigma^{*}: (w,v) \in L(\mathcal{T}), v \in L \} 
+\Pre_{\mathcal{T}}(L) = \{ w \in \Sigma^{*}: \exists  v \in L \text{ s.t. } (w,v) \in L(\mathcal{T}) \}
 \end{equation*}
 \begin{equation*}
-\ppre_{N}(\mathcal{M}) = \bigcup_{t \in \Tr} \{M : M \xrightarrow{t} M', M' \in \mathcal{M} \}
+\ppre_{N}(\mathcal{M}) = \bigcup_{t \in \Tr} \{M : \exists  M' \in \mathcal{M} \text{ s.t. }  M \xrightarrow{t} M'\}
 \end{equation*}
 
 We aim to design $\mathcal{T}$ in a way such that the words $w$ in $\Pre_{\mathcal{T}}(L)$ are encoding the predecessor markings $M$ in $\ppre_{N}(\mathcal{M})$:

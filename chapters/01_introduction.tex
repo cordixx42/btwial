@@ -27,8 +27,8 @@ To represent the infinite upward closed sets of the Backwards Reachability Algor
 
 %describe backwards reachability algorithm loosely, introduce upward closed sets
 
-In this thesis we want to investigate a novel approach to the Backwards Reachability Algorithm by representing the infinite upward closed sets with formal languages.
-By mapping a marking to a word over an alphabet and a set of markings to a language over that alphabet, we are able describe the infinite upward closed sets from the algorithm with the use deterministic finite automata.
+In this thesis we want to investigate a novel approach to the Backwards Reachability Algorithm by representing the infinite upward closed sets with formal languages called weakly acyclic. This class of weakly acyclic languages is recognized by deterministic finite automata which contain no simple cycle except for self-loops.
+By mapping a marking to a word over an alphabet and a set of markings to a language over that alphabet, we are able to describe the infinite upward closed sets from the algorithm with the use of these weakly acyclic automata.
  
 In detail, we make the following contributions:
 
@@ -36,8 +36,8 @@ In detail, we make the following contributions:
 \setlength\itemsep{0.2em}
 \item We introduce the class of weakly acyclic languages, which are a subset of regular languages (\autoref{chapter:weakly_acyclic_language}),
 \item we design a data structure Table of Nodes for representing weakly acyclic automata efficiently (\autoref{chapter:datastructure}),
-\item we implement important operations on this data structures (\autoref{chapter:datastructure}),
-\item we define a bidirectional mapping between weakly acyclic automata and Petri net configurations (\autoref{chapter:coverability}),
+\item we implement important operations on this data structure (\autoref{chapter:datastructure}),
+\item we define a mapping between weakly acyclic automata and markings of Petri nets (\autoref{chapter:coverability}),
 \item we construct a transducer -- an automaton with input and output -- from a Petri net (\autoref{chapter:coverability}),
 \item we integrate the Table of Nodes into the Backwards Reachability Algorithm (\autoref{chapter:coverability}), and
 \item we perform benchmarks on our implementation and compare it to other coverability tools (\autoref{chapter:evaluation}).
