@@ -7,7 +7,7 @@ There are some differences in the instances of the MIST format compared to the i
 
 Furthermore, the MIST format allows to have multiple target markings $M$ to be covered. The instance is coverable, if one of the target markings is coverable. We simply encode each single target marking analogous to line 4 in \autoref{alg:bw_wwa_final} and finally take the union of all these nodes.
 
-We compare \textsc{Petrimat} (\textit{ptm}) with the existing tools \textsc{Mist} (\textit{mist}) and \textsc{QCover} (\textit{qcov})  \cite{ganty_15,blondin_15}. 
+We compare \textsc{Petrimat} (\textit{ptm}) with the existing tools \textsc{Mist} (\textit{mist}) \cite{ganty_15} and \textsc{QCover} (\textit{qcov})  \cite{blondin_15}. 
 The tools were tested on existing coverability instances with a benchmark script from the tool \textsc{QCover} \cite{blondin_15}.  All benchmarks were run on a machine with an Apple M1 Pro CPU and 32 GiB RAM with a timeout of 300 seconds (5 minutes). 
 The set of coverability problems used are from the toolkit of \textit{mist} and consist of 27 coverability instances. 
 %The wahl-kroening instances are from ... and contain x instances. 
@@ -88,7 +88,7 @@ The overall memory measurements show good results for \textit{ptm} in the easier
 
 However, it is questionable whether the memory command of the Z shell gives an accurate representation of the peak memory used by the tools. For instance, the Table of Nodes used in \textit{ptm} does not have any operations for removing nodes. During the procedure a lot of nodes are never used again but still remain in the table and are thus contributing to the memory usage.
 
-To have a better comparison of the memory usage we want to take a closer look at the size of the underlying data structures. For our own tool \textit{ptm} we can collect information about the Table of Nodes very easily. The \textit{mist} tool uses a data structure called Interval Sharing Tree to represent the minimal markings of the predecessor set \cite{ganty_07,ganty_15}. Running the tool with a special command allows insights on the size of the generated tree at the end. 
+To have a better comparison of the memory usage we want to take a closer look at the size of the underlying data structures. For our own tool \textit{ptm} we can collect information about the Table of Nodes very easily. The \textit{mist} tool uses a data structure called Interval Sharing Tree to represent the minimal markings of the predecessor set \cite{ganty_07}. Running the tool with a special command allows insights on the size of the generated tree at the end. 
 The tool \textit{qcov} is left out in these comparisons, as we have not found a good way to compare its memory consumption fairly with the other two tools. 
 \bigbreak
 

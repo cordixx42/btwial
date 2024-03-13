@@ -402,17 +402,17 @@ Imagine a Petri net with a single transition $t=(g,h)$ with $g = (1,1,0)$ and $h
 %    fill=red!25,
 %    draw=red!75,
     tokens=1,
-    label=$s_1$] (s1) at (0,2) {};
+    label=$p_1$] (s1) at (0,2) {};
  
 % Place 2
 \node[place,
     tokens=3,
-    label=$s_2$] (s2) at (4,2) {};
+    label=$p_2$] (s2) at (4,2) {};
  
 % Place 3
 \node[place,
     tokens=2,
-    label=below:$s_3$] (s3) at (2,0) {};
+    label=below:$p_3$] (s3) at (2,0) {};
 
 \node[transition, label=$t_1$] (t1) at (2,2) {};
 
@@ -435,19 +435,19 @@ Imagine a Petri net with a single transition $t=(g,h)$ with $g = (1,1,0)$ and $h
 % Place 1
 \node[place,
     tokens=1,
-    label=$s_1$] (s1) at (0,2) {};
+    label=$p_1$] (s1) at (0,2) {};
  
 % Place 2
 \node[place,
     tokens=3,
-    label=$s_2$] (s2) at (4,2) {};
+    label=$p_2$] (s2) at (4,2) {};
  
 % Place 3
 \node[place,
     tokens=5,
-    label=below:$s_3$] (s3) at (2,0) {};
+    label=below:$p_3$] (s3) at (2,0) {};
 
-\node[transition, label=$t_1$] at (2,2) {};
+\node[transition, label=$t_1$](t1) at (2,2) {};
 
 \draw   (s1) edge[below, bend right] node{$1$} (t1);
 		\draw 	    (t1) edge[above, bend right] node{$1$} (s1);	
